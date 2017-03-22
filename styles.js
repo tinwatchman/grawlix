@@ -52,7 +52,7 @@ GrawlixStyle.prototype = {};
  */
 const Styles = [
     // default style
-    new GrawlixStyle(Style.ASCII, '!@#$%^&*', {
+    new GrawlixStyle(Style.ASCII, '@!#$%^&*', {
         fuck: '%!&#',
         shit: '$$#!%',
         dick: '%!&#',
@@ -66,6 +66,7 @@ const Styles = [
         bastard: '%@$$%@*#',
         bitch: '%!#*%',
         tit: '%!%$1',
+        tits: '%!%$$',
         titty: '%!%%^',
         tittie: '%!%%!#'
     }),
@@ -116,6 +117,7 @@ const Styles = [
         bastard: '☣@$$⚓@☢♢',
         bitch: '☣!⚓♧#',
         tit: '⚓!⚓$1',
+        tits: '⚓!⚓$$',
         titty: '⚓!⚓⚓⚔',
         tittie: '⚓!⚓⚓!#'
     })

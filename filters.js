@@ -101,6 +101,7 @@ var Filters = [
   }),
   new GrawlixFilter('tittie', /\btittie/i),
   new GrawlixFilter('titty', /\btitty/i),
+  new GrawlixFilter('tits', /\btits/i),
   new GrawlixFilter('tit', /\btit([^ahilmrtu])/i, { 
     priority: 1, 
     placement: Placement.POST

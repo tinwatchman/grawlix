@@ -23,7 +23,7 @@ describe('grawlix', function() {
       var t3 = grawlix("well, you PISSED ME OFF!");
       expect(t3).toEqual("well, you &!$#ED ME OFF!");
       var t4 = grawlix("man this shit is so tits");
-      expect(t4).toEqual("man this $#!% is so %!%s");
+      expect(t4).toEqual("man this $#!% is so %!%$");
       var t5 = grawlix("you guys are such assholes");
       expect(t5).toEqual("you guys are such @$$#%!&s");
       var t6 = grawlix("bitches say what?");
@@ -54,7 +54,7 @@ describe('grawlix', function() {
       var t3 = grawlix("well, you PISSED ME OFF!");
       expect(t3).toEqual("well, you ☠☠☠☠ED ME OFF!");
       var t4 = grawlix("man this shit is so tits");
-      expect(t4).toEqual("man this ☠☠☠☠ is so ☠☠☠s");
+      expect(t4).toEqual("man this ☠☠☠☠ is so ☠☠☠☠");
       var t5 = grawlix("you guys are such assholes");
       expect(t5).toEqual("you guys are such ☠☠☠☠☠☠☠s");
       var t6 = grawlix("bitches say what?");
