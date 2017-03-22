@@ -78,26 +78,26 @@ var toGrawlixFilter = function(obj) {
  * @type {Array}
  */
 var Filters = [
-  new GrawlixFilter('motherfuck', /motherfuck/i),
+  new GrawlixFilter('motherfuck', /m[o0]therfuck/i),
   new GrawlixFilter('fuck', /fuck/i, { priority: 1 }),
   new GrawlixFilter('shit', /(?:[s$])h(?:[i1])t(?!ake)/i),
-  new GrawlixFilter('dick', /d(?:[i1])ck(?!e|i)/i),
-  new GrawlixFilter('piss', /p(?:[i1])ss(?!ant)/i),
+  new GrawlixFilter('dick', /d[i1]ck(?!e|i)/i),
+  new GrawlixFilter('piss', /p[i1]ss(?!ant)/i),
   new GrawlixFilter('cunt', /(\b|[^s])cunt/i, { placement: Placement.PRE }),
-  new GrawlixFilter('cocksuck', /c(?:[o0])cksuck/i),
-  new GrawlixFilter('bastard', /\bbastard(?!ise|ize)/i),
-  new GrawlixFilter('bitch', /b(?:[i1])tch/i),
-  new GrawlixFilter('assholes', /assh(?:[o0])les/i),
-  new GrawlixFilter('asshole', /assh(?:[o0])le/i, { priority: 1 }),
-  new GrawlixFilter('asses', /([^glmp])asses\b/i, {
+  new GrawlixFilter('cocksuck', /c[o0]cksuck/i),
+  new GrawlixFilter('bastard', /\bb[a@]st[a@]rd(?!ise|ize)/i),
+  new GrawlixFilter('bitch', /b[i1]tch/i),
+  new GrawlixFilter('assholes', /[a@]ssh[o0]les/i),
+  new GrawlixFilter('asshole', /[a@]ssh[o0]le/i, { priority: 1 }),
+  new GrawlixFilter('asses', /([^glmp])[a@]sses\b/i, {
     priority: 0, 
     placement: Placement.PRE
   }),
-  new GrawlixFilter('dumbass', /\b(dumb)ass/i, {
+  new GrawlixFilter('dumb[a@]ss', /\b(dumb)[a@]ss/i, {
     priority: 1, 
     placement: Placement.PRE
   }),
-  new GrawlixFilter('ass', /(\b|\s|[^bcglmprstvu])ass\b/i, {
+  new GrawlixFilter('ass', /(\b|\s|[^bcglmprstvu])[a@]ss\b/i, {
     priority: 2, 
     placement: Placement.PRE
   }),
