@@ -34,7 +34,27 @@ describe('grawlix', function() {
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the %!&#ing keys, you %!&#ing #*#%$!#%ing " +
         "%*^##*%!&#er, aaarrrghh.");
+      var t9 = grawlix("PM ME YOUR T1TT1E$");
+      expect(t9).toEqual("PM ME YOUR %!%%!#$");
     });
+  });
+
+  describe('#allowed functionality', function() {
+    // setup
+    beforeAll(function() {
+      grawlix.setDefaults({
+        style: 'ascii',
+        randomize: false 
+      });
+    });
+
+    it('should allow words to be whitelisted', function() {
+      var r = grawlix('his young ward Dick Grayson', {
+        allowed: [ 'dick' ]
+      });
+      expect(r).toEqual('his young ward Dick Grayson');
+    });
+
   });
 
   describe('#nextwave theme', function() {
@@ -65,6 +85,8 @@ describe('grawlix', function() {
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ☠☠☠☠ing keys, you ☠☠☠☠ing ☠☠☠☠☠☠☠☠ing " +
         "☠☠☠☠☠☠☠☠☠☠er, aaarrrghh.");
+      var t9 = grawlix("PM ME YOUR T1TT1E$");
+      expect(t9).toEqual("PM ME YOUR ☠☠☠☠☠☠☠");
     });
   });
 
@@ -96,6 +118,8 @@ describe('grawlix', function() {
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ████ing keys, you ████ing ████████ing " +
         "██████████er, aaarrrghh.");
+      var t9 = grawlix("PM ME YOUR T1TT1E$");
+      expect(t9).toEqual("PM ME YOUR ███████");
     });
   });
 
@@ -127,6 +151,8 @@ describe('grawlix', function() {
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ****ing keys, you ****ing ********ing " +
         "**********er, aaarrrghh.");
+      var t9 = grawlix("PM ME YOUR T1TT1E$");
+      expect(t9).toEqual("PM ME YOUR *******");
     });
   });
 

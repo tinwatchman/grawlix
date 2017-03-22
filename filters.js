@@ -101,11 +101,12 @@ var Filters = [
     priority: 2, 
     placement: Placement.PRE
   }),
-  new GrawlixFilter('tittie', /\bt(?:[i1])tt(?:[i1])e/i),
+  new GrawlixFilter('titties', /\bt(?:[i1])tt(?:[i1])e(?:[s\$])/i),
+  new GrawlixFilter('tittie', /\bt(?:[i1])tt(?:[i1])e/i, { priority: 1 }),
   new GrawlixFilter('titty', /\bt(?:[i1])tty/i),
   new GrawlixFilter('tits', /\bt(?:[i1])t(?:[s\$])/i),
   new GrawlixFilter('tit', /\bt(?:[i1])t([^ahilmrtu])/i, { 
-    priority: 1, 
+    priority: 2, 
     placement: Placement.POST
   })
 ];

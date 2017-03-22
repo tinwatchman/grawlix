@@ -70,7 +70,8 @@ const Styles = [
         tit: '%!%$1',
         tits: '%!%$$',
         titty: '%!%%^',
-        tittie: '%!%%!#'
+        tittie: '%!%%!#',
+        titties: '%!%%!#$'
     }),
     // single-character styles
     new GrawlixStyle(Style.ASTERIX, '*', {
@@ -122,7 +123,8 @@ const Styles = [
         tit: '⚓!⚓$1',
         tits: '⚓!⚓$$',
         titty: '⚓!⚓⚓⚔',
-        tittie: '⚓!⚓⚓!#'
+        tittie: '⚓!⚓⚓!#',
+        titties: '⚓!⚓⚓!#$'
     })
 ];
 

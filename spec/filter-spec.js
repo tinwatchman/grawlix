@@ -65,6 +65,9 @@ describe('default filters', function() {
     it('should match b1tch', function() {
       expect(testFilters('b1tch')).toBe(true);
     });
+    it('should match t1tt1e$', function() {
+      expect(testFilters('t1tt1e$')).toBe(true);
+    });
   });
 
   // check compound words and variants
