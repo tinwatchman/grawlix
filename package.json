@@ -20,6 +20,10 @@
   ],
   "author": "Jon Stout (www.jonstout.net)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tinwatchman/grawlix.git"
+  },
   "devDependencies": {
     "jasmine": "^2.5.3"
   },
