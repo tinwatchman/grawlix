@@ -33,7 +33,7 @@ describe('grawlix', function() {
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the %!&#ing keys, you %!&#ing #*#%$!#%ing " +
-        "mother%!&#er, aaarrrghh.");
+        "%*^##*%!&#er, aaarrrghh.");
     });
   });
 
@@ -64,7 +64,7 @@ describe('grawlix', function() {
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ☠☠☠☠ing keys, you ☠☠☠☠ing ☠☠☠☠☠☠☠☠ing " +
-        "mother☠☠☠☠er, aaarrrghh.");
+        "☠☠☠☠☠☠☠☠☠☠er, aaarrrghh.");
     });
   });
 });

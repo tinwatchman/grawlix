@@ -54,6 +54,7 @@ const Styles = [
     // default style
     new GrawlixStyle(Style.ASCII, '@!#$%^&*', {
         fuck: '%!&#',
+        motherfuck: '%*^##*%!&#',
         shit: '$$#!%',
         dick: '%!&#',
         piss: '&!$$#',

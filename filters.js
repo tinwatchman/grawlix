@@ -78,7 +78,8 @@ var toGrawlixFilter = function(obj) {
  * @type {Array}
  */
 var Filters = [
-  new GrawlixFilter('fuck', /fuck/i),
+  new GrawlixFilter('motherfuck', /motherfuck/i),
+  new GrawlixFilter('fuck', /fuck/i, { priority: 1 }),
   new GrawlixFilter('shit', /shit(?!ake)/i),
   new GrawlixFilter('dick', /dick(?!e|i)/i),
   new GrawlixFilter('piss', /piss(?!ant)/i),
