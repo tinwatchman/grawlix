@@ -114,11 +114,20 @@ describe('default filters', function() {
     it('should include fuuuuuuck', function() {
       expect(testFilters('fuuuuuuck')).toBe(true);
     });
-    it('should include fuuuuuuckkkkkkk', function() {
-      expect(testFilters('fuuuuuuckkkkkkk')).toBe(true);
+    it('should include fffuuuuuuckkkkkkk', function() {
+      expect(testFilters('fffuuuuuuckkkkkkk')).toBe(true);
     });
     it('should include cuuuunnnnt', function() {
       expect(testFilters('cuuuunnnnt')).toBe(true);
+    });
+    it('should include ttiiiitttttttsss', function() {
+      expect(testFilters('ttiiiitttttttsss')).toBe(true);
+    });
+    it('should include mutherfuckah', function() {
+      expect(testFilters('mutherfuckah')).toBe(true);
+    });
+    it('should include diiiiiickkkk', function() {
+      expect(testFilters('diiiiiickkkk')).toBe(true);
     });
   });
   
@@ -144,6 +153,9 @@ describe('default filters', function() {
     });
     it('should not match assess', function() {
       expect(testFilters('assess')).toBe(false);
+    });
+    it('should not match asset', function() {
+      expect(testFilters('asset')).toBe(false);
     });
     it('should not match bass', function() {
       expect(testFilters('bass')).toBe(false);
