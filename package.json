@@ -1,7 +1,7 @@
 {
   "name": "grawlix",
   "version": "0.0.1",
-  "description": "Replaces curse words with grawlix strings",
+  "description": "Replace curse words with grawlix strings",
   "main": "grawlix.js",
   "scripts": {
     "test": "jasmine"
