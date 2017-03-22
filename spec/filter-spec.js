@@ -71,45 +71,54 @@ describe('default filters', function() {
   });
 
   // check compound words and variants
-  describe('#compound words', function() {
-    it('should match badass', function() {
+  describe('#compound matches', function() {
+    it('should include badass', function() {
         expect(testFilters('badass')).toBe(true);
     });
-    it('should match bitched', function() {
+    it('should include bitched', function() {
       expect(testFilters('bitched')).toBe(true);
     });
-    it('should match bitchy', function() {
+    it('should include bitchy', function() {
       expect(testFilters('bitchy')).toBe(true);
     });
-    it('should match bullshit', function() {
+    it('should include bullshit', function() {
       expect(testFilters('bullshit')).toBe(true);
     });
-    it('should match dumbass', function() {
+    it('should include dumbass', function() {
       expect(testFilters('DUMBASS')).toBe(true);
     });
-    it('should match dumbasses', function() {
+    it('should include dumbasses', function() {
       expect(testFilters('dumbasses')).toBe(true);
     });
-    it('should match fuckdick', function() {
+    it('should include fuckdick', function() {
       expect(testFilters('fuckdick')).toBe(true);
     });
-    it('should match fuckshits', function() {
+    it('should include fuckshits', function() {
       expect(testFilters('fuckshits')).toBe(true);
     });
-    it('should match fucktits', function() {
+    it('should include fucktits', function() {
       expect(testFilters('fucktits')).toBe(true);
     });
-    it('should match jackass', function() {
+    it('should include jackass', function() {
       expect(testFilters('jackass')).toBe(true);
     });
-    it('should match jackasses', function() {
+    it('should include jackasses', function() {
       expect(testFilters('jackasses')).toBe(true);
     });
-    it('should match superbitches', function() {
+    it('should include superbitches', function() {
       expect(testFilters('superbitches')).toBe(true);
     });
-    it('should match wiseass', function() {
+    it('should include wiseass', function() {
       expect(testFilters('wiseass')).toBe(true);
+    });
+    it('should include fuuuuuuck', function() {
+      expect(testFilters('fuuuuuuck')).toBe(true);
+    });
+    it('should include fuuuuuuckkkkkkk', function() {
+      expect(testFilters('fuuuuuuckkkkkkk')).toBe(true);
+    });
+    it('should include cuuuunnnnt', function() {
+      expect(testFilters('cuuuunnnnt')).toBe(true);
     });
   });
   
