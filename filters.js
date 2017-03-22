@@ -87,7 +87,8 @@ var Filters = [
   new GrawlixFilter('cocksuck', /cocksuck/i),
   new GrawlixFilter('bastard', /\bbastard(?!ise|ize)/i),
   new GrawlixFilter('bitch', /bitch/i),
-  new GrawlixFilter('asshole', /asshole/i),
+  new GrawlixFilter('assholes', /assholes/i),
+  new GrawlixFilter('asshole', /asshole/i, { priority: 1 }),
   new GrawlixFilter('asses', /([^glmp])asses\b/i, {
     priority: 0, 
     placement: Placement.PRE

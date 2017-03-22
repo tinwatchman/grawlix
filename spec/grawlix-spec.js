@@ -25,7 +25,7 @@ describe('grawlix', function() {
       var t4 = grawlix("man this shit is so tits");
       expect(t4).toEqual("man this $#!% is so %!%$");
       var t5 = grawlix("you guys are such assholes");
-      expect(t5).toEqual("you guys are such @$$#%!&s");
+      expect(t5).toEqual("you guys are such @$$#%!&$");
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("%!#*%es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
@@ -42,7 +42,7 @@ describe('grawlix', function() {
     beforeAll(function() {
       grawlix.setDefaults({
         style: 'nextwave',
-        randomize: false 
+        randomize: false
       });
     });
 
@@ -56,7 +56,7 @@ describe('grawlix', function() {
       var t4 = grawlix("man this shit is so tits");
       expect(t4).toEqual("man this ☠☠☠☠ is so ☠☠☠☠");
       var t5 = grawlix("you guys are such assholes");
-      expect(t5).toEqual("you guys are such ☠☠☠☠☠☠☠s");
+      expect(t5).toEqual("you guys are such ☠☠☠☠☠☠☠☠");
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("☠☠☠☠☠es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
