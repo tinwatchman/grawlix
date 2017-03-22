@@ -56,6 +56,15 @@ describe('default filters', function() {
     it('should match masshole', function() {
       expect(testFilters('masshole')).toBe(true);
     });
+    it('should match t1t$', function() {
+      expect(testFilters('T1T$')).toBe(true);
+    });
+    it('should match $h1t', function() {
+      expect(testFilters('$h1t')).toBe(true);
+    });
+    it('should match b1tch', function() {
+      expect(testFilters('b1tch')).toBe(true);
+    });
   });
 
   // check compound words and variants

@@ -80,15 +80,15 @@ var toGrawlixFilter = function(obj) {
 var Filters = [
   new GrawlixFilter('motherfuck', /motherfuck/i),
   new GrawlixFilter('fuck', /fuck/i, { priority: 1 }),
-  new GrawlixFilter('shit', /shit(?!ake)/i),
-  new GrawlixFilter('dick', /dick(?!e|i)/i),
-  new GrawlixFilter('piss', /piss(?!ant)/i),
+  new GrawlixFilter('shit', /(?:[s$])h(?:[i1])t(?!ake)/i),
+  new GrawlixFilter('dick', /d(?:[i1])ck(?!e|i)/i),
+  new GrawlixFilter('piss', /p(?:[i1])ss(?!ant)/i),
   new GrawlixFilter('cunt', /(\b|[^s])cunt/i, { placement: Placement.PRE }),
-  new GrawlixFilter('cocksuck', /cocksuck/i),
+  new GrawlixFilter('cocksuck', /c(?:[o0])cksuck/i),
   new GrawlixFilter('bastard', /\bbastard(?!ise|ize)/i),
-  new GrawlixFilter('bitch', /bitch/i),
-  new GrawlixFilter('assholes', /assholes/i),
-  new GrawlixFilter('asshole', /asshole/i, { priority: 1 }),
+  new GrawlixFilter('bitch', /b(?:[i1])tch/i),
+  new GrawlixFilter('assholes', /assh(?:[o0])les/i),
+  new GrawlixFilter('asshole', /assh(?:[o0])le/i, { priority: 1 }),
   new GrawlixFilter('asses', /([^glmp])asses\b/i, {
     priority: 0, 
     placement: Placement.PRE
@@ -101,10 +101,10 @@ var Filters = [
     priority: 2, 
     placement: Placement.PRE
   }),
-  new GrawlixFilter('tittie', /\btittie/i),
-  new GrawlixFilter('titty', /\btitty/i),
-  new GrawlixFilter('tits', /\btits/i),
-  new GrawlixFilter('tit', /\btit([^ahilmrtu])/i, { 
+  new GrawlixFilter('tittie', /\bt(?:[i1])tt(?:[i1])e/i),
+  new GrawlixFilter('titty', /\bt(?:[i1])tty/i),
+  new GrawlixFilter('tits', /\bt(?:[i1])t(?:[s\$])/i),
+  new GrawlixFilter('tit', /\bt(?:[i1])t([^ahilmrtu])/i, { 
     priority: 1, 
     placement: Placement.POST
   })
