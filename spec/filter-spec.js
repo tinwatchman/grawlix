@@ -378,6 +378,15 @@ describe('default filters', function() {
     it('should not match titular', function() {
       expect(testFilters('titular')).toBe(false);
     });
+    it('should pass frak', function() {
+      expect(testFilters('frak')).toBe(false);
+    });
+    it('should pass frell', function() {
+      expect(testFilters('frell')).toBe(false);
+    });
+    it('should pass smeghead', function() {
+      expect(testFilters('smeghead')).toBe(false);
+    });
   });
 
 });

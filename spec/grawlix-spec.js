@@ -71,6 +71,32 @@ describe('grawlix', function() {
 
   });
 
+  describe('#randomize option', function() {
+    // setup
+    beforeAll(function() {
+      grawlix.setDefaults({
+        style: 'unicode',
+        randomize: true 
+      });
+    });
+
+    it('should generate random grawlixes based on the theme', function() {
+      var t1 = grawlix("fuck this shit I'm out");
+      expect(t1).not.toContain('fuck');
+      expect(t1).not.toContain('shit');
+      expect(t1.length).toEqual(22);
+    });
+
+    it('should fill out expanded matches', function() {
+      var t = "fuuuuuuuuuck me";
+      var r = grawlix(t);
+      console.log(r);
+      expect(r).not.toContain('fuuuuuuuuuck');
+      expect(r.length).toEqual(t.length);
+    });
+
+  });
+
   describe('#nextwave theme', function() {
     // setup
     beforeAll(function() {
