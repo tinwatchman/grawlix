@@ -4,7 +4,7 @@
   "description": "Replaces obscenities with random symbols",
   "main": "grawlix.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "istanbul cover node_modules/jasmine/bin/jasmine.js"
   },
   "keywords": [
     "profanity",
@@ -26,6 +26,8 @@
     "url": "git@github.com:tinwatchman/grawlix.git"
   },
   "devDependencies": {
+    "eslint-plugin-promise": "^3.5.0",
+    "istanbul": "^0.4.5",
     "jasmine": "^2.5.3"
   },
   "dependencies": {

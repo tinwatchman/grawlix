@@ -3,4 +3,5 @@
 *.sublime-workspace
 docs/*
 gen/*
+coverage/*
 WORDS.json
