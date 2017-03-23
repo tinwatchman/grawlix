@@ -24,9 +24,9 @@ const _ = require('underscore');
  * @see http://underscorejs.org/#template
  */
 const FilterTemplate = {
-  PRE: '$1<%= word %>',
-  POST: '<%= word %>$1',
-  BETWEEN: '$1<%= word %>$2'
+  PRE: '$1<%= word %>', // substring comes before word
+  POST: '<%= word %>$1', // substring comes after word
+  BETWEEN: '$1<%= word %>$2' // word between substrings
 };
 
 /**
@@ -189,10 +189,6 @@ var Filters = [
     priority: 1,
     expandable: true
   }),
-  // 'piss' filter
-  new GrawlixFilter('piss', /p[i1]+ss+(?!ant)/i, {
-    expandable: true
-  }),
   // 'ass'-related filters
   new GrawlixFilter('assholes', /[a@]ssh[o0]les/i),
   new GrawlixFilter('asshole', /[a@]ssh[o0]+le/i, { 
@@ -238,6 +234,10 @@ var Filters = [
       expandable: true
     }
   ),
+  // 'piss' filter
+  new GrawlixFilter('piss', /p[i1]+ss+(?!ant)/i, {
+    expandable: true
+  }),
   // various insults
   new GrawlixFilter('dick', /d[i1]+c+k+(?!e|i)/i, {
     expandable: true
