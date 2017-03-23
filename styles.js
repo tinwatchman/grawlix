@@ -17,7 +17,7 @@ const Style = {
 };
 
 /**
- * Class representing a style
+ * Class representing a style of grawlix
  * @param {String} name     Style name
  * @param {String} chars    Characters used by style (no separators)
  * @param {Object} replaces Map of fixed replacement strings

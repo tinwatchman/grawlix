@@ -11,8 +11,8 @@ const Style = require('./styles').Style;
 var defaultOptions = {
   style: Style.ASCII,
   randomize: true,
-  allowed: [],
-  filters: []
+  filters: [],
+  allowed: []
 };
 
 /**

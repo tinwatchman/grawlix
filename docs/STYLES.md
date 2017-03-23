@@ -1,3 +1,3 @@
-# `grawlix` : Advanced Grawlix Styles
+# `grawlix`: Styles
 
 > TBD

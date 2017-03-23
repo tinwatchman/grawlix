@@ -299,6 +299,9 @@ describe('default filters', function() {
     it('should match f/u/c/k', function() {
       expect(testFilters('f/u/c/k')).toBe(true);
     });
+    it('should match f\nu\nc\nk', function() {
+      expect(testFilters('f\nu\nc\nk')).toBe(true);
+    });
   });
   
   // scunthorpe checks

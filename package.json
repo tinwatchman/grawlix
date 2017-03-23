@@ -1,7 +1,7 @@
 {
   "name": "grawlix",
   "version": "0.0.1",
-  "description": "Replace curse words with grawlix strings",
+  "description": "Replaces obscenities with random symbols",
   "main": "grawlix.js",
   "scripts": {
     "test": "jasmine"
@@ -9,14 +9,15 @@
   "keywords": [
     "profanity",
     "filter",
-    "curse",
-    "words",
     "swear",
+    "curse",
+    "cuss",
     "obscenity",
     "obscene",
     "vulgar",
-    "grawlix",
-    "regex"
+    "regex",
+    "regexp",
+    "grawlix"
   ],
   "author": "Jon Stout (www.jonstout.net)",
   "license": "MIT",
