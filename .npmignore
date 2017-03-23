@@ -1,5 +1,6 @@
 *.DS_Store
 *.sublime-project
 *.sublime-workspace
+docs/*
 gen/*
-KNOWN_WORDS.json
+WORDS.json
