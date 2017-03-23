@@ -5,6 +5,125 @@ const _ = require('underscore');
 const filters = require('../filters').filters;
 const GrawlixFilter = require('../filters').GrawlixFilter;
 const toGrawlixFilter = require('../filters').toGrawlixFilter;
+const FilterTemplate = require('../filters').FilterTemplate;
+
+// GrawfixFilter spec
+
+describe('GrawfixFilter', function() {
+
+  describe('#configure', function() {
+    it('should configure the filter object as expected', function() {
+      var filter = new GrawlixFilter('word', /word/i);
+      filter.configure({
+        priority: 1,
+        template: '$1<%= word %>',
+        expandable: true
+      });
+      expect(filter.priority).toEqual(1);
+      expect(_.isFunction(filter.template)).toBe(true);
+      expect(filter.isExpandable).toBe(true);
+    });
+  });
+
+  describe('#isValid', function() {
+    it('should return false when filter word is empty', function() {
+      var filter = new GrawlixFilter('', /word/i);
+      expect(filter.isValid()).toBe(false);
+    });
+    it('should return false when filter regex is not a RegExp', function() {
+      var filter = new GrawlixFilter('', "/word/i");
+      expect(filter.isValid()).toBe(false);
+    });
+  });
+
+  describe('#isMatch', function() {
+    it('should return true when a match is found', function() {
+      var filter = new GrawlixFilter('word', /word/i);
+      expect(filter.isMatch('here is my word yay')).toBe(true); 
+    });
+    it('should return false when no match is found', function() {
+      var filter = new GrawlixFilter('asses', /(\b|[^glmp])[a@]sses\b/i);
+      expect(filter.isMatch('you dumbass...')).toBe(false);
+    });
+  });
+
+  describe('#getMatchLen', function() {
+    it('should return the length of the matched word', function() {
+      var filter = new GrawlixFilter('fuck', /f+u+c+k+/i);
+      var testStr = 'fffuuuuuucccckkkkkkk';
+      expect(filter.getMatchLen(testStr)).toEqual(testStr.length);
+    });
+    it('should deduct the length of any substrings', function() {
+      var filter = new GrawlixFilter('asses', /(\b|[^glmp])[a@]sses\b/i);
+      var testStr = 'YOU DUMBASSES!';
+      expect(filter.getMatchLen(testStr)).toEqual(5);
+    });
+    it('should return the full length of the match', function() {
+      var filter = new GrawlixFilter('dumbass', /\b(dumb)[a@]ss+/i);
+      var testStr = 'dumb@ssssssss';
+      expect(filter.getMatchLen(testStr)).toEqual(9);
+    });
+  });
+
+  describe('#hasTemplate', function() {
+    it('should return true when filter template has been set', function() {
+      var filter = new GrawlixFilter('word', /word/i, {
+        template: '$1<%= word %>'
+      });
+      expect(filter.hasTemplate()).toBe(true);
+    });
+  });
+
+  describe('#template', function() {
+    it('should be a function', function() {
+      var filter = new GrawlixFilter('word', /word/i, {
+        template: '$1<%= word %>'
+      });
+      expect(_.isFunction(filter.template)).toBe(true);
+    });
+    it('should take a single string as input', function() {
+      var filter = new GrawlixFilter('word', /word/i, {
+        template: '$1<%= word %>'
+      });
+      expect(filter.template('#####')).toEqual('$1#####');
+    });
+  });
+
+});
+
+// GrawlixFilter factory function spec
+
+describe('toGrawlixFilter', function() {
+
+  it('should fail when not provided word parameter', function() {
+    expect(function() {
+      return toGrawlixFilter({ pattern: /fuck/i });
+    }).toThrow();
+  });
+
+  it('should fail when not provided pattern parameter', function() {
+    expect(function() {
+      return toGrawlixFilter({ word: 'abadword' });
+    }).toThrow();
+  });
+
+  it('should fail when pattern parameter not a RegExp', function() {
+    expect(function() {
+      return toGrawlixFilter({ word: 'abadword', pattern: 'abadword' });
+    }).toThrow();
+  });
+
+  it('should return a GrawlixFilter object', function() {
+    var r = toGrawlixFilter({
+      word: 'abadword',
+      pattern: /\babadword\b/i
+    });
+    expect(r instanceof GrawlixFilter).toBe(true);
+  });
+
+});
+
+// default filter tests
 
 describe('default filters', function() {
 
@@ -68,6 +187,12 @@ describe('default filters', function() {
     it('should match t1tt1e$', function() {
       expect(testFilters('t1tt1e$')).toBe(true);
     });
+    it('should match dumb@ss', function() {
+      expect(testFilters('dumb@ss')).toBe(true);
+    });
+    it('should match dumb@sses', function() {
+      expect(testFilters('dumb@sses')).toBe(true);
+    });
   });
 
   // check compound words and variants
@@ -128,6 +253,12 @@ describe('default filters', function() {
     });
     it('should include diiiiiickkkk', function() {
       expect(testFilters('diiiiiickkkk')).toBe(true);
+    });
+    it('should match muthafucka', function() {
+      expect(testFilters('muthafucka')).toBe(true);
+    });
+    it('should match dumb@ssssssss', function() {
+      expect(testFilters('dumb@ssssssss')).toBe(true);
     });
   });
   
@@ -249,31 +380,4 @@ describe('default filters', function() {
     });
   });
 
-});
-
-// GrawlixFilter factory function spec
-
-describe('toGrawlixFilter', function() {
-  it('should fail when not provided word parameter', function() {
-    expect(function() {
-      return toGrawlixFilter({ pattern: /fuck/i });
-    }).toThrow();
-  });
-  it('should fail when not provided pattern parameter', function() {
-    expect(function() {
-      return toGrawlixFilter({ word: 'abadword' });
-    }).toThrow();
-  });
-  it('should fail when pattern parameter not a RegExp', function() {
-    expect(function() {
-      return toGrawlixFilter({ word: 'abadword', pattern: 'abadword' });
-    }).toThrow();
-  });
-  it('should return a GrawlixFilter object', function() {
-    var r = toGrawlixFilter({
-      word: 'abadword',
-      pattern: /\babadword\b/i
-    });
-    expect(r instanceof GrawlixFilter).toBe(true);
-  });
 });

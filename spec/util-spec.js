@@ -6,25 +6,29 @@ const GrawlixStyle = require('../styles').GrawlixStyle;
 
 describe('GrawlixUtil', function() {
 
-  describe('#getFill', function() {
+  describe('#getFillGrawlix', function() {
     it('should return a string of the given length', function() {
-      var r = util.getFill('*', 16);
+      var r = util.getFillGrawlix('*', 16);
       expect(_.isString(r)).toBe(true);
       expect(r).toEqual('****************');
     });
     it('should default to the first char if given a string', function() {
-      var r = util.getFill('*!', 16);
+      var r = util.getFillGrawlix('*!', 16);
       expect(r).toEqual('****************');
+    });
+    it('should work on unicode', function() {
+      var r = util.getFillGrawlix('☠', 16);
+      expect(r).toEqual('☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠☠');
     });
   });
 
-  describe('#getRandom', function() {
+  describe('#getRandomGrawlix', function() {
     it('should always return a grawlix of the given length', function() {
       var grawlixChars = '!@#$%^&*';
       var nonGrawlixChars = /[^\!\@\#\$\%\^\&\*]/gi;
-      var a = util.getRandom(grawlixChars, 4);
-      var b = util.getRandom(grawlixChars, 10);
-      var c = util.getRandom(grawlixChars, 32);
+      var a = util.getRandomGrawlix(grawlixChars, 4);
+      var b = util.getRandomGrawlix(grawlixChars, 10);
+      var c = util.getRandomGrawlix(grawlixChars, 32);
       expect(_.isString(a)).toBe(true);
       expect(a.length).toEqual(4);
       expect(a).not.toMatch(nonGrawlixChars);
@@ -43,7 +47,7 @@ describe('GrawlixUtil', function() {
         return char + char;
       });
       for (var i=0; i<numTrials; i++) {
-          var r = util.getRandom(chars, 16);
+          var r = util.getRandomGrawlix(chars, 16);
           for (var n=0; n<dbls.length; n++) {
               expect(r).not.toContain(dbls[n]);
           }
@@ -54,7 +58,7 @@ describe('GrawlixUtil', function() {
       var numTrials = 10000;
       var chars = '!@#$%';
       for (var i=0; i<numTrials; i++) {
-          var r = util.getRandom(chars, 16);
+          var r = util.getRandomGrawlix(chars, 16);
           expect(r.charAt(15)).not.toEqual('!');
       };
     });

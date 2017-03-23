@@ -4,72 +4,68 @@ const _ = require('underscore');
 const util = require('./util');
 const Style = require('./styles').Style;
 
+/**
+ * Grawlix default options
+ * @type {Object}
+ */
 var defaultOptions = {
   style: Style.ASCII,
   randomize: true,
   allowed: [],
   filters: []
 };
-var cachedOpts = null;
 
 /**
- * Main grawlix function
- * @param  {String}  str               Content string to process
+ * Cached settings object; no need to repeat that work if the options haven't 
+ * changed.
+ * @type {GrawlixSettings}
+ */
+var defaultSettings = null;
+
+/**
+ * Replaces all curse words in the given content string with cartoon-like 
+ * grawlixes.
+ * @param  {String}  str               Content string
  * @param  {Object}  options           Options object. Optional.
  * @param  {Object}  options.style     Style of grawlix to use for replacements. 
  *                                     Can be either a string, with the name of 
  *                                     the style to use; or an object with a 
  *                                     required `name` property. See readme for 
- *                                     more details / available options.
+ *                                     more details and available options. 
+ *                                     Defaults to the `ascii` style.
  * @param  {Boolean} options.randomize Whether or not to replace curses with 
  *                                     randomized or fixed grawlixes. Default is 
  *                                     true.
  * @param  {Array}   options.allowed   Array of strings, representing 
  *                                     whitelisted words that would otherwise be 
  *                                     replaced. Optional.
- * @param  {Array}   options.filters   Array of custom filter objects. Each 
- *                                     object must have at least two properties: 
- *                                     `word` (the word being replaced) and 
- *                                     `regex` (regex to find the word). See 
- *                                     readme for more details. Optional.
+ * @param  {Array}   options.filters   Array of custom filter objects. These can
+ *                                     either reconfigure one of the existing 
+ *                                     default filter, or represent an entirely
+ *                                     new filter. See readme for details. 
+ *                                     Optional.
  * @return {String}                    Processed string
  */
 var grawlix = function(str, options) {
   // get settings
-  var opts;
-  if (_.isUndefined(options) && cachedOpts !== null) {
-    opts = cachedOpts;
+  var settings;
+  if (_.isUndefined(options) && defaultSettings !== null) {
+    settings = defaultSettings;
   } else if (!_.isUndefined(options)) {
-    opts = util.parseOptions(options, defaultOptions);
+    settings = util.parseOptions(options, defaultOptions);
   } else {
-    opts = util.parseOptions(defaultOptions);
+    settings = util.parseOptions(defaultOptions);
+    defaultSettings = settings;
   }
-  cachedOpts = opts;
   // apply filters
-  _.each(opts.filters, function(filter) {
+  _.each(settings.filters, function(filter) {
     while (filter.isMatch(str)) {
-      var repl;
-      if (!opts.isRandom && opts.style.hasFixed(filter.word)) {
-        repl = opts.style.replaces[filter.word];
-      } else if (opts.isRandom && style.canRandomize() && filter.hasPlacement()){
-        repl = filter.getReplaceTemplate(util.getRandom(filter.word.length));
-      } else if (opts.isRandom && style.canRandomize()) {
-        repl = util.getRandom(filter.word.length);
-      } else if (filter.hasPlacement()) {
-        repl = filter.getReplaceTemplate(
-          util.getFill(opts.style.chars, filter.word.length)
-        );
-      } else {
-        repl = util.getFill(opts.style.chars, filter.word.length);
-      }
-      str = str.replace(filter.regex, repl);
+      str = util.replaceMatch(str, filter, settings);
     }
   });
   // return
   return str;
 };
-grawlix.Style = Style;
-grawlix.GrawlixStyle = require('./styles').GrawlixStyle;
 
 /**
  * Get default options
@@ -85,8 +81,15 @@ grawlix.getDefaults = function() {
  */
 grawlix.setDefaults = function(options) {
   defaultOptions = _.extend({}, defaultOptions, options);
-  cachedOpts = null;
+  defaultSettings = null;
 };
+
+/**
+ * Enum and class exports
+ */
+grawlix.Style = Style;
+grawlix.GrawlixStyle = require('./styles').GrawlixStyle;
+grawlix.FilterTemplate = require('./filters').FilterTemplate;
 
 /**
  * Export

@@ -29,14 +29,27 @@ describe('grawlix', function() {
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("%!#*%es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
-      expect(t7).toEqual("Hand me the keys, you %!&#ing #*#%$!#%er.");
+      expect(t7).toEqual("Hand me the keys, you %!&#ing #*#%$!#%#&.");
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
-        "motherfucker, aaarrrghh.");
+        "motherfucker, aaarrrghh!");
       expect(t8).toEqual("Give me the %!&#ing keys, you %!&#ing #*#%$!#%ing " +
-        "%*^##*%!&#er, aaarrrghh.");
+        "%*^##*%!&##&, aaarrrghh!");
       var t9 = grawlix("PM ME YOUR T1TT1E$");
       expect(t9).toEqual("PM ME YOUR %!%%!#$");
+      var t10 = grawlix("you dumb@ss...");
+      expect(t10).toEqual("you dumb@$$...");
     });
+
+    it('should work on multiline strings', function() {
+      var str = "Can you motherfucking dumbfucks even comprehend what I am\n" +
+        "all about in your tiny minds?\r\n\r\n" +
+        "Fuck this shit I'm done with all of you.\nI'm just done.\n\n";
+      var exp = "Can you %*^##*%!&#ing dumb%!&#s even comprehend what I am\n" +
+        "all about in your tiny minds?\r\n\r\n" +
+        "%!&# this $#!% I'm done with all of you.\nI'm just done.\n\n";
+      expect(grawlix(str)).toEqual(exp);
+    });
+
   });
 
   describe('#allowed functionality', function() {
@@ -49,10 +62,11 @@ describe('grawlix', function() {
     });
 
     it('should allow words to be whitelisted', function() {
-      var r = grawlix('his young ward Dick Grayson', {
+      var str = 'his young ward Dick Grayson';
+      var r = grawlix(str, {
         allowed: [ 'dick' ]
       });
-      expect(r).toEqual('his young ward Dick Grayson');
+      expect(r).toEqual(str);
     });
 
   });
@@ -80,13 +94,15 @@ describe('grawlix', function() {
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("☠☠☠☠☠es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
-      expect(t7).toEqual("Hand me the keys, you ☠☠☠☠ing ☠☠☠☠☠☠☠☠er.");
+      expect(t7).toEqual("Hand me the keys, you ☠☠☠☠ing ☠☠☠☠☠☠☠☠☠☠.");
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ☠☠☠☠ing keys, you ☠☠☠☠ing ☠☠☠☠☠☠☠☠ing " +
-        "☠☠☠☠☠☠☠☠☠☠er, aaarrrghh.");
+        "☠☠☠☠☠☠☠☠☠☠☠☠, aaarrrghh.");
       var t9 = grawlix("PM ME YOUR T1TT1E$");
       expect(t9).toEqual("PM ME YOUR ☠☠☠☠☠☠☠");
+      var t10 = grawlix("you dumb@ss...");
+      expect(t10).toEqual("you dumb☠☠☠...");
     });
   });
 
@@ -113,13 +129,15 @@ describe('grawlix', function() {
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("█████es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
-      expect(t7).toEqual("Hand me the keys, you ████ing ████████er.");
+      expect(t7).toEqual("Hand me the keys, you ████ing ██████████.");
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ████ing keys, you ████ing ████████ing " +
-        "██████████er, aaarrrghh.");
+        "████████████, aaarrrghh.");
       var t9 = grawlix("PM ME YOUR T1TT1E$");
       expect(t9).toEqual("PM ME YOUR ███████");
+      var t10 = grawlix("you dumb@ss...");
+      expect(t10).toEqual("you dumb███...");
     });
   });
 
@@ -146,13 +164,50 @@ describe('grawlix', function() {
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("*****es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
-      expect(t7).toEqual("Hand me the keys, you ****ing ********er.");
+      expect(t7).toEqual("Hand me the keys, you ****ing **********.");
       var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
         "motherfucker, aaarrrghh.");
       expect(t8).toEqual("Give me the ****ing keys, you ****ing ********ing " +
-        "**********er, aaarrrghh.");
+        "************, aaarrrghh.");
       var t9 = grawlix("PM ME YOUR T1TT1E$");
       expect(t9).toEqual("PM ME YOUR *******");
+      var t10 = grawlix("you dumb@ss...");
+      expect(t10).toEqual("you dumb***...");
+    });
+  });
+
+  describe('#underscore theme', function() {
+    // setup
+    beforeAll(function() {
+      grawlix.setDefaults({
+        style: 'underscore',
+        randomize: false
+      });
+    });
+
+    it('should replace curses with underscores', function() {
+      var t1 = grawlix("fuck this shit I'm out");
+      expect(t1).toEqual("____ this ____ I'm out");
+      var t2 = grawlix("you dumbasses don't know who you're messing with!");
+      expect(t2).toEqual("you dumb_____ don't know who you're messing with!");
+      var t3 = grawlix("well, you PISSED ME OFF!");
+      expect(t3).toEqual("well, you ____ED ME OFF!");
+      var t4 = grawlix("man this shit is so tits");
+      expect(t4).toEqual("man this ____ is so ____");
+      var t5 = grawlix("you guys are such assholes");
+      expect(t5).toEqual("you guys are such ________");
+      var t6 = grawlix("bitches say what?");
+      expect(t6).toEqual("_____es say what?");
+      var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
+      expect(t7).toEqual("Hand me the keys, you ____ing __________.");
+      var t8 = grawlix("Give me the fucking keys, you fucking cocksucking " + 
+        "motherfucker, aaarrrghh.");
+      expect(t8).toEqual("Give me the ____ing keys, you ____ing ________ing " +
+        "____________, aaarrrghh.");
+      var t9 = grawlix("PM ME YOUR T1TT1E$");
+      expect(t9).toEqual("PM ME YOUR _______");
+      var t10 = grawlix("you dumb@ss...");
+      expect(t10).toEqual("you dumb___...");
     });
   });
 

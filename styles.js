@@ -3,7 +3,7 @@
 const _ = require('underscore');
 
 /**
- * Map of recognized styles
+ * Map of recognized default styles
  * @type {Object}
  */
 const Style = {
@@ -43,6 +43,15 @@ const GrawlixStyle = function(name, chars, replaces) {
     this.hasFixed = function(word) {
         return (_.has(this.replaces, word) && !_.isEmpty(this.replaces[word]));
     };
+
+    /**
+     * Gets a fixed replacement string from the map
+     * @param  {String} word Word
+     * @return {String}      Replacement string
+     */
+    this.getFixed = function(word) {
+        return this.replaces[word];
+    };
 };
 GrawlixStyle.prototype = {};
 
@@ -55,11 +64,13 @@ const Styles = [
     new GrawlixStyle(Style.ASCII, '@!#$%^&*', {
         fuck: '%!&#',
         motherfuck: '%*^##*%!&#',
+        motherfucker: '%*^##*%!&##&',
         shit: '$$#!%',
         dick: '%!&#',
         piss: '&!$$#',
         cunt: '#^&%',
         cocksuck: '#*#%$$!#%',
+        cocksucker: '#*#%$$!#%#&',
         ass: '$1@$$$$',
         asses: '$1@$$$$#$$',
         asshole: '@$$$$#%!&',
@@ -73,46 +84,41 @@ const Styles = [
         tittie: '%!%%!#',
         titties: '%!%%!#$'
     }),
-    // single-character styles
-    new GrawlixStyle(Style.ASTERIX, '*', {
-        ass: '$1***',
-        asses: '$1*****',
-        dumbass: '$1***',
-        tit: '***$1'
-    }),
-    new GrawlixStyle(Style.NEXTWAVE, '☠', {
-        ass: '$1☠☠☠',
-        asses: '$1☠☠☠☠☠',
-        dumbass: '$1☠☠☠',
-        tit: '☠☠☠$1'
-    }),
-    new GrawlixStyle(Style.REDACTED, '█', {
-        ass: '$1███',
-        asses: '$1█████',
-        dumbass: '$1███',
-        tit: '███$1'
-    }),
-    new GrawlixStyle(Style.UNDERSCORE, '_', {
-        ass: '$1___',
-        asses: '$1______',
-        dumbass: '$1___',
-        tit: '___$1'
-    }),
     // dingbats (unicode-only) style
-    new GrawlixStyle(Style.DINGBATS, '★☒☎☠☢☣☹♡♢♤♧⚓⚔⚑⚡', {
+    new GrawlixStyle(Style.DINGBATS, '★☒☎☠☢☣☹♡♢♤♧⚓⚔⚑⚡♯✓☝', {
+        fuck: '⚑☠♧⚔',
+        motherfuck: '★☹⚓♯⚡☢⚑☠♧⚔',
+        motherfucker: '★☹⚓♯⚡☢⚑☠♧⚔⚡☢',
+        shit: '☠♯☝⚓',
+        dick: '♢☝♧⚔',
+        piss: '☣☝☠☠',
+        cunt: '♧♡⚔⚓',
+        cocksuck: '♧☹♧⚔☠♡♧⚔',
+        cocksucker: '♧☹♧⚔☠♡♧⚔⚡☢',
         ass: '$1☹☠☠',
         asses: '$1☹☠☠♯☠',
+        asshole: '☹☠☠♯☢✓⚡',
+        assholes: '☹☠☠♯☢✓⚡☠',
         dumbass: '$1☹☠☠',
-        tit: '⚓⚑⚓$1'
+        bastard: '☣☹☠⚓@☢♢',
+        bitch: '☣☝⚓♧♯',
+        tit: '⚓☝⚓$1',
+        tits: '⚓☝⚓☠',
+        titty: '⚓☝⚓⚓⚔',
+        tittie: '⚓☝⚓⚓☝♯',
+        titties: '⚓☝⚓⚓☝♯☠'
     }),
     // unicode style
     new GrawlixStyle(Style.UNICODE, '!@#$%★☒☎☠☢☣☹♡♢♤♧⚓⚔⚑⚡', {
         fuck: '⚑☠♧⚔',
+        motherfuck: '★☹⚓#⚡☢⚑☠♧⚔',
+        motherfucker: '★☹⚓#⚡☢⚑☠♧⚔⚡☢',
         shit: '$$#!⚓',
         dick: '♢!♧⚔',
         piss: '☣!$$$$',
         cunt: '♧♡⚔⚓',
         cocksuck: '♧☹♧⚔$$♡♧⚔',
+        cocksucker: '♧☹♧⚔$$♡♧⚔⚡☢',
         ass: '$1@$$$$',
         asses: '$1@$$$$#$$',
         asshole: '@$$$$#☢!⚡',
@@ -124,8 +130,13 @@ const Styles = [
         tits: '⚓!⚓$$',
         titty: '⚓!⚓⚓⚔',
         tittie: '⚓!⚓⚓!#',
-        titties: '⚓!⚓⚓!#$'
-    })
+        titties: '⚓!⚓⚓!#$$'
+    }),
+    // single-character styles
+    new GrawlixStyle(Style.ASTERIX, '*', {}),
+    new GrawlixStyle(Style.NEXTWAVE, '☠', {}),
+    new GrawlixStyle(Style.REDACTED, '█', {}),
+    new GrawlixStyle(Style.UNDERSCORE, '_', {})
 ];
 
 module.exports = {
