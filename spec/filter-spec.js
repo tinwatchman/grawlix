@@ -135,7 +135,7 @@ describe('default filters', function() {
   };
 
   // basic tests
-  describe('#basic tests', function() {
+  describe('(basic tests)', function() {
     it('should match ass', function() {
       expect(testFilters('ass')).toBe(true);
     });
@@ -196,7 +196,7 @@ describe('default filters', function() {
   });
 
   // check compound words and variants
-  describe('#compound matches', function() {
+  describe('(compound matches)', function() {
     it('should include badass', function() {
         expect(testFilters('badass')).toBe(true);
     });
@@ -260,122 +260,161 @@ describe('default filters', function() {
     it('should match dumb@ssssssss', function() {
       expect(testFilters('dumb@ssssssss')).toBe(true);
     });
+    it('should match f u c k', function() {
+      expect(testFilters('f u c k')).toBe(true);
+    });
+    it('should match s h i t', function() {
+      expect(testFilters('s h i t')).toBe(true);
+    });
+    it('should match c u n t', function() {
+      expect(testFilters('c u n t')).toBe(true);
+    });
+    it('should match t i t s', function() {
+      expect(testFilters('t i t s')).toBe(true);
+    });
+    it('should match a s s', function() {
+      expect(testFilters('a s s')).toBe(true);
+    });
+    it('should match b i t c h', function() {
+      expect(testFilters('b i t c h')).toBe(true);
+    });
+    it('should match f_u_c_k', function() {
+      expect(testFilters('f_u_c_k')).toBe(true);
+    });
+    it('should match f-u-c-k', function() {
+      expect(testFilters('f-u-c-k')).toBe(true);
+    });
+    it('should match f*u*c*k', function() {
+      expect(testFilters('f*u*c*k')).toBe(true);
+    });
+    it('should match f:u:c:k', function() {
+      expect(testFilters('f:u:c:k')).toBe(true);
+    });
+    it('should match f>u>c>k', function() {
+      expect(testFilters('f>u>c>k')).toBe(true);
+    });
+    it('should match f\\u\\c\\k', function() {
+      expect(testFilters('f\\u\\c\\k')).toBe(true);
+    });
+    it('should match f/u/c/k', function() {
+      expect(testFilters('f/u/c/k')).toBe(true);
+    });
   });
   
   // scunthorpe checks
-  describe('#scunthorpes', function() {
-    it('should not match scunthorpe', function() {
+  describe('(scunthorpes)', function() {
+    it('should pass scunthorpe', function() {
       expect(testFilters('scunthorpe')).toBe(false);
     });
-    it('should not match shitake', function() {
+    it('should pass shitake', function() {
       expect(testFilters('shitake')).toBe(false);
     });
-    it('should not match shitakes', function() {
+    it('should pass shitakes', function() {
       expect(testFilters('shitakes')).toBe(false);
     });
-    it('should not match bastardize', function() {
+    it('should pass bastardize', function() {
       expect(testFilters('bastardize')).toBe(false);
     });
-    it('should not match bastardized', function() {
+    it('should pass bastardized', function() {
       expect(testFilters('bastardized')).toBe(false);
     });
-    it('should not match bastardise', function() {
+    it('should pass bastardise', function() {
       expect(testFilters('bastardise')).toBe(false);
     });
-    it('should not match assess', function() {
+    it('should pass assess', function() {
       expect(testFilters('assess')).toBe(false);
     });
-    it('should not match asset', function() {
+    it('should pass asset', function() {
       expect(testFilters('asset')).toBe(false);
     });
-    it('should not match bass', function() {
+    it('should pass bass', function() {
       expect(testFilters('bass')).toBe(false);
     });
-    it('should not match brass', function() {
+    it('should pass brass', function() {
       expect(testFilters('brass')).toBe(false);
     });
-    it('should not match bypass', function() {
+    it('should pass bypass', function() {
       expect(testFilters('bypass')).toBe(false);
     });
-    it('should not match bypasses', function() {
+    it('should pass bypasses', function() {
       expect(testFilters('bypasses')).toBe(false);
     });
-    it('should not match carcass', function() {
+    it('should pass carcass', function() {
       expect(testFilters('carcass')).toBe(false);
     });
-    it ('should not match class', function() {
+    it ('should pass class', function() {
       expect(testFilters('class')).toBe(false);
     });
-    it('should not match crass', function() {
+    it('should pass crass', function() {
       expect(testFilters('crass')).toBe(false);
     });
-    it('should not match dickens', function() {
+    it('should pass dickens', function() {
       expect(testFilters('Dickens')).toBe(false);
     });
-    it('should not match dicker', function() {
+    it('should pass dicker', function() {
       expect(testFilters('dicker')).toBe(false);
     });
-    it('should not match dickie', function() {
+    it('should pass dickie', function() {
       expect(testFilters('dickie')).toBe(false);
     });
-    it('should not match embarrass', function() {
+    it('should pass embarrass', function() {
       expect(testFilters('embarrass')).toBe(false);
     });
-    it('should not match gasses', function() {
+    it('should pass gasses', function() {
       expect(testFilters('gasses')).toBe(false);
     });
-    it('should not match glasses', function() {
+    it('should pass glasses', function() {
       expect(testFilters('glasses')).toBe(false);
     });
-    it('should not match kvass', function() {
+    it('should pass kvass', function() {
       expect(testFilters('kvass')).toBe(false);
     });
-    it('should not match lass', function() {
+    it('should pass lass', function() {
       expect(testFilters('lass')).toBe(false);
     });
-    it('should not match mass', function() {
+    it('should pass mass', function() {
       expect(testFilters('mass')).toBe(false);
     });
-    it('should not match masses', function() {
+    it('should pass masses', function() {
       expect(testFilters('masses')).toBe(false);
     });
-    it('should not match morass', function() {
+    it('should pass morass', function() {
       expect(testFilters('morass')).toBe(false);
     });
-    it('should not match passes', function() {
+    it('should pass passes', function() {
       expect(testFilters('passes')).toBe(false);
     });
-    it('should not match sass', function() {
+    it('should pass sass', function() {
       expect(testFilters('sass')).toBe(false);
     });
-    it('should not match quass', function() {
+    it('should pass quass', function() {
       expect(testFilters('quass')).toBe(false);
     });
-    it('should not match underpasses', function() {
+    it('should pass underpasses', function() {
       expect(testFilters('underpasses')).toBe(false);
     });
-    it('should not match titan', function() {
+    it('should pass titan', function() {
       expect(testFilters('titan')).toBe(false);
     });
-    it('should not match tithe', function() {
+    it('should pass tithe', function() {
       expect(testFilters('tithe')).toBe(false);
     });
-    it('should not match titillate', function() {
+    it('should pass titillate', function() {
       expect(testFilters('titillate')).toBe(false);
     });
-    it('should not match title', function() {
+    it('should pass title', function() {
       expect(testFilters('title')).toBe(false);
     });
-    it('should not match titmouse', function() {
+    it('should pass titmouse', function() {
       expect(testFilters('titmouse')).toBe(false);
     });
-    it('should not match titration', function() {
+    it('should pass titration', function() {
       expect(testFilters('titration')).toBe(false);
     });
-    it('should not match titter', function() {
+    it('should pass titter', function() {
       expect(testFilters('titter')).toBe(false);
     });
-    it('should not match titular', function() {
+    it('should pass titular', function() {
       expect(testFilters('titular')).toBe(false);
     });
     it('should pass frak', function() {

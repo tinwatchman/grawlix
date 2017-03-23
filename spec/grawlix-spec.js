@@ -90,11 +90,10 @@ describe('grawlix', function() {
     it('should fill out expanded matches', function() {
       var t = "fuuuuuuuuuck me";
       var r = grawlix(t);
-      console.log(r);
       expect(r).not.toContain('fuuuuuuuuuck');
       expect(r.length).toEqual(t.length);
     });
-
+    
   });
 
   describe('#nextwave theme', function() {
