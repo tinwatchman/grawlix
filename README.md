@@ -131,7 +131,7 @@ npm test
 
 Forks and pull requests welcome.
 
-Depending on community response/interest in the package, the following areas and/or features could potentially be developed further:
+Depending on community response, the following areas and/or features could potentially be explored in the future:
 
 - [ ] Default support for more curse words (depending on user needs)
 - [ ] Plugin framework
