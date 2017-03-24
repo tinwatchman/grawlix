@@ -31,7 +31,7 @@ describe('GrawfixFilter', function() {
       expect(filter.isValid()).toBe(false);
     });
     it('should return false when filter regex is not a RegExp', function() {
-      var filter = new GrawlixFilter('', "/word/i");
+      var filter = new GrawlixFilter('word', "/word/i");
       expect(filter.isValid()).toBe(false);
     });
   });
@@ -62,6 +62,11 @@ describe('GrawfixFilter', function() {
       var filter = new GrawlixFilter('dumbass', /\b(dumb)[a@]ss+/i);
       var testStr = 'dumb@ssssssss';
       expect(filter.getMatchLen(testStr)).toEqual(9);
+    });
+    it('should return 0 if there is no match', function() {
+      var filter = new GrawlixFilter('fuck', /f+u+c+k+/i);
+      var testStr = 'dumb@ssssssss';
+      expect(filter.getMatchLen(testStr)).toEqual(0);
     });
   });
 
@@ -301,6 +306,18 @@ describe('default filters', function() {
     });
     it('should match f\nu\nc\nk', function() {
       expect(testFilters('f\nu\nc\nk')).toBe(true);
+    });
+    it('should match #cunt', function() {
+      expect(testFilters('#cunt')).toBe(true);
+    });
+    it('should match .tits', function() {
+      expect(testFilters('.tits')).toBe(true);
+    });
+    it('should match .t.i.t.s.', function() {
+      expect(testFilters('.t.i.t.s.')).toBe(true);
+    });
+    it('should match >tits', function() {
+      expect(testFilters('>tits')).toBe(true);
     });
   });
   
