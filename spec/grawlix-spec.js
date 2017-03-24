@@ -14,6 +14,27 @@ describe('grawlix', function() {
     });
   });
 
+  describe('#Style', function() {
+    it('should exist', function() {
+      expect(grawlix.Style).toBeDefined();
+      expect(_.isObject(grawlix.Style)).toBe(true);
+    });
+  });
+
+  describe('#GrawlixStyle', function() {
+    it('should exist', function() {
+      expect(grawlix.GrawlixStyle).toBeDefined();
+      expect(_.isFunction(grawlix.GrawlixStyle)).toBe(true);
+    });
+  });
+
+  describe('#FilterTemplate', function() {
+    it('should exist', function() {
+      expect(grawlix.FilterTemplate).toBeDefined();
+      expect(_.isObject(grawlix.FilterTemplate)).toBe(true);
+    });
+  });
+
   describe('#basic tests', function() {
     // setup
     beforeAll(function() {
