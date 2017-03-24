@@ -6,6 +6,14 @@ const grawlix = require('../grawlix');
 
 describe('grawlix', function() {
 
+  describe('#getDefaults', function() {
+    it('should return the default options', function() {
+      var defaults = grawlix.getDefaults();
+      expect(_.isObject(defaults)).toBe(true);
+      expect(_.has(defaults, 'style')).toBe(true);
+    });
+  });
+
   describe('#basic tests', function() {
     // setup
     beforeAll(function() {
