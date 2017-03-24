@@ -304,6 +304,12 @@ describe('default filters', function() {
     it('should match f/u/c/k', function() {
       expect(testFilters('f/u/c/k')).toBe(true);
     });
+    it('should match f+U+0075+ck', function() {
+      expect(testFilters('f+U+0075+ck')).toBe(true);
+    });
+    it('should match s0123h456i789t', function() {
+      expect(testFilters('s0123h456i789t')).toBe(true);
+    });
     it('should match f\nu\nc\nk', function() {
       expect(testFilters('f\nu\nc\nk')).toBe(true);
     });
@@ -330,6 +336,9 @@ describe('default filters', function() {
     });
     it('should match @$$3$', function() {
       expect(testFilters('@$$3$')).toBe(true);
+    });
+    it('should match a0123s456s', function() {
+      expect(testFilters('a0123s456s')).toBe(true);
     });
     it('should match dumb@$$', function() {
       expect(testFilters('dumb@$$')).toBe(true);
