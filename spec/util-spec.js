@@ -255,4 +255,17 @@ describe('GrawlixUtil', function() {
 
   });
 
+  describe('#parseOptions', function() {
+    it('should throw an error when style is not defined', function() {
+      var testFunc = function() {
+        var settings = util.parseOptions({
+          randomize: true,
+          allowed: [],
+          filters: []
+        });
+      };
+      expect(testFunc).toThrow();
+    });
+  });
+
 });
