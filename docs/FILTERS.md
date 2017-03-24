@@ -1,5 +1,13 @@
 # `grawlix`: Filters
 
+__Contents__
+- [Adding New Filters](#adding-new-filters)
+  + [Filter Properties](#filter-properties)
+- [Configuring Filters](#configuring-filters)
+- [Filter Templates](#filter-templates)
+
+***
+
 ## Adding New Filters
 
 ```javascript
@@ -104,7 +112,8 @@ grawlix.setDefaults({
   filters: [
     {
       word: 'fsck',
-      pattern: /(\s)fsck/i, // no, there isn't any good reason to grab whitespace here. Chill. It's just an example.
+      pattern: /(\s)fsck/i, // no, there isn't any good reason to grab whitespace here. 
+                            // chill. it's just an example.
       template: grawlix.FilterTemplate.PRE
     }
   ]
