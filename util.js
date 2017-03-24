@@ -60,7 +60,10 @@ exports.parseOptions = function(options, defaults) {
   // sort filters
   settings.filters.sort(FilterSort);
   // get style
-  settings.style = getStyleOptions(options);
+  if (!_.has(options, 'style') || options.style === null) {
+    throw new Error('grawlix style not defined!');
+  }
+  settings.style = getStyle(options);
   // return settings
   return settings;
 };
@@ -81,48 +84,61 @@ GrawlixSettings.prototype = {};
  * @param  {Object}       options Options object
  * @return {GrawlixStyle}         GrawlixStyle object
  */
-var getStyleOptions = function(options) {
-  if (_.has(options, 'style') && options.style instanceof GrawlixStyle) {
+var getStyle = function(options) {
+  if (options.style instanceof GrawlixStyle) {
     return options.style;
   }
+  // look up style
   var style;
-  var isOptObject = false;
   if (!_.isString(options.style) && _.has(options.style, 'name')) {
     style = _.findWhere(defaultStyles, { name: options.style.name });
-    isOptObject = true;
   } else {
     style = _.findWhere(defaultStyles, { name: options.style });
   }
   if (_.isUndefined(style)) {
     throw new Error('grawlix style not found!');
   }
-  // check for style character options
-  var hasCharOptions = (isOptObject && _.has(options.style, 'chars'));
-  var isCharOptionObj = (hasCharOptions && !_.isString(options.style.chars));
-  if (hasCharOptions && !isCharOptionObj) {
-    style.chars = options.style.chars;
-  }
-  if (isCharOptionObj && _.has(options.style.chars, 'add')) {
-    addStyleOptionChars(style, options.style.chars.add);
-  }
-  if (isCharOptionObj && _.has(options.style.chars, 'remove')) {
-    removeStyleOptionChars(style, options.style.chars.remove);
-  }
-  // check for fixed replacements
-  if (options.randomize && isOptObject && _.has(options.style, 'replacements')){
-    style.replaces = _.extend({}, style.replaces, options.replacements);
+  // check for style config options
+  if (!_.isString(options.style) && _.isObject(options.style)) {
+    parseStyleOptions(style, options.style);
   }
   // return style
   return style;
 };
-exports.getStyleOptions = getStyleOptions;
+exports.getStyle = getStyle;
+
+var parseStyleOptions = function(style, styleOptions) {
+  // parse style character options
+  if (_.has(styleOptions, 'chars') && !_.isString(styleOptions.chars)) {
+    if (_.has(styleOptions.chars, 'add')) {
+      addStyleChars(style, styleOptions.chars.add);
+    }
+    if (_.has(styleOptions.chars, 'remove')) {
+      removeStyleChars(style, styleOptions.chars.remove);
+    }
+    if (_.has(styleOptions.chars, 'replace') && 
+        _.isObject(styleOptions.chars.replace)) {
+      replaceStyleChars(style, styleOptions.chars.replace);
+    }
+  } else if (_.has(styleOptions, 'chars') && _.isString(styleOptions.chars)) {
+    // replace all characters
+    style.chars = styleOptions.chars;
+  }
+  // parse fixed replacement options
+  if (_.has(styleOptions, 'fixed') && _.isObject(styleOptions.fixed) && 
+      !_.isArray(styleOptions.fixed) && !_.isString(styleOptions.fixed)) {
+    style.fixed = _.extend({}, style.fixed, styleOptions.fixed);
+  }
+  return style;
+};
+exports.parseStyleOptions = parseStyleOptions;
 
 /**
  * Add given characters to style character string
  * @param {GrawlixStyle} style     GrawlixStyle object
  * @param {String}       additions Chars to add (will also accept Array)
  */
-var addStyleOptionChars = function(style, additions) {
+var addStyleChars = function(style, additions) {
   var addChars = _.isArray(additions) ? additions : additions.split('');
   _.each(addChars, function(newChar) {
     if (style.chars.indexOf(newChar) === -1) {
@@ -131,14 +147,14 @@ var addStyleOptionChars = function(style, additions) {
   });
   return style;
 };
-exports.addStyleOptionChars = addStyleOptionChars;
+exports.addStyleChars = addStyleChars;
 
 /**
  * Removes given characters from style character string
  * @param  {GrawlixStyle} style   Style object
  * @param  {String}       removes Chars to remove (will also accept Array)
  */
-var removeStyleOptionChars = function(style, removes) {
+var removeStyleChars = function(style, removes) {
   var chars = style.chars.split('');
   var accepted = _.filter(chars, function(char) {
     return (removes.indexOf(char) === -1);
@@ -146,7 +162,24 @@ var removeStyleOptionChars = function(style, removes) {
   style.chars = accepted.join('');
   return style;
 }
-exports.removeStyleOptionChars = removeStyleOptionChars;
+exports.removeStyleChars = removeStyleChars;
+
+/**
+ * Replaces characters within style character string
+ * @param  {GrawlixStyle} style   GrawlixStyle object
+ * @param  {Object}       charMap Map of characters, with keys representing 
+ *                                chars to remove and values representing chars 
+ *                                to add.
+ * @return {GrawlixStyle}
+ */
+var replaceStyleChars = function(style, charMap) {
+  _.each(charMap, function(newChar, oldChar) {
+    removeStyleChars(style, oldChar);
+    addStyleChars(style, newChar);
+  });
+  return style;
+};
+exports.replaceStyleChars = replaceStyleChars;
 
 /**
  * Replaces a filter match in a string

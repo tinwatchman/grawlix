@@ -64,7 +64,7 @@ describe('GrawlixUtil', function() {
     });
   });
 
-  describe('#addStyleOptionChars', function() {
+  describe('#addStyleChars', function() {
     // setup
     var style;
     beforeEach(function() {
@@ -72,26 +72,26 @@ describe('GrawlixUtil', function() {
     });
 
     it('should add given characters to the style', function() {
-      util.addStyleOptionChars(style, '^&*');
+      util.addStyleChars(style, '^&*');
       expect(style.chars).toContain('^');
       expect(style.chars).toContain('&');
       expect(style.chars).toContain('*');
     });
 
     it('should also accept an Array of chars as 2nd argument', function() {
-      util.addStyleOptionChars(style, ['^', '&', '*']);
+      util.addStyleChars(style, ['^', '&', '*']);
       expect(style.chars).toContain('^');
       expect(style.chars).toContain('&');
       expect(style.chars).toContain('*');
     });
 
     it('should not add characters already in the style', function() {
-      util.addStyleOptionChars(style, '%');
+      util.addStyleChars(style, '%');
       expect(style.chars).not.toContain('%%');
     });
   });
 
-  describe('#removeStyleOptionChars', function() {
+  describe('#removeStyleChars', function() {
     // setup
     var style;
     beforeEach(function() {
@@ -99,7 +99,7 @@ describe('GrawlixUtil', function() {
     });
 
     it('should remove given characters from style', function() {
-      util.removeStyleOptionChars(style, '♡♢♧⚡');
+      util.removeStyleChars(style, '♡♢♧⚡');
       expect(style.chars).not.toContain('♡');
       expect(style.chars).not.toContain('♢');
       expect(style.chars).not.toContain('♧');
@@ -107,11 +107,104 @@ describe('GrawlixUtil', function() {
     });
 
     it('should also accept an array of chars as 2nd argument', function() {
-      util.removeStyleOptionChars(style, ['♡','♢','♧','⚡']);
+      util.removeStyleChars(style, ['♡','♢','♧','⚡']);
       expect(style.chars).not.toContain('♡');
       expect(style.chars).not.toContain('♢');
       expect(style.chars).not.toContain('♧');
       expect(style.chars).not.toContain('⚡');
+    });
+  });
+
+  describe('#replaceStyleChars', function() {
+    it('should replace object keys with object values', function() {
+      var style = new GrawlixStyle('style', '★☒☎☠☢☣☹♡♢♤♧⚓⚔⚑⚡', {});
+      util.replaceStyleChars(style, {
+        '♡': '♥',
+        '♢': '♦',
+        '♤': '♠',
+        '♧': '♣'
+      });
+      expect(style.chars).not.toContain('♡');
+      expect(style.chars).toContain('♥');
+      expect(style.chars).not.toContain('♢');
+      expect(style.chars).toContain('♦');
+      expect(style.chars).not.toContain('♤');
+      expect(style.chars).toContain('♠');
+      expect(style.chars).not.toContain('♧');
+      expect(style.chars).toContain('♣');
+    });
+  });
+
+  describe('#parseStyleOptions', function() {
+    // setup
+    var style;
+    beforeEach(function() {
+      // characters to add: ⚓⚔⚑⚡
+      style = new GrawlixStyle('style', '★☒☎☠☢☣☹♡♢♤♧', {
+        word1: 'w0rd1',
+        word2: 'w0rd2'
+      });
+    });
+
+    it('should add characters passed in chars.add', function() {
+      util.parseStyleOptions(style, {
+        chars: {
+          add: '⚓⚔⚑⚡'
+        }
+      });
+      expect(style.chars).toContain('⚓');
+      expect(style.chars).toContain('⚔');
+      expect(style.chars).toContain('⚑');
+      expect(style.chars).toContain('⚡');
+    });
+
+    it('should remove characters passed in chars.remove', function() {
+      util.parseStyleOptions(style, {
+        chars: {
+          remove: '♡♢♤♧'
+        }
+      });
+      expect(style.chars).not.toContain('♡');
+      expect(style.chars).not.toContain('♢');
+      expect(style.chars).not.toContain('♤');
+      expect(style.chars).not.toContain('♧');
+    });
+
+    it('should replace characters passed in chars.replace', function() {
+      util.parseStyleOptions(style, {
+        chars: {
+          replace: {
+            '♡': '♥',
+            '♢': '♦',
+            '♤': '♠',
+            '♧': '♣'
+          }
+        }
+      });
+      expect(style.chars).not.toContain('♡');
+      expect(style.chars).toContain('♥');
+      expect(style.chars).not.toContain('♢');
+      expect(style.chars).toContain('♦');
+      expect(style.chars).not.toContain('♤');
+      expect(style.chars).toContain('♠');
+      expect(style.chars).not.toContain('♧');
+      expect(style.chars).toContain('♣');
+    });
+
+    it('should add or replace fixed replacements passed in fixed', function() {
+      util.parseStyleOptions(style, {
+        fixed: {
+          word1: 'wordOne',
+          word3: 'w0rd3'
+        }
+      });
+      expect(_.has(style.fixed, 'word1')).toBe(true);
+      expect(style.fixed.word1).toEqual('wordOne');
+      expect(_.has(style.fixed, 'word3')).toBe(true);
+      expect(style.fixed.word3).toEqual('w0rd3');
+      // check to make sure word2 is still there / hasn't been modified
+      expect(_.has(style.fixed, 'word2')).toBe(true);
+      expect(style.fixed.word2).toEqual('w0rd2');
     });
   });
 

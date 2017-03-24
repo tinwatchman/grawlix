@@ -18,14 +18,14 @@ const Style = {
 
 /**
  * Class representing a style of grawlix
- * @param {String} name     Style name
- * @param {String} chars    Characters used by style (no separators)
- * @param {Object} replaces Map of fixed replacement strings
+ * @param {String} name              Style name
+ * @param {String} chars             Characters used by style (no separators)
+ * @param {Object} fixedReplacements Map of fixed replacement strings
  */
-const GrawlixStyle = function(name, chars, replaces) {
+const GrawlixStyle = function(name, chars, fixedReplacements) {
     this.name = name;
     this.chars = chars;
-    this.replaces = replaces;
+    this.fixed = !_.isUndefined(fixedReplacements) ? fixedReplacements : {};
 
     /**
      * Returns whether or not this style supports random grawlix generation
@@ -41,7 +41,7 @@ const GrawlixStyle = function(name, chars, replaces) {
      * @return {Boolean}      True if replacement found, false otherwise
      */
     this.hasFixed = function(word) {
-        return (_.has(this.replaces, word) && !_.isEmpty(this.replaces[word]));
+        return (_.has(this.fixed, word) && !_.isEmpty(this.fixed[word]));
     };
 
     /**
@@ -50,7 +50,7 @@ const GrawlixStyle = function(name, chars, replaces) {
      * @return {String}      Replacement string
      */
     this.getFixed = function(word) {
-        return this.replaces[word];
+        return this.fixed[word];
     };
 };
 GrawlixStyle.prototype = {};
@@ -82,7 +82,7 @@ const Styles = [
         tits: '%!%$$',
         titty: '%!%%^',
         tittie: '%!%%!#',
-        titties: '%!%%!#$'
+        titties: '%!%%!#$$'
     }),
     // dingbats (unicode-only) style
     new GrawlixStyle(Style.DINGBATS, '★☒☎☠☢☣☹♡♢♤♧⚓⚔⚑⚡♯✓☝', {
@@ -133,10 +133,10 @@ const Styles = [
         titties: '⚓!⚓⚓!#$$'
     }),
     // single-character styles
-    new GrawlixStyle(Style.ASTERIX, '*', {}),
-    new GrawlixStyle(Style.NEXTWAVE, '☠', {}),
-    new GrawlixStyle(Style.REDACTED, '█', {}),
-    new GrawlixStyle(Style.UNDERSCORE, '_', {})
+    new GrawlixStyle(Style.ASTERIX, '*'),
+    new GrawlixStyle(Style.NEXTWAVE, '☠'),
+    new GrawlixStyle(Style.REDACTED, '█'),
+    new GrawlixStyle(Style.UNDERSCORE, '_')
 ];
 
 module.exports = {
