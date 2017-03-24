@@ -77,6 +77,7 @@ var censored = grawlix(text, {
 ```
 
 <a name="styles"></a>
+
 ## Grawlix Styles
 
 Seven different styles of grawlixes are available within the library by default. The three primary styles are:
@@ -104,6 +105,7 @@ var censored = grawlix(text, {
 For information on advanced options, including on how to create new grawlix styles, see the full [Styles](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) documentation.
 
 <a name="adding_new_filters"></a>
+
 ## Adding New Filters
 
 To ease the process of adapting to new demands (such as targeting obscene words not supported by default, or supporting languages other than English), `grawlix` accepts new filters via the `options` object. Let's say, for example, that you decide you want to prevent your forum users from discussing Unix's [File System Consistency ChecK](https://en.wikipedia.org/wiki/Fsck) tool. You can add a filter targeting the word to the library's default settings like so:
