@@ -45,7 +45,7 @@ grawlix.setDefaults({
 Type: `String` or `Object`<br>
 Default: `'ascii'`
 
-What style of grawlix the function should use when replacing curse words. To see the list of available styles, see the [Styles](#styles) section below.
+What style of grawlix the function should use when replacing curse words. To see the list of available styles, see the [Grawlix Styles](#styles) section below.
 
 ##### randomize
 
@@ -101,7 +101,7 @@ var censored = grawlix(text, {
 // outputs '☠☠☠☠☠☠'
 ```
 
-For information on advanced options, including on how to create new grawlix styles, see the [Styles](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) documentation.
+For information on advanced options, including on how to create new grawlix styles, see the full [Styles](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) documentation.
 
 <a name="adding_new_filters"></a>
 ## Adding New Filters
@@ -131,7 +131,7 @@ npm test
 
 Forks and pull requests welcome.
 
-Depending on community response/interest, the following features could potentially be implemented in the future:
+Depending on community response/interest in the package, the following areas and/or features could potentially be developed further:
 
 - [ ] Default support for more curse words (depending on user needs)
 - [ ] Plugin framework

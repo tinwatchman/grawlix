@@ -50,7 +50,7 @@ grawlix.setDefaults({
 
 ### Options
 
-The following properties can be specified within the `style` options object:
+The following properties can be specified within the `style` option object:
 
 ##### name
 
