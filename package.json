@@ -1,6 +1,6 @@
 {
   "name": "grawlix",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Replaces profanity with nonsensical symbols",
   "main": "grawlix.js",
   "scripts": {
