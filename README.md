@@ -2,7 +2,7 @@ grawlix
 =======
 > Make the Internet swear like a cartoon
 
-`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L325) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's also highly extensible, allowing new words and grawlix styles to be easily added as needed.
+`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L325) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
 
 Please note that, due to the subject matter, the `grawlix` source code may be considered **NSFW/Not Safe For Work**, depending on an individual reader's circumstances. To see the full list of the words the library currently targets, see [this file](https://github.com/tinwatchman/grawlix/blob/master/WORDS.json).
 
@@ -106,14 +106,14 @@ For information on advanced options, including on how to create new grawlix styl
 <a name="adding_new_filters"></a>
 ## Adding New Filters
 
-To ease the process of adapting to new demands (such as targeting obscene words not supported by default, or supporting languages other than English), `grawlix` accepts new filters via the `options` object. Let's say, for example, that you decide you want to prevent your forum users from discussing Unix's [File System Consistency Check](https://en.wikipedia.org/wiki/Fsck) tool. You can add a filter targeting the word to the library's default settings like so:
+To ease the process of adapting to new demands (such as targeting obscene words not supported by default, or supporting languages other than English), `grawlix` accepts new filters via the `options` object. Let's say, for example, that you decide you want to prevent your forum users from discussing Unix's [File System Consistency ChecK](https://en.wikipedia.org/wiki/Fsck) tool. You can add a filter targeting the word to the library's default settings like so:
 
 ```javascript
 grawlix.setDefaults({
   filters: [
     {
       word: 'fsck',
-      pattern: /fsck/i // this property *must* be a RegExp object
+      pattern: /fsck/i
     }
   ]
 });
@@ -126,6 +126,20 @@ For more information on creating and configuring filters, see the [Filters](http
 ```sh
 npm test
 ```
+
+## Contributing
+
+Forks and pull requests welcome.
+
+Depending on community response/interest, the following features could potentially be implemented in the future:
+
+- [ ] Default support for more curse words (depending on user needs)
+- [ ] Plugin framework
+- [ ] Browser support
+- [ ] Internationalization / support for languages other than English
+- [ ] Regular expression optimization
+- [ ] New grawlix styles
+- [ ] Improved branch test coverage for util.js
 
 ## Credits and Licensing
 

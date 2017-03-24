@@ -1,20 +1,26 @@
 {
   "name": "grawlix",
   "version": "0.0.1",
-  "description": "Replaces obscenities with random symbols",
+  "description": "Replaces profanity with nonsensical symbols",
   "main": "grawlix.js",
   "scripts": {
     "test": "istanbul cover node_modules/jasmine/bin/jasmine.js"
+  },
+  "engines": {
+    "node": ">=7.3.0"
   },
   "keywords": [
     "profanity",
     "filter",
     "swear",
+    "obscenity",
+    "expletive",
+    "replace",
     "curse",
     "cuss",
-    "obscenity",
     "obscene",
     "vulgar",
+    "swearword",
     "regex",
     "regexp",
     "grawlix"
@@ -25,8 +31,10 @@
     "type": "git",
     "url": "git@github.com:tinwatchman/grawlix.git"
   },
+  "bugs": {
+    "url": "https://github.com/tinwatchman/grawlix/issues"
+  },
   "devDependencies": {
-    "eslint-plugin-promise": "^3.5.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.3"
   },

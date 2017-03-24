@@ -77,7 +77,6 @@ Default: `null`
 
 Optional. For more information on this property and how to use it, see [Filter Templates](#filter-templates) below.
 
-
 ## Configuring Filters
 
 The `filters` option can also be used to reconfigure the existing default filters if necessary. To do this, one merely has to leave out the `pattern` property. The library will then interpret the provided filter object as configuration settings.
@@ -96,7 +95,6 @@ grawlix.setDefaults({
 ```
 
 Messing with the internals of the library in this manner will probably be unnecessary for most developers. Still, the option is there.
-
 
 ## Filter Templates
 
@@ -122,4 +120,4 @@ grawlix.setDefaults({
 
 ***
 
-*Last updated March 23, 2017.*
+*Last updated March 24, 2017.*
