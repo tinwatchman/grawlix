@@ -71,11 +71,11 @@ const Styles = [
         cunt: '#^&%',
         cocksuck: '#*#%$$!#%',
         cocksucker: '#*#%$$!#%#&',
-        ass: '@$$$$',
-        asses: '@$$$$#$$',
-        asshole: '@$$$$#%!&',
-        assholes: '@$$$$#%!&$$',
-        dumbass: '@$$$$', // note: due to the particular way this filter works, only 'ass' is replaced by this string. The 'dumb' part will be taken from the original string.
+        ass: '@**',
+        asses: '@**#*',
+        asshole: '@**#%!&',
+        assholes: '@**#%!&*',
+        dumbass: '@**', // note: due to the particular way this filter works, only 'ass' is replaced by this string. The 'dumb' part will be taken from the original string.
         bastard: '%@$$%@*#',
         bitch: '%!#*%',
         tit: '%!%',

@@ -2,7 +2,7 @@ grawlix
 =======
 > Make the Internet swear like a cartoon
 
-`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L325) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
+`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L339) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
 
 Please note that, due to the subject matter, the `grawlix` source code may be considered **NSFW/Not Safe For Work**, depending on an individual reader's circumstances. To see the full list of the words the library currently targets, see [this file](https://github.com/tinwatchman/grawlix/blob/master/WORDS.json).
 
@@ -139,7 +139,7 @@ Depending on community response, the following areas and/or features could poten
 - [ ] Internationalization / support for languages other than English
 - [ ] Regular expression optimization
 - [ ] New grawlix styles
-- [ ] Improved branch test coverage for util.js
+- [ ] Improve test coverage for util.js
 
 ## Credits and Licensing
 

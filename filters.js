@@ -158,7 +158,7 @@ var toGrawlixFilter = function(obj) {
  */
 var Filters = [
   // 'fuck'-related filters
-  new GrawlixFilter('motherfucker', /m[o0u]th(?:er|a)f+u+c+k+er/i, {
+  new GrawlixFilter('motherfucker', /m[o0u]th(?:er|a)f+u+c+k+[e3]r/i, {
     expandable: true
   }), 
   new GrawlixFilter('motherfuck', /m[o0u]th(?:er|a)f+u+c+k+/i, {
@@ -182,7 +182,7 @@ var Filters = [
     }
   ),
   // 'cocksucker'-related filters
-  new GrawlixFilter('cocksucker', /c+[o0]+c+k+s+u+c+k+e+r+/i, {
+  new GrawlixFilter('cocksucker', /c+[o0]+c+k+s+u+c+k+[e3]+r+/i, {
     expandable: true
   }),
   new GrawlixFilter('cocksuck', /c+[o0]+c+k+s+u+c+k+/i, {
@@ -190,22 +190,22 @@ var Filters = [
     expandable: true
   }),
   // 'ass'-related filters
-  new GrawlixFilter('assholes', /[a@]ssh[o0]les/i),
-  new GrawlixFilter('asshole', /[a@]ssh[o0]+le/i, { 
+  new GrawlixFilter('assholes', /[a@][s\$][s\$]h[o0]l[e3][s\$]/i),
+  new GrawlixFilter('asshole', /[a@][s\$][s\$]h[o0]+l[e3]/i, { 
     priority: 1,
     expandable: true 
   }),
-  new GrawlixFilter('asses', /(\b|[^glmp])[a@]sses\b/i, {
+  new GrawlixFilter('asses', /(\b|^|[^glmp])[a@][s\$][s\$][e3][s\$](?:\b|$)/i, {
     template: FilterTemplate.PRE 
   }),
-  new GrawlixFilter('dumbass', /\b(dumb)[a@]ss+/i, {
+  new GrawlixFilter('dumbass', /\b(dumb)[a@][s\$][s\$]+/i, {
     priority: 1,
     expandable: true,
     template: FilterTemplate.PRE
   }),
   new GrawlixFilter(
     'ass',
-    /(\b|\s|[^bcglmprstvu])[a@][\s_\^\+\=\*\.\-,:"'>|\/\\]{0,42}s[\s_\^\+\=\*\.\-,:"'>|\/\\]{0,42}s+\b/i, 
+    /(\b|^|\s|[^bcglmprstvu])[a@][\s_\^\+\=\*\.\-,:"'>|\/\\]{0,42}[s\$][\s_\^\+\=\*\.\-,:"'>|\/\\]{0,42}[s\$]+(?:\b|$)/i, 
     {
       priority: 2,
       template: FilterTemplate.PRE,

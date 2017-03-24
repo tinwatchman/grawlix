@@ -35,7 +35,7 @@ describe('grawlix', function() {
     });
   });
 
-  describe('#basic tests', function() {
+  describe('(basic functionality)', function() {
     // setup
     beforeAll(function() {
       grawlix.setDefaults({
@@ -48,13 +48,13 @@ describe('grawlix', function() {
       var t1 = grawlix("fuck this shit I'm out");
       expect(t1).toEqual("%!&# this $#!% I'm out");
       var t2 = grawlix("you dumbasses don't know who you're messing with!");
-      expect(t2).toEqual("you dumb@$$#$ don't know who you're messing with!");
+      expect(t2).toEqual("you dumb@**#* don't know who you're messing with!");
       var t3 = grawlix("well, you PISSED ME OFF!");
       expect(t3).toEqual("well, you &!$$ED ME OFF!");
       var t4 = grawlix("man this shit is so tits");
       expect(t4).toEqual("man this $#!% is so %!%$");
       var t5 = grawlix("you guys are such assholes");
-      expect(t5).toEqual("you guys are such @$$#%!&$");
+      expect(t5).toEqual("you guys are such @**#%!&*");
       var t6 = grawlix("bitches say what?");
       expect(t6).toEqual("%!#*%es say what?");
       var t7 = grawlix("Hand me the keys, you fucking cocksucker.");
@@ -66,7 +66,7 @@ describe('grawlix', function() {
       var t9 = grawlix("PM ME YOUR T1TT1E$");
       expect(t9).toEqual("PM ME YOUR %!%%!#$");
       var t10 = grawlix("you dumb@ss...");
-      expect(t10).toEqual("you dumb@$$...");
+      expect(t10).toEqual("you dumb@**...");
     });
 
     it('should work on multiline strings', function() {
@@ -81,7 +81,7 @@ describe('grawlix', function() {
 
   });
 
-  describe('#allowed functionality', function() {
+  describe('#allowed option', function() {
     // setup
     beforeAll(function() {
       grawlix.setDefaults({

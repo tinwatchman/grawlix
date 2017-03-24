@@ -319,6 +319,21 @@ describe('default filters', function() {
     it('should match >tits', function() {
       expect(testFilters('>tits')).toBe(true);
     });
+    it('should match @$$h0le', function() {
+      expect(testFilters('@$$h0le')).toBe(true);
+    });
+    it('should match @$$h0l3$', function() {
+      expect(testFilters('@$$h0l3$')).toBe(true);
+    });
+    it('should match @$$', function() {
+      expect(testFilters('@$$')).toBe(true);
+    });
+    it('should match @$$3$', function() {
+      expect(testFilters('@$$3$')).toBe(true);
+    });
+    it('should match dumb@$$', function() {
+      expect(testFilters('dumb@$$')).toBe(true);
+    });
   });
   
   // scunthorpe checks
@@ -436,6 +451,9 @@ describe('default filters', function() {
     });
     it('should pass titular', function() {
       expect(testFilters('titular')).toBe(false);
+    });
+    it('should pass address@sssysadmin.com', function() {
+      expect(testFilters('address@ssysadmin.com')).toBe(false);
     });
     it('should pass frak', function() {
       expect(testFilters('frak')).toBe(false);
