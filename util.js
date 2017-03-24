@@ -204,6 +204,10 @@ exports.replaceMatch = function(str, filter, settings) {
     // if single-character style
     repl = generateGrawlix(str, filter, style, getFillGrawlix);
   }
+  // apply filter template if necessary
+  if (filter.hasTemplate()) {
+    repl = filter.template(repl);
+  }
   // replace the match
   return str.replace(filter.regex, repl);
 };
@@ -226,12 +230,7 @@ var generateGrawlix = function(str, filter, style, generator) {
     len = filter.word.length;
   }
   // generate grawlix
-  var grawlix = generator(style.chars, len);
-  // apply filter template if necessary
-  if (filter.hasTemplate()) {
-    return filter.template(grawlix);
-  }
-  return grawlix;
+  return generator(style.chars, len);
 };
 
 /**

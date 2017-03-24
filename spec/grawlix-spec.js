@@ -29,7 +29,7 @@ describe('grawlix', function() {
       var t2 = grawlix("you dumbasses don't know who you're messing with!");
       expect(t2).toEqual("you dumb@$$#$ don't know who you're messing with!");
       var t3 = grawlix("well, you PISSED ME OFF!");
-      expect(t3).toEqual("well, you &!$#ED ME OFF!");
+      expect(t3).toEqual("well, you &!$$ED ME OFF!");
       var t4 = grawlix("man this shit is so tits");
       expect(t4).toEqual("man this $#!% is so %!%$");
       var t5 = grawlix("you guys are such assholes");
