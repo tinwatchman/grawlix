@@ -3,7 +3,7 @@
 const _ = require('underscore');
 
 /**
- * Map of recognized default styles
+ * Enum of recognized default styles
  * @type {Object}
  */
 const Style = {

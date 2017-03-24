@@ -2,6 +2,7 @@
 
 const _ = require('underscore');
 const util = require('../util');
+const Style = require('../styles').Style;
 const GrawlixStyle = require('../styles').GrawlixStyle;
 
 describe('GrawlixUtil', function() {
@@ -191,6 +192,13 @@ describe('GrawlixUtil', function() {
       expect(style.chars).toContain('♣');
     });
 
+    it('should replace everything if chars is a string', function() {
+      util.parseStyleOptions(style, {
+        chars: 'x'
+      });
+      expect(style.chars).toEqual('x');
+    });
+
     it('should add or replace fixed replacements passed in fixed', function() {
       util.parseStyleOptions(style, {
         fixed: {
@@ -206,6 +214,45 @@ describe('GrawlixUtil', function() {
       expect(_.has(style.fixed, 'word2')).toBe(true);
       expect(style.fixed.word2).toEqual('w0rd2');
     });
+  });
+
+  describe('#getStyle', function() {
+
+    it('should return the value when style is a GrawlixStyle object', () => {
+      var style = new GrawlixStyle('x-style', 'x');
+      var r = util.getStyle({
+        'style': style
+      });
+      expect(r).toBe(style);
+    });
+
+    it('should return the named style when given a String', function() {
+      var r = util.getStyle({
+        style: 'unicode'
+      });
+      expect(r instanceof GrawlixStyle).toBe(true);
+      expect(r.name).toEqual('unicode');
+    });
+
+    it('should return the named style when given an Object', function() {
+      var r = util.getStyle({
+        style: {
+          name: Style.UNICODE
+        }
+      });
+      expect(r instanceof GrawlixStyle).toBe(true);
+      expect(r.name).toEqual('unicode');
+    });
+
+    it('should throw an error when given an invalid style', function() {
+      var testFunc = function() {
+        return util.getStyle({
+          style: 'got-no-style-got-no-class'
+        });
+      };
+      expect(testFunc).toThrow();
+    });
+
   });
 
 });
