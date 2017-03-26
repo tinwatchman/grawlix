@@ -18,19 +18,21 @@ grawlix.setDefaults({
 });
 ```
 
-The `style` option can also be an `Object`. In this case, a `name` property is required:
+### Enum: grawlix.Style
 
-```javascript
-var censored = grawlix(text, {
-  style: {
-    name: 'unicode'
-  }
-});
-```
+Properties:
+
++ `ASCII`: the `'ascii'` style
++ `ASTERIX`: the `'asterix'` style
++ `DINGBATS`: the `'dingbats'` style
++ `NEXTWAVE`: the `'nextwave'` style
++ `REDACTED`: the `'redacted'` style
++ `UNICODE`: the `'unicode'` style
++ `UNDERSCORE`: the `'underscore'` style
 
 ## Advanced Style Options
 
-Specifying an `Object` as the `style` option also allows one to exert exact control over the named style's configuration:
+Specifying an `Object` as the `style` option allows one to exert exact control over the style's configuration:
 
 ```javascript
 grawlix.setDefaults({
@@ -203,4 +205,4 @@ To see how this works in the default styles, see [styles.js](https://github.com/
 
 ***
 
-*Last updated March 24, 2017*
+*Last updated March 25, 2017*
