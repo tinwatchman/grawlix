@@ -207,4 +207,4 @@ To see how this works in the default styles, see [styles.js](https://github.com/
 
 ***
 
-*Last updated March 25, 2017*
+*Last updated March 25, 2017.*

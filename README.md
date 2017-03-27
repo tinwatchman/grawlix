@@ -76,6 +76,8 @@ var censored = grawlix(text, {
 });
 ```
 
+For more information, see the [full API documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/API.md).
+
 <a name="styles"></a>
 
 ## Grawlix Styles
@@ -102,7 +104,7 @@ var censored = grawlix(text, {
 // outputs '☠☠☠☠☠☠'
 ```
 
-For information on advanced options, including on how to create new grawlix styles, see the full [Styles](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) documentation.
+For information on advanced options, including on how to create new grawlix styles, see the [full Styles documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md).
 
 <a name="adding_new_filters"></a>
 

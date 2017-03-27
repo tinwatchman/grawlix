@@ -1,8 +1,18 @@
 # `grawlix`: API
 
+__Contents__
+- [Function: grawlix](#function-grawlix)
+  + [grawlix(str\[, options\])](#grawlixstr-options)
+  + [grawlix.isObscene(str\[, filters, allowed\])](#grawlixisobscenestr-filters-allowed)
+  + [grawlix.getDefaults()](#grawlixgetdefaults)
+  + [grawlix.setDefaults(options)](#grawlixsetdefaultsoptions)
+  + [grawlix.Style](#grawlixstyle)
+  + [grawlix.GrawlixStyle](#grawlixgrawlixstyle)
+  + [grawlix.FilterTemplate](#grawlixfiltertemplate)
+
 ***
 
-## grawlix Function
+## Function: grawlix
 
 ### grawlix(str[, options])
 
@@ -25,8 +35,6 @@ var censored = grawlix(str, {
 Type: `String`
 
 The content string to process. **Required.**
-
-<a name="grawlix-options"></a>
 
 #### options
 
@@ -72,14 +80,14 @@ The content string to check. **Required.**
 Type: `Array`<br>
 Default: `[]`
 
-Optional. An array of filter objects. Identical to the `filter` option above.
+Optional. An array of filter objects. Identical to [the `filter` option above](#options).
 
 #### allowed
 
 Type: `Array`<br>
 Default: `[]`
 
-Optional. An array of strings, representing a whitelist of words that shouldn't be replaced. Identical to the `allowed` option above.
+Optional. An array of strings, representing a whitelist of words that shouldn't be replaced. Identical to [the `allowed` option above](#options).
 
 #### Returns
 
@@ -114,7 +122,7 @@ grawlix.setDefaults({
 
 Type: `Object`
 
-The default options to set. See (grawlix#Options)[#grawlix-options] above.
+The default options to set. See (grawlix#Options)[#options] above.
 
 ### grawlix.Style
 
@@ -127,3 +135,7 @@ See [Class: grawlix.GrawlixStyle](https://github.com/tinwatchman/grawlix/blob/ma
 ### grawlix.FilterTemplate
 
 See [Enumeration: grawlix.FilterTemplate](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#enumeration-grawlixfiltertemplate).
+
+***
+
+*Last updated March 27, 2017.*
