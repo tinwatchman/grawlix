@@ -2,8 +2,10 @@
 
 __Contents__
 - [Choosing a Grawlix Style](#choosing-a-grawlix-style)
+  + [Enumeration: grawlix.Style](#enumeration-grawlixstyle)
 - [Advanced Style Options](#advanced-style-options)
 - [Creating a new Grawlix Style](#creating-a-new-grawlix-style)
+  + [Class: grawlix.GrawlixStyle](#class-grawlixgrawlixstyle)
 - [Using Fixed Replacement Strings](#using-fixed-replacement-strings)
 
 ***

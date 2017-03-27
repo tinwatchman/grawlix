@@ -5,6 +5,7 @@ __Contents__
   + [Filter Properties](#filter-properties)
 - [Configuring Filters](#configuring-filters)
 - [Filter Templates](#filter-templates)
+  + [Enumeration: grawlix.FilterTemplate](#enumeration-grawlixfiltertemplate)
 
 ***
 
