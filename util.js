@@ -78,6 +78,7 @@ var GrawlixSettings = function() {
   this.style = null;
 };
 GrawlixSettings.prototype = {};
+exports.GrawlixSettings = GrawlixSettings;
 
 /**
  * Parses grawlix style options
@@ -180,6 +181,22 @@ var replaceStyleChars = function(style, charMap) {
   return style;
 };
 exports.replaceStyleChars = replaceStyleChars;
+
+/**
+ * Returns whether or not any of the given filters match the given string.
+ * @param  {String}           str      Content string
+ * @param  {GrawlixSettings}  settings GrawlixSettings object
+ * @return {Boolean}                   Whether or not obscenity is found in the 
+ *                                     given string
+ */
+exports.isMatch = function(str, settings) {
+  if (settings.filters.length === 0) {
+    return false;
+  }
+  return _.some(settings.filters, function(filter) {
+    return filter.isMatch(str);
+  });
+};
 
 /**
  * Replaces a filter match in a string

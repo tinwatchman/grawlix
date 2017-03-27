@@ -4,6 +4,8 @@ const _ = require('underscore');
 const util = require('../util');
 const Style = require('../styles').Style;
 const GrawlixStyle = require('../styles').GrawlixStyle;
+const GrawlixSettings = require('../util').GrawlixSettings;
+const GrawlixFilter = require('../filters').GrawlixFilter;
 
 describe('GrawlixUtil', function() {
 
@@ -265,6 +267,40 @@ describe('GrawlixUtil', function() {
         });
       };
       expect(testFunc).toThrow();
+    });
+  });
+
+  describe('#isMatch', function() {
+    it('should return false when no filters are given', function() {
+      var settings = new GrawlixSettings();
+      settings.filters = [];
+      expect(util.isMatch('shitshow', settings)).toBe(false);
+    });
+    it('should return true when a filter matches the given string', function() {
+      var testStr = 'oh my god this fucking cat';
+      var settings = new GrawlixSettings();
+      settings.filters = [
+        new GrawlixFilter(
+          'fuck',
+          /f+u+c+k+/i
+        )
+      ];
+      expect(util.isMatch(testStr, settings)).toBe(true);
+    });
+    it('should return false if no filter matches the given string', function() {
+      var testStr = 'i got blisters on my fingers';
+      var settings = new GrawlixSettings();
+      settings.filters = [
+        new GrawlixFilter(
+          'word',
+          /word/i
+        ),
+        new GrawlixFilter(
+          'beatles',
+          /beatles/i
+        )
+      ];
+      expect(util.isMatch(testStr, settings)).toBe(false);
     });
   });
 

@@ -85,6 +85,32 @@ grawlix.setDefaults = function(options) {
 };
 
 /**
+ * Returns whether or not the given string contains any profanity matches
+ * @param  {String}  str     Content string
+ * @param  {Array}   filters Array of filter objects. Optional.
+ * @param  {Array}   allowed Array of words to allow. Optional.
+ * @return {Boolean}         True if a filter matches, false otherwise.
+ */
+grawlix.isObscene = function(str, filters, allowed) {
+  // get settings
+  var settings;
+  if (_.isUndefined(filters) && _.isUndefined(allowed) && 
+      defaultSettings !== null) {
+    settings = defaultSettings;
+  } else if (_.isArray(filters) || _.isArray(allowed)) {
+    settings = util.parseOptions({
+      filters: (!_.isUndefined(filters) && filters !== null) ? filters : [],
+      allowed: (!_.isUndefined(allowed) && allowed !== null) ? allowed : []
+    }, defaultOptions);
+  } else {
+    settings = util.parseOptions(defaultOptions);
+    defaultSettings = settings;
+  }
+  // return if there's a filter match
+  return util.isMatch(str, settings);
+};
+
+/**
  * Enum and class exports
  */
 grawlix.Style = Style;

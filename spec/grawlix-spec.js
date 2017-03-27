@@ -35,6 +35,41 @@ describe('grawlix', function() {
     });
   });
 
+  describe('#isObscene', function() {
+    it('should exist', function() {
+      expect(grawlix.isObscene).toBeDefined();
+      expect(_.isFunction(grawlix.isObscene)).toBe(true);
+    });
+    it('should return true if any obscenity is found', function() {
+      var testStr = 'Give me the fucking keys, you fucking cocksucking ' +
+                    'motherfucker, aaarrrghh!';
+      expect(grawlix.isObscene(testStr)).toBe(true);
+    });
+    it('should return false if obscenity is not found', function() {
+      var testStr = 'A bear, however hard he tries, grows tubby without ' + 
+                    'exercise.';
+      expect(grawlix.isObscene(testStr)).toBe(false);
+    });
+    it('should accept an array of filter objects', function() {
+      var filters = [{ word: 'word', pattern: /word/i }];
+      var testStr = "The best way to keep one's word is not to give it.";
+      var r = grawlix.isObscene(testStr, filters);
+      expect(r).toBe(true);
+    });
+    it('should accept an array of allowed words', function() {
+      var testStr = 'Give me the fucking keys, you fucking cocksucking ' +
+                    'motherfucker, aaarrrghh!';
+      var allowed = [ 
+        'motherfucker', 
+        'motherfuck', 
+        'fuck',
+        'cocksuck'
+      ];
+      var r = grawlix.isObscene(testStr, null, allowed);
+      expect(r).toBe(false);
+    });
+  });
+
   describe('(basic functionality)', function() {
     // setup
     beforeAll(function() {
