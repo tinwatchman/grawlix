@@ -145,6 +145,14 @@ Depending on community response, the following areas and/or features could poten
 - [ ] New grawlix styles
 - [ ] Improve test coverage for util.js
 
+## Release History
+
+- 1.0.3
+  * Added `grawlix.isObscene` function as per the suggestion of /u/calsosta on [/r/node](https://www.reddit.com/r/node/).
+  * Removed tests from package as per [issue #1](https://github.com/tinwatchman/grawlix/issues/1).
+- 1.0.2
+  * Added digits to separator checks in filter regex patterns.
+
 ## Credits and Licensing
 
 Created by [Jon Stout](http://www.jonstout.net). Licensed under [the MIT license](http://opensource.org/licenses/MIT).

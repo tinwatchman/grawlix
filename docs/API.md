@@ -91,7 +91,7 @@ Optional. An array of strings, representing a whitelist of words that shouldn't 
 
 #### Returns
 
-`Boolean` `true` if obscenity is found, `false` otherwise.
+`Boolean` -- `true` if obscenity is found, `false` otherwise.
 
 ### grawlix.getDefaults()
 
