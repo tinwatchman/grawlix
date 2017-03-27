@@ -18,7 +18,7 @@ grawlix.setDefaults({
 });
 ```
 
-### Enum: grawlix.Style
+### Enumeration: grawlix.Style
 
 Properties:
 

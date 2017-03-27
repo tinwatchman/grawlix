@@ -103,7 +103,7 @@ On occasion, it may prove impossible to extract a target word without the regula
 - Within your regular expression, surround the part that's capturing extra characters with [parentheses](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Using_parentheses).
 - Choose or provide a string to act as the filter's template.
 
-Filter template strings are standard [Underscore.js templates](http://underscorejs.org/#template) that accept only one parameter -- a String called `word`. For examples of template strings, see the `FilterTemplate` object in [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L6). These strings are available to code outside of the package via the `grawlix.FilterTemplate` property. Like so:
+Filter template strings are standard [Underscore.js templates](http://underscorejs.org/#template) that accept only one parameter -- a String called `word`. For examples of template strings, see the `FilterTemplate` enumeration in [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L6). These strings are available to code outside of the package via the `grawlix.FilterTemplate` property. Like so:
 
 ```javascript
 grawlix.setDefaults({
@@ -118,6 +118,14 @@ grawlix.setDefaults({
 });
 ```
 
+### Enumeration: grawlix.FilterTemplate
+
+Properties:
+
++ `PRE`: template string where first substring match goes before/in front of the word being replaced. Raw string value: `'$1<%= word %>'`.
++ `POST`: template string where first substring match goes before/after the word being replaced. Raw string value: `'<%= word %>$1'`.
++ `BETWEEN`: template string where word goes between the first and second substring matches. Raw string value: `'$1<%= word %>$2'`.
+
 ***
 
-*Last updated March 24, 2017.*
+*Last updated March 27, 2017.*
