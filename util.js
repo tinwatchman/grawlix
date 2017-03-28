@@ -30,15 +30,7 @@ exports.parseOptions = function(options, defaults) {
   // before anything else, load plugins (if we have any)
   if (options.plugins.length > 0) {
     _.each(options.plugins, function(obj) {
-      var plugin;
-      if (_.isFunction(obj)) {
-        plugin = obj(options);
-      } else if (obj instanceof GrawlixPlugin) {
-        plugin = obj;
-      }
-      if (!_.isUndefined(plugin)) {
-        loadPlugin(plugin, options);
-      }
+      loadPlugin(obj, options);
     });
   }
   // get settings
@@ -104,15 +96,25 @@ GrawlixSettings.prototype = {};
 exports.GrawlixSettings = GrawlixSettings;
 
 /**
- * Loads a plugin's filters and styles
- * @param  {GrawlixPlugin} plugin  Grawlix plugin object
- * @param  {Object}        options Options object
+ * Loads a plugin
+ * @param  {GrawlixPlugin|Function} pluginOrFunc Grawlix plugin object or 
+ *                                               factory function
+ * @param  {Object}                 options      Options object
  * @return {void}
  */
-var loadPlugin = function(plugin, options) {
-  if (!(plugin instanceof GrawlixPlugin)) {
+var loadPlugin = function(pluginOrFunc, options) {
+  // get plugin
+  var plugin;
+  if (_.isFunction(pluginOrFunc)) {
+    plugin = pluginOrFunc(options);
+  } else if (pluginOrFunc instanceof GrawlixPlugin) {
+    plugin = pluginOrFunc;
+  }
+  if (_.isUndefined(plugin)) {
+    throw new Error('GrawlixPlugin not provided!');
+  } else if (!(plugin instanceof GrawlixPlugin)) {
     throw new Error('Provided object not a GrawlixPlugin!');
-  } else if (_.contains(loadedPlugins, plugin.name)) {
+  } else if (hasPlugin(plugin.name)) {
     return;
   }
   // initialize plugin
@@ -152,6 +154,16 @@ var loadPlugin = function(plugin, options) {
   loadedPlugins.push(plugin.name);
 };
 exports.loadPlugin = loadPlugin;
+
+/**
+ * Returns if named plugin has already been loaded
+ * @param  {String}  name Plugin name
+ * @return {Boolean}
+ */
+var hasPlugin = function(name) {
+  return _.contains(loadedPlugins, name);
+};
+exports.hasPlugin = hasPlugin;
 
 /**
  * Parses grawlix style options

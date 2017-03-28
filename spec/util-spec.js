@@ -78,6 +78,15 @@ describe('GrawlixUtil', function() {
       expect(testFunc).toThrow();
     });
 
+    it("should throw if factory function doesn't return a GrawlixPlugin", ()=>{
+      var testFunc = function() {
+        util.loadPlugin(function(options) {
+          return {};
+        });
+      };
+      expect(testFunc).toThrow();
+    });
+
     it('should not load the same plugin twice', function() {
       var plugin = new GrawlixPlugin({
         name: 'blank-plugin',
@@ -89,6 +98,18 @@ describe('GrawlixUtil', function() {
       util.loadPlugin(plugin, options);
       util.loadPlugin(plugin, options);
       expect(options.inits).toEqual(1);
+    });
+
+    it('should accept factory functions', function() {
+      var factory = function(options) {
+        options.isFactoryRun = true;
+        return new GrawlixPlugin({
+          name: 'blank-plugin-2'
+        });
+      };
+      var options = { isFactoryRun: false };
+      util.loadPlugin(factory, options);
+      expect(options.isFactoryRun).toBe(true);
     });
 
     it('should accept new (valid) filters', function() {
@@ -169,6 +190,15 @@ describe('GrawlixUtil', function() {
           defaultStyles.splice(s, 1);
         }
       }
+    });
+  });
+
+  describe('#hasPlugin', function() {
+    it('should return true when a plugin has been loaded', function() {
+      expect(util.hasPlugin('blank-plugin')).toBe(true);
+    });
+    it('should return false when a plugin has not been loaded', function() {
+      expect(util.hasPlugin('blah-blah-blah')).toBe(false);
     });
   });
 
@@ -388,7 +418,7 @@ describe('GrawlixUtil', function() {
     it('should allow plugins to be loaded', function() {
       // standard plugin
       var plugin = new GrawlixPlugin({
-        name: 'blank-plugin-2',
+        name: 'blank-plugin-3',
         init: function(options) {
           options.inits++;
         }
@@ -397,7 +427,7 @@ describe('GrawlixUtil', function() {
       var factFunc = function(options) {
         options.isFactoryFunctionRun = true;
         return new GrawlixPlugin({
-          name: 'blank-plugin-3',
+          name: 'blank-plugin-4',
           init: function(options) {
             options.inits++;
           }
