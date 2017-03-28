@@ -21,6 +21,13 @@ describe('grawlix', function() {
     });
   });
 
+  describe('#GrawlixPlugin', function() {
+    it('should exist', function() {
+      expect(grawlix.GrawlixPlugin).toBeDefined();
+      expect(_.isFunction(grawlix.GrawlixPlugin)).toBe(true);
+    });
+  });
+
   describe('#GrawlixStyle', function() {
     it('should exist', function() {
       expect(grawlix.GrawlixStyle).toBeDefined();
@@ -298,6 +305,98 @@ describe('grawlix', function() {
       var t10 = grawlix("you dumb@ss...");
       expect(t10).toEqual("you dumb___...");
     });
+  });
+
+  describe('#loadPlugin', function() {    
+    it('should load a GrawlixPlugin object', function() {
+      var opts = { inits: 0 };
+      grawlix.loadPlugin(new grawlix.GrawlixPlugin({
+        name: 'grawlix-blank-plugin-1',
+        init: function(options) {
+          options.inits++;
+        }
+      }), opts);
+      expect(opts.inits).toEqual(1);
+    });
+
+    it('should load a GrawlixPlugin factory function', function() {
+      var opts = {
+        isFactoryRun: false, 
+        inits: 0 
+      };
+      grawlix.loadPlugin(function(options) {
+        options.isFactoryRun = true;
+        return new grawlix.GrawlixPlugin({
+          name: 'grawlix-blank-plugin-2',
+          init: function(options) {
+            options.inits++;
+          }
+        });
+      }, opts);
+      expect(opts.isFactoryRun).toBe(true);
+      expect(opts.inits).toEqual(1);
+    });
+
+    it('should load a grawlix plugin module via require', function() {
+      var opts = {
+        isGrawlixPluginFactoryRun: false,
+        inits: 0
+      };
+      grawlix.loadPlugin(
+        './spec/support/test-plugin-module',
+        opts
+      );
+      expect(opts.isGrawlixPluginFactoryRun).toBe(true);
+      expect(opts.inits).toEqual(1);
+    });
+
+    it('should throw if given a non-GrawlixPlugin object', function() {
+      var testFunc = function() {
+        grawlix.loadPlugin({});
+      };
+      expect(testFunc).toThrow();
+    });
+
+    it('should allow chaining', function() {
+      var opts = { loaded: [] };
+      var plugin1 = new grawlix.GrawlixPlugin({
+        name: 'grawlix-test-chain-plugin-1',
+        init: function(options) {
+          options.loaded.push(this.name);
+        }
+      });
+      var plugin2 = new grawlix.GrawlixPlugin({
+        name: 'grawlix-test-chain-plugin-2',
+        init: function(options) {
+          options.loaded.push(this.name);
+        }
+      });
+      var g = grawlix.loadPlugin(plugin1, opts)
+                     .loadPlugin(plugin2, opts);
+      expect(g).toBe(grawlix);
+      expect(_.contains(opts.loaded, 'grawlix-test-chain-plugin-1')).toBe(true);
+      expect(_.contains(opts.loaded, 'grawlix-test-chain-plugin-2')).toBe(true);
+    });
+  });
+
+  describe('#hasPlugin', function() {
+
+    it('should return true if a plugin has been loaded', function() {
+      expect(grawlix.hasPlugin('grawlix-blank-plugin-1')).toBe(true);
+    });
+
+    it('should return false if a plugin has not been loaded', function() {
+      expect(grawlix.hasPlugin('grawlix-blank-plugin-4')).toBe(false);
+    });
+
+    it('should also accept a GrawlixPlugin object', function() {
+      var plugin = new grawlix.GrawlixPlugin({
+        name: 'grawlix-blank-plugin-3'
+      });
+      grawlix.loadPlugin(plugin);
+      expect(grawlix.hasPlugin(plugin)).toBe(true);
+    });
+
   });
 
 });

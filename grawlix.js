@@ -116,6 +116,52 @@ grawlix.isObscene = function(str, filters, allowed) {
 };
 
 /**
+ * Loads a plugin
+ * @param  {GrawlixPlugin|Function|String} plugin  Either a GrawlixPlugin 
+ *                                                 object, a factory function 
+ *                                                 that returns a GrawlixPlugin 
+ *                                                 object, or a module plugin 
+ *                                                 name to load via require.
+ * @param  {Object}                        options Options object
+ * @return {grawlix}                               Returns self for chaining
+ */
+grawlix.loadPlugin = function(plugin, options) {
+  // see if plugin needs to be loaded via require
+  var resolved;
+  if (_.isString(plugin)) {
+    resolved = require(plugin);
+  } else {
+    resolved = plugin;
+  }
+  // throw error if it's not a plugin or a factory function
+  if (!_.isFunction(resolved) && !(resolved instanceof GrawlixPlugin)) {
+    throw new Error('error: invalid grawlix plugin');
+  }
+  // get options
+  if (!_.isUndefined(options)) {
+    _.defaults(options, defaultOptions);
+  } else {
+    options = defaultOptions;
+  }
+  // load plugin
+  util.loadPlugin(resolved, options);
+  // return self for chaining
+  return grawlix;
+};
+
+/**
+ * Returns whether or not a given plugin has already been loaded.
+ * @param  {String|GrawlixPlugin} plugin Name of plugin or GrawlixPlugin object
+ * @return {Boolean}
+ */
+grawlix.hasPlugin = function(plugin) {
+  if (!_.isString(plugin) && plugin instanceof GrawlixPlugin) {
+    return util.hasPlugin(plugin.name);
+  }
+  return util.hasPlugin(plugin);
+};
+
+/**
  * Enum and class exports
  */
 grawlix.Style = Style;
