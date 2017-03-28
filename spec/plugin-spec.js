@@ -16,6 +16,16 @@ describe('GrawlixPlugin', function() {
       expect(plugin.init).toBeDefined();
       expect(_.isFunction(plugin.init)).toBe(true);
     });
+    it('should accept a name option', function() {
+      var plugin = new GrawlixPlugin({
+        name: 'my-plugin'
+      });
+      expect(plugin.name).toEqual('my-plugin');
+    });
+    it('should accept a string', function() {
+      var plugin = new GrawlixPlugin('my-plugin');
+      expect(plugin.name).toEqual('my-plugin');
+    });
     it('should accept a filters option (if an array)', function() {
       var filter = { word: 'word', pattern: /word/i };
       var filter2 = { word: 'word2', pattern: /word2/i };

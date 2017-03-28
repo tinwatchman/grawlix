@@ -9,11 +9,18 @@ const _ = require('underscore');
 /**
  * Defines a grawlix plugin.
  * @param {Object}   obj         Constructor options. Optional.
+ * @param {String}   obj.name    Plugin name. Optional.
  * @param {Array}    obj.filters Array of filter objects. Optional.
  * @param {Array}    obj.styles  Array of grawlix styles. Optional.
  * @param {Function} obj.init    Initialization function override. Optional.
  */
-var GrawlixPlugin = function(obj) {
+const GrawlixPlugin = function(obj) {
+  /**
+   * Plugin name
+   * @type {String}
+   */
+  this.name = null;
+
   /**
    * Array of filter objects
    * @type {Array}
@@ -37,6 +44,11 @@ var GrawlixPlugin = function(obj) {
     // can override in subclasses
   };
 
+  if(!_.isUndefined(obj) && _.isString(obj)) {
+    this.name = obj;
+  } else if (!_.isUndefined(obj) && !_.isString(obj) && _.has(obj, 'name')) {
+    this.name = obj.name;
+  }
   if (!_.isUndefined(obj) && _.has(obj, 'filters') && _.isArray(obj.filters)) {
     this.filters = obj.filters;
   }
