@@ -28,6 +28,20 @@ const GrawlixStyle = function(name, chars, fixedReplacements) {
     this.fixed = !_.isUndefined(fixedReplacements) ? fixedReplacements : {};
 
     /**
+     * Returns whether or not the style is valid
+     * @return {Boolean}
+     */
+    this.isValid = function() {
+        return (
+            _.isString(this.name) && !_.isEmpty(this.name) && 
+            (
+                (_.isString(this.chars) && !_.isEmpty(this.chars)) ||
+                (!_.isEmpty(this.fixed) && _.keys(this.fixed).length > 0)
+            )
+        );
+    };
+
+    /**
      * Returns whether or not this style supports random grawlix generation
      * @return {Boolean}
      */
