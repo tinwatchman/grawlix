@@ -6,6 +6,9 @@ const Style = require('../styles').Style;
 const GrawlixStyle = require('../styles').GrawlixStyle;
 const GrawlixSettings = require('../util').GrawlixSettings;
 const GrawlixFilter = require('../filters').GrawlixFilter;
+const GrawlixPlugin = require('../plugin');
+const defaultFilters = require('../filters').filters;
+const defaultStyles = require('../styles').styles;
 
 describe('GrawlixUtil', function() {
 
@@ -64,6 +67,108 @@ describe('GrawlixUtil', function() {
           var r = util.getRandomGrawlix(chars, 16);
           expect(r.charAt(15)).not.toEqual('!');
       };
+    });
+  });
+
+  describe('#loadPlugin', function() {
+    it('should throw an error if not a GrawlixPlugin', function() {
+      var testFunc = function() {
+        util.loadPlugin({}, {});
+      };
+      expect(testFunc).toThrow();
+    });
+
+    it('should not load the same plugin twice', function() {
+      var plugin = new GrawlixPlugin({
+        name: 'blank-plugin',
+        init: function(options) {
+          options.inits++;
+        }
+      });
+      var options = { inits: 0 };
+      util.loadPlugin(plugin, options);
+      util.loadPlugin(plugin, options);
+      expect(options.inits).toEqual(1);
+    });
+
+    it('should accept new (valid) filters', function() {
+      var plugin = new GrawlixPlugin({
+        name: 'my-damn-plugin',
+        filters: [
+          {
+            word: 'damn',
+            pattern: /\bd[a@]mn/i
+          },
+          {
+            word: 'bad',
+            pattern: null
+          }
+        ]
+      });
+      util.loadPlugin(plugin, {});
+      var damnFilter = _.findWhere(defaultFilters, { word: 'damn' });
+      var badFilter = _.findWhere(defaultFilters, { word: 'bad' });
+      expect(damnFilter).toBeDefined();
+      expect(badFilter).not.toBeDefined();
+    });
+
+    it('should allow filter configuration', function() {
+      var plugin = new GrawlixPlugin({
+        name: 'my-reconfig-plugin',
+        filters: [{
+          word: 'bastard',
+          expandable: false
+        }]
+      });
+      util.loadPlugin(plugin);
+      var bastardFilter = _.findWhere(defaultFilters, { word: 'bastard'});
+      expect(bastardFilter).toBeDefined();
+      expect(bastardFilter.isExpandable).toBe(false);
+    });
+
+    it('should accept new (valid) styles', function() {
+      var cloudStyle = new GrawlixStyle('clouds', '☁');
+      var nedStyle = new GrawlixStyle('ned-flanders', null, {
+        cocksucker: 'ding-dong-diddly'
+      });
+      var badStyle = new GrawlixStyle('bad-style', null);
+      var plugin = new GrawlixPlugin({
+        name: 'test-styles-plugin',
+        styles: [
+          cloudStyle,
+          nedStyle,
+          badStyle
+        ]
+      });
+      util.loadPlugin(plugin);
+      var defClouds = _.findWhere(defaultStyles, { name: 'clouds' });
+      var defNed = _.findWhere(defaultStyles, { name: 'ned-flanders' });
+      var defBad = _.findWhere(defaultStyles, { name: 'bad-style' });
+      expect(defClouds).toBeDefined();
+      expect(defClouds).toBe(cloudStyle);
+      expect(defNed).toBeDefined();
+      expect(defNed).toBe(nedStyle);
+      expect(defBad).not.toBeDefined();
+    });
+
+    // tear down
+    afterAll(function() {
+      for (var f=0; f<defaultFilters.length; f++) {
+        if (defaultFilters[f].word === 'bastard') {
+          defaultFilters[f].isExpandable = true;
+        }
+        if (defaultFilters[f].word === 'damn') {
+          defaultFilters.splice(f, 1);
+        }
+      }
+      for (var s=0; s<defaultStyles.length; s++) {
+        if (defaultStyles[s].name === 'clouds') {
+          defaultStyles.splice(s, 1);
+        }
+        if (defaultStyles[s].name === 'ned-flanders') {
+          defaultStyles.splice(s, 1);
+        }
+      }
     });
   });
 
@@ -246,7 +351,7 @@ describe('GrawlixUtil', function() {
       expect(r.name).toEqual('unicode');
     });
 
-    it('should throw an error when given an invalid style', function() {
+    it('should throw an error when given an invalid style name', function() {
       var testFunc = function() {
         return util.getStyle({
           style: 'got-no-style-got-no-class'
@@ -255,27 +360,77 @@ describe('GrawlixUtil', function() {
       expect(testFunc).toThrow();
     });
 
+    it('should throw an error when given an invalid style', function() {
+      var testFunc = function() {
+        return util.getStyle({
+          style: new GrawlixStyle(null, null)
+        });
+      };
+      expect(testFunc).toThrow();
+    });
+
   });
 
   describe('#parseOptions', function() {
+
     it('should throw an error when style is not defined', function() {
       var testFunc = function() {
         var settings = util.parseOptions({
           randomize: true,
           allowed: [],
-          filters: []
+          filters: [],
+          plugins: []
         });
       };
       expect(testFunc).toThrow();
     });
+
+    it('should allow plugins to be loaded', function() {
+      // standard plugin
+      var plugin = new GrawlixPlugin({
+        name: 'blank-plugin-2',
+        init: function(options) {
+          options.inits++;
+        }
+      });
+      // factory function plugin
+      var factFunc = function(options) {
+        options.isFactoryFunctionRun = true;
+        return new GrawlixPlugin({
+          name: 'blank-plugin-3',
+          init: function(options) {
+            options.inits++;
+          }
+        });
+      };
+      // parse options
+      var opts = {
+        randomize: true,
+        style: 'ascii',
+        allowed: [],
+        filters: [],
+        plugins: [
+          plugin,
+          factFunc
+        ],
+        inits: 0
+      };
+      var settings = util.parseOptions(opts);
+      expect(opts.isFactoryFunctionRun).toBeDefined();
+      expect(opts.isFactoryFunctionRun).toBe(true);
+      expect(opts.inits).toEqual(2);
+    });
+
   });
 
   describe('#isMatch', function() {
+
     it('should return false when no filters are given', function() {
       var settings = new GrawlixSettings();
       settings.filters = [];
       expect(util.isMatch('shitshow', settings)).toBe(false);
     });
+
     it('should return true when a filter matches the given string', function() {
       var testStr = 'oh my god this fucking cat';
       var settings = new GrawlixSettings();
@@ -287,6 +442,7 @@ describe('GrawlixUtil', function() {
       ];
       expect(util.isMatch(testStr, settings)).toBe(true);
     });
+
     it('should return false if no filter matches the given string', function() {
       var testStr = 'i got blisters on my fingers';
       var settings = new GrawlixSettings();
@@ -302,6 +458,7 @@ describe('GrawlixUtil', function() {
       ];
       expect(util.isMatch(testStr, settings)).toBe(false);
     });
+
   });
 
 });

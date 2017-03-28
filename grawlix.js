@@ -3,12 +3,14 @@
 const _ = require('underscore');
 const util = require('./util');
 const Style = require('./styles').Style;
+const GrawlixPlugin = require('./plugin');
 
 /**
  * Grawlix default options
  * @type {Object}
  */
 var defaultOptions = {
+  plugins: [],
   style: Style.ASCII,
   randomize: true,
   filters: [],
@@ -44,6 +46,9 @@ var defaultSettings = null;
  *                                     default filter, or represent an entirely
  *                                     new filter. See readme for details. 
  *                                     Optional.
+ * @param  {Array}   options.plugins   Array of either plugin factory functions 
+ *                                     or GrawlixPlugin objects. See docs for 
+ *                                     details. Optional.
  * @return {String}                    Processed string
  */
 var grawlix = function(str, options) {
@@ -115,6 +120,7 @@ grawlix.isObscene = function(str, filters, allowed) {
  */
 grawlix.Style = Style;
 grawlix.GrawlixStyle = require('./styles').GrawlixStyle;
+grawlix.GrawlixPlugin = GrawlixPlugin;
 grawlix.FilterTemplate = require('./filters').FilterTemplate;
 
 /**

@@ -7,6 +7,14 @@ const defaultStyles = require('./styles').styles;
 const FilterSort = require('./filters').FilterSort;
 const toGrawlixFilter = require('./filters').toGrawlixFilter;
 const GrawlixStyle = require('./styles').GrawlixStyle;
+const GrawlixPlugin = require('./plugin');
+
+/**
+ * Array of loaded plugin names
+ * @private
+ * @type {Array}
+ */
+var loadedPlugins = [];
 
 /**
  * Parse grawlix options
@@ -19,6 +27,21 @@ exports.parseOptions = function(options, defaults) {
   if (!_.isUndefined(defaults)) {
     _.defaults(options, defaults);
   }
+  // before anything else, load plugins (if we have any)
+  if (options.plugins.length > 0) {
+    _.each(options.plugins, function(obj) {
+      var plugin;
+      if (_.isFunction(obj)) {
+        plugin = obj(options);
+      } else if (obj instanceof GrawlixPlugin) {
+        plugin = obj;
+      }
+      if (!_.isUndefined(plugin)) {
+        loadPlugin(plugin, options);
+      }
+    });
+  }
+  // get settings
   var settings = new GrawlixSettings();
   settings.isRandom = options.randomize;
   // load default filters
@@ -81,13 +104,65 @@ GrawlixSettings.prototype = {};
 exports.GrawlixSettings = GrawlixSettings;
 
 /**
+ * Loads a plugin's filters and styles
+ * @param  {GrawlixPlugin} plugin  Grawlix plugin object
+ * @param  {Object}        options Options object
+ * @return {void}
+ */
+var loadPlugin = function(plugin, options) {
+  if (!(plugin instanceof GrawlixPlugin)) {
+    throw new Error('Provided object not a GrawlixPlugin!');
+  } else if (_.contains(loadedPlugins, plugin.name)) {
+    return;
+  }
+  // initialize plugin
+  plugin.init(options);
+  // load filters
+  if (plugin.filters.length > 0) {
+    _.each(plugin.filters, function(obj) {
+      var filter;
+      if (_.isObject(obj) && _.has(obj, 'word') && !_.has(obj, 'pattern')) {
+        // configure default filter
+        filter = _.findWhere(defaultFilters, { word: obj.word });
+        if (!_.isUndefined(filter)) {
+          filter.configure(obj);
+        }
+      } else {
+        // add filter
+        try {
+          filter = toGrawlixFilter(obj);
+        } catch (e) {
+          return;
+        }
+        if (filter.isValid()) {
+          defaultFilters.push(filter);
+        }
+      }
+    });
+  }
+  // load styles
+  if (plugin.styles.length > 0) {
+    _.each(plugin.styles, function(style) {
+      if ((style instanceof GrawlixStyle) && style.isValid()) {
+        defaultStyles.push(style);
+      }
+    });
+  }
+  // add to loaded plugins
+  loadedPlugins.push(plugin.name);
+};
+exports.loadPlugin = loadPlugin;
+
+/**
  * Parses grawlix style options
  * @param  {Object}       options Options object
  * @return {GrawlixStyle}         GrawlixStyle object
  */
 var getStyle = function(options) {
-  if (options.style instanceof GrawlixStyle) {
+  if ((options.style instanceof GrawlixStyle) && options.style.isValid()) {
     return options.style;
+  } else if (options.style instanceof GrawlixStyle) {
+    throw new Error('grawlix style invalid!');
   }
   // look up style
   var style;
@@ -108,6 +183,12 @@ var getStyle = function(options) {
 };
 exports.getStyle = getStyle;
 
+/**
+ * Parses style options
+ * @param  {GrawlixStyle} style        GrawlixStyle object
+ * @param  {Object}       styleOptions Style options
+ * @return {GrawlixStyle}
+ */
 var parseStyleOptions = function(style, styleOptions) {
   // parse style character options
   if (_.has(styleOptions, 'chars') && !_.isString(styleOptions.chars)) {
