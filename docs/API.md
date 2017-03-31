@@ -6,8 +6,11 @@ __Contents__
   + [grawlix.isObscene(str\[, filters, allowed\])](#grawlixisobscenestr-filters-allowed)
   + [grawlix.getDefaults()](#grawlixgetdefaults)
   + [grawlix.setDefaults(options)](#grawlixsetdefaultsoptions)
+  + grawlix.hasPlugin(plugin)
+  + grawlix.loadPlugin(plugin[, options])
   + [grawlix.Style](#grawlixstyle)
   + [grawlix.GrawlixStyle](#grawlixgrawlixstyle)
+  + [grawlix.GrawlixPlugin](#grawlixgrawlixplugin)
   + [grawlix.FilterTemplate](#grawlixfiltertemplate)
 
 ***
@@ -26,7 +29,8 @@ var censored = grawlix(str, {
   style: 'ascii',
   randomize: true,
   filters: [],
-  allowed: []
+  allowed: [],
+  plugins: []
 });
 ```
 
@@ -34,7 +38,7 @@ var censored = grawlix(str, {
 
 Type: `String`
 
-The content string to process. **Required.**
+The content string to process. Required.
 
 #### options
 
@@ -46,6 +50,7 @@ Optional. An object that may have any of the following properties:
 - `randomize`: {Boolean} Defines whether or not grawlixes should be built via random selection or taken directly from [a map of fixed replacements](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#using-fixed-replacement-strings) (if supported by the style.) Defaults to `true`. Ignored when using a single-character style.
 - `filters`: {Array} An optional array of filter objects. For a full description of how to use this property, see the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md).
 - `allowed`: {Array} An optional array of strings, representing a whitelist of words that shouldn't be replaced.
+- `plugins`: {Array} An optional array of `grawlix` plugins to include. See the [Plugins documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md) for more details.
 
 #### Returns
 
@@ -73,7 +78,7 @@ var isTextObscene = grawlix.isObscene(text, null, allowed); // with just the
 
 Type: `String`
 
-The content string to check. **Required.**
+The content string to check. Required.
 
 #### filters
 
@@ -124,6 +129,71 @@ Type: `Object`
 
 The default options to set. See (grawlix#Options)[#options] above.
 
+### grawlix.hasPlugin(plugin)
+
+Returns whether or not the given plugin has been added to the default options.
+
+```javascript
+// find by name
+var isInstalled = grawlix.hasPlugin('my-plugin-module');
+// find by direct reference
+var plugin = require('my-plugin-module');
+var isInstalled = grawlix.hasPlugin(plugin);
+```
+
+#### plugin
+
+Type: `String`, `GrawlixPlugin`, or `Function`
+
+Name of plugin, `GrawlixPlugin` object, or plugin factory function.
+
+#### Returns
+
+`Boolean` -- `true` if plugin found, `false` otherwise.
+
+### grawlix.loadPlugin(plugin[, options])
+
+Adds the given plugin to the default options.
+
+```javascript
+// you can just provide the module name, like so...
+grawlix.loadPlugin('plugin-module-name');
+grawlix.loadPlugin('plugin-module-name', {
+  // plugin-specific config options can go here
+});
+// or you can load and provide the plugin yourself
+var plugin = require('plugin-module-name');
+grawlix.loadPlugin(plugin);
+grawlix.loadPlugin(plugin, {
+  // plugin options
+});
+```
+
+For convenience, this method can also be chained. Like so:
+
+```javascript
+grawlix.loadPlugin('plugin-module-1')
+       .loadPlugin('plugin-module-2')
+       .loadPlugin('plugin-module-3');
+```
+
+#### plugin
+
+Type: `String`, `GrawlixPlugin`, or `Function`
+
+The plugin to add to the default options. Required.
+
+#### options
+
+Type: `Object`<br>
+Default: `{}`
+
+Optional. A map of config options specifically for this plugin. See the plugin's own documentation to see what options are available (if any.)
+
+#### Returns
+
+The main `grawlix` function, so as to enable chaining.
+
 ### grawlix.Style
 
 See [Enumeration: grawlix.Style](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#enumeration-grawlixstyle).
@@ -132,10 +202,14 @@ See [Enumeration: grawlix.Style](https://github.com/tinwatchman/grawlix/blob/mas
 
 See [Class: grawlix.GrawlixStyle](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#class-grawlixgrawlixstyle).
 
+### grawlix.GrawlixPlugin
+
+See [Class: grawlix.GrawlixPlugin](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md#class-grawlixgrawlixplugin).
+
 ### grawlix.FilterTemplate
 
 See [Enumeration: grawlix.FilterTemplate](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#enumeration-grawlixfiltertemplate).
 
 ***
 
-*Last updated March 27, 2017.*
+*Last updated March 28, 2017.*
