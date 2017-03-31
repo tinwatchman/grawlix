@@ -36,7 +36,8 @@ grawlix.setDefaults({
   style: 'ascii',
   randomize: true,
   filters: [],
-  allowed: []
+  allowed: [],
+  plugins: []
 });
 ```
 
@@ -75,6 +76,10 @@ var censored = grawlix(text, {
   allowed: [ 'bastard' ]
 });
 ```
+
+##### plugins
+
+An optional `Array` of plugins to include. See the [Plugins documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md) for more details.
 
 For more information, see the [full API documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/API.md).
 
@@ -138,7 +143,7 @@ Forks and pull requests welcome.
 Depending on community response, the following areas and/or features could potentially be explored in the future:
 
 - [ ] Default support for more curse words (depending on user needs)
-- [ ] Plugin framework
+- [X] Plugin framework (work in progress)
 - [ ] Browser support
 - [ ] Internationalization / support for languages other than English
 - [ ] Regular expression optimization
@@ -147,6 +152,8 @@ Depending on community response, the following areas and/or features could poten
 
 ## Release History
 
+- 1.0.4
+  * First draft of plugin framework. Feedback would be appreciated.
 - 1.0.3
   * Added `grawlix.isObscene` function as per the suggestion of /u/calsosta on [/r/node](https://www.reddit.com/r/node/).
   * Removed tests from package as per [issue #1](https://github.com/tinwatchman/grawlix/issues/1).
