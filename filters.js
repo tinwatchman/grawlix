@@ -141,9 +141,9 @@ GrawlixFilter.prototype = {};
  */
 var toGrawlixFilter = function(obj) {
   if (!_.has(obj, 'word') || !_.isString(obj.word)) {
-    throw new Error('grawlix filter error: word parameter is required!');
+    throw new Error('grawlix filter error - word parameter is required and must be a String!');
   } else if (!_.has(obj, 'pattern') || !_.isRegExp(obj.pattern)) {
-    throw new Error('grawlix filter error: pattern parameter is required!');
+    throw new Error('grawlix filter error - pattern parameter is required and must be a RegExp!');
   }
   return new GrawlixFilter(
     obj.word,

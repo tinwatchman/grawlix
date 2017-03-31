@@ -26,7 +26,7 @@ const GrawlixStyle = function(name, chars, fixedReplacements) {
   this.name = name;
   this.chars = chars;
   this.fixed = !_.isUndefined(fixedReplacements) ? fixedReplacements : {};
-
+  
   /**
    * Returns whether or not the style is valid
    * @return {Boolean}

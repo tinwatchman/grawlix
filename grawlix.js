@@ -116,13 +116,14 @@ grawlix.isObscene = function(str, filters, allowed) {
 };
 
 /**
- * Loads a plugin
+ * Adds a plugin to the default options.
  * @param  {GrawlixPlugin|Function|String} plugin  Either a GrawlixPlugin 
  *                                                 object, a factory function 
  *                                                 that returns a GrawlixPlugin 
  *                                                 object, or a module plugin 
  *                                                 name to load via require.
- * @param  {Object}                        options Options object
+ * @param  {Object}                        options Plugin-specific options. 
+ *                                                 Optional.
  * @return {grawlix}                               Returns self for chaining
  */
 grawlix.loadPlugin = function(plugin, options) {
@@ -135,30 +136,31 @@ grawlix.loadPlugin = function(plugin, options) {
   }
   // throw error if it's not a plugin or a factory function
   if (!_.isFunction(resolved) && !(resolved instanceof GrawlixPlugin)) {
-    throw new Error('error: invalid grawlix plugin');
+    throw new Error('invalid grawlix plugin');
   }
-  // get options
-  if (!_.isUndefined(options)) {
-    _.defaults(options, defaultOptions);
-  } else {
-    options = defaultOptions;
+  // add to default options
+  if (!util.hasPlugin(resolved, defaultOptions)) {
+    var pluginInfo = { plugin: resolved };
+    if (_.isFunction(resolved) && _.isString(plugin)) {
+      // save module plugin name if it was required
+      pluginInfo.name = plugin;
+    }
+    pluginInfo.options = !_.isUndefined(options) ? options : {};
+    defaultOptions.plugins.push(pluginInfo);
   }
-  // load plugin
-  util.loadPlugin(resolved, options);
   // return self for chaining
   return grawlix;
 };
 
 /**
- * Returns whether or not a given plugin has already been loaded.
- * @param  {String|GrawlixPlugin} plugin Name of plugin or GrawlixPlugin object
+ * Returns whether or not the given plugin has already been added to the default
+ * options.
+ * @param  {String|GrawlixPlugin|Function}  plugin Name of plugin, GrawlixPlugin 
+ *                                                 object, or factory function.
  * @return {Boolean}
  */
 grawlix.hasPlugin = function(plugin) {
-  if (!_.isString(plugin) && plugin instanceof GrawlixPlugin) {
-    return util.hasPlugin(plugin.name);
-  }
-  return util.hasPlugin(plugin);
+  return util.hasPlugin(plugin, defaultOptions);
 };
 
 /**
