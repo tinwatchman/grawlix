@@ -117,6 +117,7 @@ var GrawlixFilter = function(word, regex, options) {
       this.priority = opts.priority;
     } else if (_.has(opts, 'minPriority') && _.isNumber(opts.minPriority) &&
       this.priority < opts.minPriority) {
+      // set to minPriority if and only if priority is less than given min
       this.priority = opts.minPriority;
     }
     if (_.has(opts, 'template') && _.isString(opts.template)) {
