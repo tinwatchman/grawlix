@@ -23,6 +23,22 @@ describe('GrawfixFilter', function() {
       expect(_.isFunction(filter.template)).toBe(true);
       expect(filter.isExpandable).toBe(true);
     });
+    it('should support the minPriority option', function() {
+      var filter1 = new GrawlixFilter('word', /word/i, {
+        priority: 0
+      });
+      filter1.configure({
+        minPriority: 2
+      });
+      var filter2 = new GrawlixFilter('word', /word/i, {
+        priority: 3
+      });
+      filter2.configure({
+        minPriority: 2
+      });
+      expect(filter1.priority).toEqual(2);
+      expect(filter2.priority).toEqual(3);
+    });
   });
 
   describe('#isValid', function() {

@@ -115,6 +115,9 @@ var GrawlixFilter = function(word, regex, options) {
     }
     if (_.has(opts, 'priority') && _.isNumber(opts.priority)) {
       this.priority = opts.priority;
+    } else if (_.has(opts, 'minPriority') && _.isNumber(opts.minPriority) &&
+      this.priority < opts.minPriority) {
+      this.priority = opts.minPriority;
     }
     if (_.has(opts, 'template') && _.isString(opts.template)) {
       this.template = _.template(opts.template, { variable: 'word' });
