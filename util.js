@@ -5,9 +5,14 @@ const _ = require('underscore');
 const defaultFilters = require('./filters').filters;
 const defaultStyles = require('./styles').styles;
 const FilterSort = require('./filters').FilterSort;
+const GrawlixFilter = require('./filters').GrawlixFilter;
 const toGrawlixFilter = require('./filters').toGrawlixFilter;
+const GrawlixFilterError = require('./filters').GrawlixFilterError;
 const GrawlixStyle = require('./styles').GrawlixStyle;
-const GrawlixPlugin = require('./plugin');
+const toGrawlixStyle = require('./styles').toGrawlixStyle;
+const GrawlixStyleError = require('./styles').GrawlixStyleError;
+const GrawlixPlugin = require('./plugin').GrawlixPlugin;
+const GrawlixPluginError = require('./plugin').GrawlixPluginError;
 
 /**
  * Parse grawlix options
@@ -24,7 +29,7 @@ exports.parseOptions = function(options, defaults) {
   var settings = new GrawlixSettings();
   settings.isRandom = options.randomize;
   // load default filters
-  settings.filters = _.filter(defaultFilters, function(filter) {
+  _.each(defaultFilters, function(filter) {
     // check to see if word is on whitelist
     var isAllowed = _.contains(options.allowed, filter.word);
     // check to see if options has a replacement filter
@@ -35,13 +40,15 @@ exports.parseOptions = function(options, defaults) {
         _.has(optFilter, 'pattern')
       );
     });
-    return (!isAllowed && !isReplaced && filter.isValid());
+    if (!isAllowed && !isReplaced && filter.isValid()) {
+      settings.filters.push( filter.clone() );
+    }
   });
-  // add option filters (if any) and/or configure filter options
-  loadFilters(settings, options.filters, options.allowed);
-  // load in default styles
-  settings.styles = _.filter(defaultStyles, function(style) {
-    return (style instanceof GrawlixStyle && style.isValid()); 
+  // load default styles
+  _.each(defaultStyles, function(style) {
+    if (style instanceof GrawlixStyle && style.isValid()) {
+      settings.styles.push( style.clone() );
+    }
   });
   // load plugins (if we have any)
   if (options.plugins.length > 0) {
@@ -49,13 +56,37 @@ exports.parseOptions = function(options, defaults) {
       loadPlugin(settings, pluginInfo, options);
     });
   }
+  // add option filters (if any) and/or configure filter options
+  loadFilters(settings, options.filters, options.allowed);
   // sort filters
   settings.filters.sort(FilterSort);
+  // add option styles / configure style options
+  loadStyles(settings, options.styles);
   // get main style
   if (!_.has(options, 'style') || options.style === null) {
-    throw new Error('grawlix style not defined!');
+    throw new Error('grawlix main style not defined!');
   }
-  settings.style = getStyle(options, settings.styles);
+  var style;
+  if (_.isString(options.style)) {
+    style = _.findWhere(settings.styles, { name: options.style });
+  } else if (_.isObject(options.style) && _.has(options.style, 'name')) {
+    // check to see if it's a configuration
+    style = _.findWhere(settings.styles, { name: options.style.name });
+    if (_.isUndefined(style)) {
+      // if style of that name not found, presume it's a new style object
+      style = toGrawlixStyle(options.style);
+    } else {
+      // otherwise, use object to configure existing style
+      style.configure(options.style);
+    }
+  } else if (_.isObject(options.style)) {
+    // if no style name given
+    style = toGrawlixStyle(options.style);
+  }
+  if (_.isUndefined(style)) {
+    throw new Error('grawlix main style not found!');
+  }
+  settings.style = style;
   // return settings
   return settings;
 };
@@ -66,44 +97,13 @@ exports.parseOptions = function(options, defaults) {
  */
 var GrawlixSettings = function() {
   this.isRandom = true;
-  this.filters = null;
+  this.filters = [];
   this.style = null;
-  this.styles = null;
+  this.styles = [];
   this.loadedPlugins = [];
 };
 GrawlixSettings.prototype = {};
 exports.GrawlixSettings = GrawlixSettings;
-
-/**
- * Loads an array of filter objects into the GrawlixSettings object
- * @param  {GrawlixSettings} settings GrawlixSettings object
- * @param  {Array}           filters  Array of filter objects
- * @param  {Array}           allowed  Whitelist of words to ignore
- * @return {GrawlixSettings}          Settings objects with filters added
- */
-var loadFilters = function(settings, filters, allowed) {
-  if (filters.length > 0) {
-    _.each(filters, function(obj) {
-      if (!_.has(obj, 'word')) {
-        return;
-      }
-      var filter;
-      if (!_.has(obj, 'pattern')) {
-        // configure existing filter options
-        filter = _.findWhere(settings.filters, { word: obj.word });
-        if (!_.isUndefined(filter)) {
-          filter.configure(obj);
-        }
-      } else if (!_.contains(allowed, obj.word)) {
-        // if filter word isn't whitelisted, add as new GrawlixFilter
-        filter = toGrawlixFilter(obj);
-        settings.filters.push(filter);
-      }
-    });
-  }
-  return settings;
-};
-exports.loadFilters = loadFilters;
 
 /**
  * Loads the given plugin into the given GrawlixSettings object
@@ -132,30 +132,53 @@ var loadPlugin = function(settings, pluginInfo, options) {
   }
   // instantiate plugin if necessary
   if (_.isFunction(pluginOrFunc)) {
-    plugin = pluginOrFunc(options, pluginOpts);
+    plugin = pluginOrFunc(pluginOpts, options);
   } else if (pluginOrFunc instanceof GrawlixPlugin) {
     plugin = pluginOrFunc;
   }
   if (_.isUndefined(plugin)) {
-    throw new Error('GrawlixPlugin not found!');
+    throw new Error({
+      msg: 'plugin is undefined',
+      plugin: pluginInfo
+    });
   } else if (!(plugin instanceof GrawlixPlugin)) {
-    throw new Error('Provided object not a GrawlixPlugin!');
+    throw new GrawlixPluginError({
+      msg: 'object is not a GrawlixPlugin',
+      plugin: pluginInfo
+    });
+  } else if (plugin.name === null || _.isEmpty(plugin.name)) {
+    throw new GrawlixPluginError({
+      msg: 'invalid plugin; name property is not provided',
+      plugin: pluginInfo
+    });
   }
   // initialize plugin
   plugin.init(pluginOpts);
   // load filters
   if (!_.isUndefined(plugin.filters) && _.isArray(plugin.filters)) {
-    loadFilters(settings, plugin.filters, options.allowed);
+    try {
+      loadFilters(settings, plugin.filters, options.allowed);
+    } catch (err) {
+      throw new GrawlixPluginError({
+        msg: 'error loading plugin filters',
+        plugin: plugin,
+        baseError: err
+      });
+    }
   }
   // load styles
   if (plugin.styles.length > 0) {
-    _.each(plugin.styles, function(style) {
-      if ((style instanceof GrawlixStyle) && style.isValid()) {
-        settings.styles.push(style);
-      }
-    });
+    try {
+      loadStyles(settings, plugin.styles);
+    } catch (err) {
+      throw new GrawlixPluginError({
+        msg: 'error loading plugin styles',
+        plugin: plugin,
+        baseError: err
+      });
+    }
   }
-  // add to loaded plugins
+  // add name to loaded plugins
   settings.loadedPlugins.push(plugin.name);
   // return
   return settings;
@@ -163,115 +186,64 @@ var loadPlugin = function(settings, pluginInfo, options) {
 exports.loadPlugin = loadPlugin;
 
 /**
- * Parses grawlix style options
- * @param  {Object}       options Options object
- * @param  {Array}        styles  Array of GrawlixStyle objects
- * @return {GrawlixStyle}         GrawlixStyle object
+ * Loads an array of filter objects into the GrawlixSettings object
+ * @param  {GrawlixSettings} settings GrawlixSettings object
+ * @param  {Array}           filters  Array of filter objects
+ * @param  {Array}           allowed  Whitelist of words to ignore
+ * @return {GrawlixSettings}          Settings objects with filters added
  */
-var getStyle = function(options, styles) {
-  if ((options.style instanceof GrawlixStyle) && options.style.isValid()) {
-    return options.style;
-  } else if (options.style instanceof GrawlixStyle) {
-    throw new Error('grawlix style invalid!');
+var loadFilters = function(settings, filters, allowed) {
+  if (filters.length > 0) {
+    _.each(filters, function(obj) {
+      if (!_.has(obj, 'word')) {
+        return;
+      }
+      var filter;
+      if (!_.has(obj, 'pattern')) {
+        // configure existing filter options
+        filter = _.findWhere(settings.filters, { word: obj.word });
+        if (!_.isUndefined(filter)) {
+          filter.configure(obj);
+        }
+      } else if (!_.contains(allowed, obj.word)) {
+        // if filter word isn't whitelisted, add as new GrawlixFilter
+        filter = toGrawlixFilter(obj);
+        if (filter.isValid()) {
+          settings.filters.push(filter);
+        }
+      }
+    });
   }
-  // look up style
-  var style;
-  if (!_.isString(options.style) && _.has(options.style, 'name')) {
-    style = _.findWhere(styles, { name: options.style.name });
-  } else {
-    style = _.findWhere(styles, { name: options.style });
-  }
-  if (_.isUndefined(style)) {
-    throw new Error('grawlix style not found!');
-  }
-  // check for style config options
-  if (!_.isString(options.style) && _.isObject(options.style)) {
-    parseStyleOptions(style, options.style);
-  }
-  // return style
-  return style;
+  return settings;
 };
-exports.getStyle = getStyle;
+exports.loadFilters = loadFilters;
 
 /**
- * Parses style options
- * @param  {GrawlixStyle} style        GrawlixStyle object
- * @param  {Object}       styleOptions Style options
- * @return {GrawlixStyle}
+ * Loads an array of style objects into the given GrawlixSettings instance
+ * @param  {GrawlixSettings} settings GrawlixSettings object
+ * @param  {Array}           styles   Array of style objects
+ * @return {GrawlixSettings}
  */
-var parseStyleOptions = function(style, styleOptions) {
-  // parse style character options
-  if (_.has(styleOptions, 'chars') && !_.isString(styleOptions.chars)) {
-    if (_.has(styleOptions.chars, 'add')) {
-      addStyleChars(style, styleOptions.chars.add);
-    }
-    if (_.has(styleOptions.chars, 'remove')) {
-      removeStyleChars(style, styleOptions.chars.remove);
-    }
-    if (_.has(styleOptions.chars, 'replace') && 
-        _.isObject(styleOptions.chars.replace)) {
-      replaceStyleChars(style, styleOptions.chars.replace);
-    }
-  } else if (_.has(styleOptions, 'chars') && _.isString(styleOptions.chars)) {
-    // replace all characters
-    style.chars = styleOptions.chars;
+var loadStyles = function(settings, styles) {
+  if (_.isArray(styles) && styles.length > 0) {
+    _.each(styles, function(obj) {
+      if (!_.has(obj, 'name')) {
+        return;
+      }
+      var style = _.findWhere(settings.styles, { name: obj.name });
+      if (!_.isUndefined(style)) {
+        style.configure(obj);
+      } else {
+        style = toGrawlixStyle(obj);
+        if (style.isValid()) {
+          settings.styles.push(style);
+        }
+      }
+    });
   }
-  // parse fixed replacement options
-  if (_.has(styleOptions, 'fixed') && _.isObject(styleOptions.fixed) && 
-      !_.isArray(styleOptions.fixed) && !_.isString(styleOptions.fixed)) {
-    style.fixed = _.extend({}, style.fixed, styleOptions.fixed);
-  }
-  return style;
+  return settings;
 };
-exports.parseStyleOptions = parseStyleOptions;
-
-/**
- * Add given characters to style character string
- * @param {GrawlixStyle} style     GrawlixStyle object
- * @param {String}       additions Chars to add (will also accept Array)
- */
-var addStyleChars = function(style, additions) {
-  var addChars = _.isArray(additions) ? additions : additions.split('');
-  _.each(addChars, function(newChar) {
-    if (style.chars.indexOf(newChar) === -1) {
-      style.chars += newChar;
-    }
-  });
-  return style;
-};
-exports.addStyleChars = addStyleChars;
-
-/**
- * Removes given characters from style character string
- * @param  {GrawlixStyle} style   Style object
- * @param  {String}       removes Chars to remove (will also accept Array)
- */
-var removeStyleChars = function(style, removes) {
-  var chars = style.chars.split('');
-  var accepted = _.filter(chars, function(char) {
-    return (removes.indexOf(char) === -1);
-  });
-  style.chars = accepted.join('');
-  return style;
-}
-exports.removeStyleChars = removeStyleChars;
-
-/**
- * Replaces characters within style character string
- * @param  {GrawlixStyle} style   GrawlixStyle object
- * @param  {Object}       charMap Map of characters, with keys representing 
- *                                chars to remove and values representing chars 
- *                                to add.
- * @return {GrawlixStyle}
- */
-var replaceStyleChars = function(style, charMap) {
-  _.each(charMap, function(newChar, oldChar) {
-    removeStyleChars(style, oldChar);
-    addStyleChars(style, newChar);
-  });
-  return style;
-};
-exports.replaceStyleChars = replaceStyleChars;
+exports.loadStyles = loadStyles;
 
 /**
  * Returns whether or not the given plugin has been added to the given options 
@@ -326,27 +298,49 @@ exports.isMatch = function(str, settings) {
 };
 
 /**
+ * Replaces obscenities in the given string using the given settings.
+ * @param  {String}          str      String to process
+ * @param  {GrawlixSettings} settings Grawlix settings
+ * @return {String}                   Processed string
+ */
+exports.replaceMatches = function(str, settings) {
+  if (settings.filters.length === 0) {
+    return str;
+  }
+  _.each(settings.filters, function(filter) {
+    while (filter.isMatch(str)) {
+      str = replaceMatch(str, filter, settings);
+    }
+  });
+  return str;
+};
+
+/**
  * Replaces a filter match in a string
  * @param  {String}          str      Content string
  * @param  {GrawlixFilter}   filter   GrawlixFilter object
  * @param  {GrawlixSettings} settings GrawlixSettings object
  * @return {String}                   String with replacement applied
  */
-exports.replaceMatch = function(str, filter, settings) {
-  // unpack settings for convenience / readability
-  var style = settings.style;
+var replaceMatch = function(str, filter, settings) {
+  // get filter style if provided
+  var style;
+  if (filter.hasStyle() && settings.style.isOverrideAllowed) {
+    style = _.findWhere(settings.styles, { name: filter.style });
+  }
+  if (_.isUndefined(style)) {
+    // if filter style not found, or no filter style set, use main style
+    style = settings.style;
+  }
   // get replacement grawlix
   var repl;
   if (!settings.isRandom && style.hasFixed(filter.word)) {
     // if in fixed replacement mode and style has a defined fixed replacement 
     // string for the filter's word 
     repl = style.getFixed(filter.word);
-  } else if (style.canRandomize()) {
-    // if style supports generating a random grawlix
-    repl = generateGrawlix(str, filter, style, getRandomGrawlix);
   } else {
     // if single-character style
-    repl = generateGrawlix(str, filter, style, getFillGrawlix);
+    repl = generateGrawlix(str, filter, style);
   }
   // apply filter template if necessary
   if (filter.hasTemplate()) {
@@ -355,6 +349,7 @@ exports.replaceMatch = function(str, filter, settings) {
   // replace the match
   return str.replace(filter.regex, repl);
 };
+exports.replaceMatch = replaceMatch;
 
 /**
  * Replaces matched content with a grawlix, taking into account filter and style
@@ -362,10 +357,9 @@ exports.replaceMatch = function(str, filter, settings) {
  * @param  {String}        str       Content string
  * @param  {GrawlixFilter} filter    Filter object
  * @param  {GrawlixStyle}  style     Style object
- * @param  {Function}      generator Function to use to generate grawlix
  * @return {String}                  Grawlix replacement string
  */
-var generateGrawlix = function(str, filter, style, generator) {
+var generateGrawlix = function(str, filter, style) {
   // determine length
   var len;
   if (filter.isExpandable) {
@@ -374,51 +368,9 @@ var generateGrawlix = function(str, filter, style, generator) {
     len = filter.word.length;
   }
   // generate grawlix
-  return generator(style.chars, len);
-};
-
-/**
- * Creates a string of the given length that's just the same character repeated 
- * over and over.
- * @param  {String} char Character
- * @param  {Number} len  Desired length of string
- * @return {String}
- */
-var getFillGrawlix = function(char, len) {
-  if (char.length > 0) {
-    char = char.charAt(0);
+  if (!style.canRandomize()) {
+    return style.getFillGrawlix(len);
   }
-  var grawlixChars = [];
-  for (var i=0; i<len; i++) {
-    grawlixChars.push(char);
-  }
-  return grawlixChars.join('');
+  return style.getRandomGrawlix(len);
 };
-exports.getFillGrawlix = getFillGrawlix;
-
-/**
- * Assembles a random grawlix of the given length
- * @param  {String} chars String of characters to use
- * @param  {Number} len   Length of grawlix to return
- * @return {String}       Grawlix of given length
- */
-var getRandomGrawlix = function(chars, len) {
-  var result = [];
-  var char;
-  var prev;
-  while (result.length < len) {
-    char = chars.charAt(_.random(chars.length-1));
-    // make sure not to repeat characters
-    if (char === prev) {
-      continue;
-    // make sure never to end on a !
-    } else if (char === '!' && result.length === (len-1)) {
-      continue;
-    }
-    // add to result, remember as prev character
-    result.push(char);
-    prev = char;
-  }
-  return result.join('');
-};
-exports.getRandomGrawlix = getRandomGrawlix;
+exports.generateGrawlix = generateGrawlix;

@@ -1,6 +1,6 @@
 'use strict';
 
-const GrawlixPlugin = require('../plugin');
+const GrawlixPlugin = require('../plugin').GrawlixPlugin;
 const GrawlixStyle = require('../styles').GrawlixStyle;
 const _ = require('underscore');
 

@@ -8,8 +8,8 @@ const _ = require('underscore');
 
 /**
  * Defines a grawlix plugin.
- * @param {Object}   obj         Constructor options. Optional.
- * @param {String}   obj.name    Plugin name. Optional.
+ * @param {Object}   obj         Constructor options
+ * @param {String}   obj.name    Plugin name. Required.
  * @param {Array}    obj.filters Array of filter objects. Optional.
  * @param {Array}    obj.styles  Array of grawlix styles. Optional.
  * @param {Function} obj.init    Initialization function override. Optional.
@@ -62,6 +62,37 @@ const GrawlixPlugin = function(obj) {
 GrawlixPlugin.prototype = {};
 
 /**
- * Export
+ * Custom Error subclass for Grawlix plugin exceptions
+ * @param {Object} args            Arguments
+ * @param {String} args.msg        Error message. Required.
+ * @param {Object} args.plugin     Plugin object or plugin. Optional.
+ * @param {Error}  args.baseError  An error that caused or is related to the 
+ *                                 plugin error. Optional.
  */
-module.exports = GrawlixPlugin;
+const GrawlixPluginError = function(args) {
+  this.name = 'GrawlixPluginError';
+  this.plugin = _.has(args, 'plugin') ? args.plugin : null;
+  if (_.has(args, 'baseError')) {
+    this.baseError = args.baseError;
+  }
+  this.stack = (new Error()).stack;
+  if (this.plugin !== null) {
+    this.message = 'grawlix plugin error: ' + args.msg + '\n' + 
+                   JSON.stringify(this.plugin, null, 4);
+  } else {
+    this.message = 'grawlix plugin error: ' + args.msg;
+  }
+  if (!_.isUndefined(this.baseError)) {
+    this.message += '\nbase error:' + JSON.stringify(this.baseError, null, 4);
+  }
+};
+GrawlixPluginError.prototype = Object.create(Error.prototype);
+GrawlixPluginError.prototype.constructor = GrawlixPluginError;
+
+/**
+ * Exports
+ */
+module.exports = {
+  GrawlixPlugin: GrawlixPlugin,
+  GrawlixPluginError: GrawlixPluginError
+};

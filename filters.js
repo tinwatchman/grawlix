@@ -44,12 +44,13 @@ const FilterTemplate = {
  *                                     whole length of the matched word. Default
  *                                     false. 
  */
-var GrawlixFilter = function(word, regex, options) {
+const GrawlixFilter = function(word, regex, options) {
   this.word = word;
   this.regex = regex;
   this.priority = 0;
   this.template = null;
   this.isExpandable = false;
+  this.style = null;
 
   /**
    * Returns whether or not the filter is valid and ready to match content.
@@ -106,6 +107,14 @@ var GrawlixFilter = function(word, regex, options) {
   };
 
   /**
+   * Returns whether or not a specific style has been set on this filter.
+   * @return {Boolean}
+   */
+  this.hasStyle = function() {
+    return (this.style !== null);
+  };
+
+  /**
    * Configures filter based on given options.
    * @param  {Object} opts Options object. See above for available fields.
    */
@@ -126,6 +135,22 @@ var GrawlixFilter = function(word, regex, options) {
     if (_.has(opts, 'expandable') && _.isBoolean(opts.expandable)) {
       this.isExpandable = opts.expandable;
     }
+    if (_.has(opts, 'style') && _.isString(opts.style)) {
+      this.style = opts.style;
+    }
+  };
+
+  /**
+   * Returns a new GrawlixFilter instance that's an exact replica of this one.
+   * @return {GrawlixFilter}
+   */
+  this.clone = function() {
+    var filter = new GrawlixFilter(this.word, this.regex);
+    filter.priority = this.priority;
+    filter.template = this.template;
+    filter.isExpandable = this.isExpandable;
+    filter.style = this.style;
+    return filter;
   };
 
   this.configure(options);
@@ -133,21 +158,58 @@ var GrawlixFilter = function(word, regex, options) {
 GrawlixFilter.prototype = {};
 
 /**
+ * Custom Error subclass for grawlix filter exceptions
+ * @param {Object} args        Parameters
+ * @param {String} args.msg    Error message. Required.
+ * @param {Object} args.filter Filter object or GrawlixFilter instance
+ * @param {Object} args.plugin Source plugin. Optional.
+ */
+const GrawlixFilterError = function(args) {
+  this.name = 'GrawlixFilterError';
+  this.filter = _.has(args, 'filter') ? args.filter : null;
+  if (_.has(args, 'plugin') && !_.isUndefined(args.plugin)) {
+    this.plugin = args.plugin;
+  }
+  this.stack = (new Error()).stack;
+  // construct message
+  if (this.filter !== null) {
+    this.message = 'grawlix filter error: ' + args.msg + '\n' + 
+                   JSON.stringify(this.filter);
+  } else {
+    this.message = 'grawlix filter error: ' + args.msg;
+  }
+  if (_.has(this, 'plugin') && _.has(this.plugin, 'name')) {
+    this.message += '\nplugin: ' + this.plugin.name;
+  } else if (_.has(this, 'plugin') && _.isString(this.plugin)) {
+    this.message += '\nplugin: ' + this.plugin;
+  }
+};
+GrawlixFilterError.prototype = Object.create(Error.prototype);
+GrawlixFilterError.prototype.constructor = GrawlixFilterError;
+
+/**
  * GrawlixFilter factory function
  * @param  {Object}  obj            Filter settings
- * @param  {String}  obj.word       Required. Word filter is intended to replace.
- * @param  {RegExp}  obj.pattern    Required. Regular expression to be used to 
- *                                  find/match the word. Required.
+ * @param  {String}  obj.word       Word that the filter targets. Required. 
+ * @param  {RegExp}  obj.pattern    Regular expression to be used to find/match 
+ *                                  the word. Required.
  * @param  {Number}  obj.priority   See GrawfixFilter options.
  * @param  {String}  obj.template   See GrawfixFilter options.
  * @param  {Boolean} obj.expandable See GrawfixFilter options.
+ * @param  {String}  obj.style      See GrawlixFilter options.
  * @return {GrawlixFilter}          GrawlixFilter object
  */
 var toGrawlixFilter = function(obj) {
   if (!_.has(obj, 'word') || !_.isString(obj.word)) {
-    throw new Error('grawlix filter error - word parameter is required and must be a String!');
+    throw new GrawlixFilterError({
+      msg: 'word parameter is required',
+      filter: obj
+    });
   } else if (!_.has(obj, 'pattern') || !_.isRegExp(obj.pattern)) {
-    throw new Error('grawlix filter error - pattern parameter is required and must be a RegExp!');
+    throw new GrawlixFilterError({
+      msg: 'pattern parameter is required',
+      filter: obj
+    });
   }
   return new GrawlixFilter(
     obj.word,
@@ -281,6 +343,7 @@ var FilterSort = function(a, b) {
 
 module.exports = {
   GrawlixFilter: GrawlixFilter,
+  GrawlixFilterError: GrawlixFilterError,
   FilterSort: FilterSort,
   FilterTemplate: FilterTemplate,
   filters: Filters.sort(FilterSort),

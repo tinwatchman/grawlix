@@ -68,7 +68,7 @@ Optional. This property determines the order in which filters are run on a given
 
 Type: `Number`
 
-Optional. This property will set the filter's priority to the given value if and only if the current priority is less than the given value. This may be useful when configuring filters from within plugins, as a way to avoid overriding any other settings.
+Optional. This property will set the filter's priority to the given value if and only if the current priority is less than the given value. This may be useful as a way of avoiding overriding other settings when configuring filters from within plugins.
 
 ##### expandable
 
@@ -83,6 +83,32 @@ Type: `String`<br>
 Default: `null`
 
 Optional. For more information on this property and how to use it, see [Filter Templates](#filter-templates) below.
+
+##### style
+
+Type: `String`
+
+(**New in v1.0.5**) Sets a specific style for a filter, overriding whatever the main style is when replacing the filter's word. This allows one to replace specific words with entirely different styles of grawlixes. For example:
+
+```javascript
+var grawlix = require('grawlix');
+grawlix.setDefaults({
+  style: 'asterix',
+  filters: [
+    {
+      word: 'foo',
+      pattern: /foo/i
+    },
+    {
+      word: 'bar',
+      pattern: /bar/i,
+      style: 'redacted'
+    }
+  ]
+});
+grawlix('I hate that fooing bar.');
+// returns: 'I hate that ***ing ███.'
+```
 
 ## Configuring Filters
 

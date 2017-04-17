@@ -3,17 +3,18 @@
 const _ = require('underscore');
 const util = require('./util');
 const Style = require('./styles').Style;
-const GrawlixPlugin = require('./plugin');
+const GrawlixPlugin = require('./plugin').GrawlixPlugin;
 
 /**
  * Grawlix default options
  * @type {Object}
  */
 var defaultOptions = {
-  plugins: [],
   style: Style.ASCII,
   randomize: true,
+  plugins: [],
   filters: [],
+  styles: [],
   allowed: []
 };
 
@@ -62,14 +63,8 @@ var grawlix = function(str, options) {
     settings = util.parseOptions(defaultOptions);
     defaultSettings = settings;
   }
-  // apply filters
-  _.each(settings.filters, function(filter) {
-    while (filter.isMatch(str)) {
-      str = util.replaceMatch(str, filter, settings);
-    }
-  });
-  // return
-  return str;
+  // return processed string
+  return util.replaceMatches(str, settings);
 };
 
 /**
@@ -167,7 +162,6 @@ grawlix.hasPlugin = function(plugin) {
  * Enum and class exports
  */
 grawlix.Style = Style;
-grawlix.GrawlixStyle = require('./styles').GrawlixStyle;
 grawlix.GrawlixPlugin = GrawlixPlugin;
 grawlix.FilterTemplate = require('./filters').FilterTemplate;
 

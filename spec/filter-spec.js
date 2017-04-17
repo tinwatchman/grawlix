@@ -39,6 +39,13 @@ describe('GrawfixFilter', function() {
       expect(filter1.priority).toEqual(2);
       expect(filter2.priority).toEqual(3);
     });
+    it('should support the style option', function() {
+      var filter = new GrawlixFilter('word', /word/i);
+      filter.configure({
+        style: 'redacted'
+      });
+      expect(filter.style).toEqual('redacted');
+    });
   });
 
   describe('#isValid', function() {
@@ -86,6 +93,19 @@ describe('GrawfixFilter', function() {
     });
   });
 
+  describe('#hasStyle', function() {
+    it('should return false if style not set', function() {
+      var filter = new GrawlixFilter('word', /word/i);
+      expect(filter.hasStyle()).toBe(false);
+    });
+    it('should return true if style is set', function() {
+      var filter = new GrawlixFilter('word', /word/i, {
+        style: 'asterix'
+      });
+      expect(filter.hasStyle()).toBe(true);
+    });
+  });
+
   describe('#hasTemplate', function() {
     it('should return true when filter template has been set', function() {
       var filter = new GrawlixFilter('word', /word/i, {
@@ -110,6 +130,24 @@ describe('GrawfixFilter', function() {
     });
   });
 
+  describe('#clone', function() {
+    it('should return an exact copy of the filter', function() {
+      var filter1 = new GrawlixFilter('word', /word/i, {
+        priority: 1,
+        expandable: true,
+        template: '$1<%= word %>',
+        style: 'nextwave'
+      });
+      var filter2 = filter1.clone();
+      expect(filter2.word).toEqual(filter1.word);
+      expect(filter2.regex).toBe(filter1.regex);
+      expect(filter2.priority).toEqual(filter1.priority);
+      expect(filter2.template).toBe(filter1.template);
+      expect(filter2.isExpandable).toEqual(filter1.isExpandable);
+      expect(filter2.style).toEqual(filter1.style);
+    });
+  });
+
 });
 
 // GrawlixFilter factory function spec
@@ -118,7 +156,7 @@ describe('toGrawlixFilter', function() {
 
   it('should fail when not provided word parameter', function() {
     expect(function() {
-      return toGrawlixFilter({ pattern: /fuck/i });
+      return toGrawlixFilter({ pattern: /fsck/i });
     }).toThrow();
   });
 

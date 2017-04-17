@@ -27,14 +27,7 @@ describe('grawlix', function() {
       expect(_.isFunction(grawlix.GrawlixPlugin)).toBe(true);
     });
   });
-
-  describe('#GrawlixStyle', function() {
-    it('should exist', function() {
-      expect(grawlix.GrawlixStyle).toBeDefined();
-      expect(_.isFunction(grawlix.GrawlixStyle)).toBe(true);
-    });
-  });
-
+  
   describe('#FilterTemplate', function() {
     it('should exist', function() {
       expect(grawlix.FilterTemplate).toBeDefined();
