@@ -19,7 +19,7 @@ var grawlix = require('grawlix');
 var censored = grawlix(text, { /* options go here */ }); // outputs '%!@*'
 ```
 
-Alternatively, if you prefer not having to pass in options with every call, you can also configure the library's default settings with the `setDefaults` method:
+Alternately, if you prefer not having to pass in options with every call, you can also configure the library's default settings with the `setDefaults` method:
 
 ```javascript
 grawlix.setDefaults({
@@ -48,7 +48,7 @@ For even more options, see the [full API documentation](https://github.com/tinwa
 Type: `String` or `Object`<br>
 Default: `'ascii'`
 
-What style of grawlix the function should use when replacing curse words. To see the list of available styles, see the [Grawlix Styles](#styles) section below.
+What style of grawlix the function should use when replacing curse words. To see the list of available styles, see the [Grawlix Styles](#styles) section below. To learn how to create your own styles, see the [full Styles documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md).
 
 ##### randomize
 
@@ -131,7 +131,7 @@ grawlix.setDefaults({
 });
 ```
 
-For more information on creating and configuring filters, see the full [Filters](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md) documentation.
+For more information on creating and configuring filters, see the [full Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md).
 
 <a name="using_plugins"></a>
 
@@ -175,7 +175,7 @@ Forks and pull requests welcome.
 
 Depending on community response, the following areas and/or features could potentially be explored in the future:
 
-- [ ] Default support for more curse words (depending on user needs)
+- [ ] Default support for more curse words (depending on community needs)
 - [X] Plugin framework (work in progress)
 - [ ] Browser support
 - [ ] Internationalization / support for languages other than English
@@ -185,6 +185,10 @@ Depending on community response, the following areas and/or features could poten
 
 ## Release History
 
+- 1.0.5
+  * Switched to using [style objects](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#style-objects) for consistency.
+  * Different styles can now be set on individual filters. [See here](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#style) for details.
+  * New plugin: [grawlix-racism](https://github.com/tinwatchman/grawlix-racism)
 - 1.0.4
   * First draft of plugin framework. Feedback would be appreciated.
 - 1.0.3

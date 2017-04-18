@@ -46,7 +46,7 @@ Type: `Object`
 
 Optional. An object that may have any of the following properties:
 
-- `style`: {String|Object} The style of grawlix to use when replacing obscenities. Defaults to `'ascii'`. To see the list of available default styles, see [README#Grawlix Styles](https://github.com/tinwatchman/grawlix#grawlix-styles). To see all available style options -- including how to create new styles -- see the [full Styles documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md).
+- `style`: {String|Object} **Required.** The style of grawlix to use when replacing obscenities. Defaults to `'ascii'`. To see the list of available default styles, see [README#Grawlix Styles](https://github.com/tinwatchman/grawlix#grawlix-styles). To see all available style options -- including how to create new styles -- see the [full Styles documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md).
 - `randomize`: {Boolean} Defines whether or not grawlixes should be built via random selection or taken directly from [a map of fixed replacements](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#using-fixed-replacement-strings) (if supported by the style.) Defaults to `true`. Ignored when using a single-character style.
 - `filters`: {Array} An optional array of filter objects. For a full description of how to use this property, see the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md).
 - `allowed`: {Array} An optional array of strings, representing a whitelist of words that shouldn't be replaced.
