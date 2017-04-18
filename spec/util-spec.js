@@ -17,7 +17,6 @@ describe('GrawlixUtil', function() {
 
     beforeEach(function() {
       settings = new GrawlixSettings();
-      settings.filters = [];
     });
 
     it('should skip over objects without `word` properties', function() {
@@ -55,6 +54,17 @@ describe('GrawlixUtil', function() {
         util.loadFilters(settings, filters, []);
       };
       expect(testFunc).not.toThrow();
+    });
+
+    it('should not load filters on allowed whitelist', function() {
+      var filters = [
+        {
+          word: 'badword',
+          pattern: /badword/i
+        }
+      ];
+      util.loadFilters(settings, filters, [ 'badword' ]);
+      expect(settings.filters.length).toEqual(0);
     });
 
   });
@@ -285,6 +295,34 @@ describe('GrawlixUtil', function() {
       expect(testFunc).toThrow();
     });
 
+    it('should ignore plugins with invalid .filters property', function() {
+      var plug = new GrawlixPlugin({
+        name: 'plugin'
+      });
+      plug.filters = null;
+      var testFunc = function() {
+        var plugin = {
+          plugin: plug
+        };
+        util.loadPlugin(settings, plugin, {});
+      };
+      expect(testFunc).not.toThrow();
+    });
+
+    it('should ignore plugins with invalid .styles property', function() {
+      var plug = new GrawlixPlugin({
+        name: 'plugin'
+      });
+      plug.styles = null;
+      var testFunc = function() {
+        var plugin = {
+          plugin: plug
+        };
+        util.loadPlugin(settings, plugin, {});
+      };
+      expect(testFunc).not.toThrow();
+    });
+
     // tear down
     afterAll(function() {
       var bastardFilter = _.findWhere(settings.filters, { word: 'bastard'});
@@ -496,6 +534,27 @@ describe('GrawlixUtil', function() {
       expect(opts.isFactoryFunctionRun).toBe(true);
       expect(opts.plugins[0].options.isLoaded).toBe(true);
       expect(opts.plugins[1].options.isLoaded).toBe(true);
+    });
+
+    it('should allow default filters to be replaced', function() {
+      var replRegex = /bastard/i;
+      var opts = {
+        filters: [
+          {
+            word: 'bastard',
+            pattern: replRegex
+          }
+        ],
+        style: 'ascii',
+        randomize: true,
+        plugins: [],
+        styles: [],
+        allowed: []
+      };
+      var settings = util.parseOptions(opts);
+      var bastardFilter = _.findWhere(settings.filters, { word: 'bastard' });
+      expect(bastardFilter).toBeDefined();
+      expect(bastardFilter.regex).toBe(replRegex);
     });
 
   });

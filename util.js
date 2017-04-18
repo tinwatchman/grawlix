@@ -46,9 +46,7 @@ exports.parseOptions = function(options, defaults) {
   });
   // load default styles
   _.each(defaultStyles, function(style) {
-    if (style instanceof GrawlixStyle && style.isValid()) {
-      settings.styles.push( style.clone() );
-    }
+    settings.styles.push( style.clone() );
   });
   // load plugins (if we have any)
   if (options.plugins.length > 0) {
@@ -190,19 +188,15 @@ var loadFilters = function(settings, filters, allowed) {
       if (!_.has(obj, 'word')) {
         return;
       }
-      var filter;
       if (!_.has(obj, 'pattern')) {
         // configure existing filter options
-        filter = _.findWhere(settings.filters, { word: obj.word });
+        var filter = _.findWhere(settings.filters, { word: obj.word });
         if (!_.isUndefined(filter)) {
           filter.configure(obj);
         }
       } else if (!_.contains(allowed, obj.word)) {
         // if filter word isn't whitelisted, add as new GrawlixFilter
-        filter = toGrawlixFilter(obj);
-        if (filter.isValid()) {
-          settings.filters.push(filter);
-        }
+        settings.filters.push( toGrawlixFilter(obj) );
       }
     });
   }
@@ -226,10 +220,7 @@ var loadStyles = function(settings, styles) {
       if (!_.isUndefined(style)) {
         style.configure(obj);
       } else {
-        style = toGrawlixStyle(obj);
-        if (style.isValid()) {
-          settings.styles.push(style);
-        }
+        settings.styles.push( toGrawlixStyle(obj) );
       }
     });
   }
