@@ -80,7 +80,7 @@ module.exports = new GrawlixPlugin({
 });
 
 // exports a factory function
-module.exports = function(options, pluginOptions) {
+module.exports = function(pluginOptions, options) {
   var plugin = new GrawlixPlugin({
     name: 'my-plugin-module'
   });
@@ -137,13 +137,13 @@ The unique name of this plugin. Should ideally be related to its package name.
 
 Type: `Array`
 
-An array of filter objects to be added to the default filters. See the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md) for how these are set up.
+An array of [filter objects](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#filter-objects) to be added to the default filters. See the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md) to see how these are set up.
 
 ##### styles
 
 Type: `Array`
 
-An array of style objects to be added to the default styles. See the [Style documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) for more information.
+An array of [style objects](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#style-objects) to be added to the default styles. See the [Style documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) for more information.
 
 ### Methods
 

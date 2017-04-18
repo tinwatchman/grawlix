@@ -32,63 +32,35 @@ Properties:
 + `UNICODE`: the `'unicode'` style
 + `UNDERSCORE`: the `'underscore'` style
 
-## Configuring an Existing Grawlix Style
-
-To exert exact control over the main style's configuration, pass in a [style object](#style-objects) instead:
-
-```javascript
-grawlix.setDefaults({
-  style: {
-    name: 'ascii',
-    randomChars: {
-      add: '...',
-      remove: '...',
-      replace: {}
-    },
-    fixed: {
-      // add or replace fixed replacement strings
-    }
-  }
-});
-```
-
-## Creating New Grawlix Styles
-
-You can also use [style objects](#style-objects) to create entirely new styles:
-
-```javascript
-grawlix.setDefaults({
-  style: {
-    name: 'x-out',
-    char: 'X'
-  }
-});
-grawlix('you bastards'); // outputs 'you XXXXXXX'
-```
-
-New styles can also be passed in via the `styles` option:
-
-```javascript
-grawlix.setDefaults({
-  styles: [
-    {
-      name: 'x-out',
-      char: 'X'
-    },
-    {
-      name: 'playing-cards',
-      randomChars: '♡♢♤♧'
-    }
-  ],
-  style: 'playing-cards'
-});
-```
-
-Please note that objects used to create new styles **must** have at least one of the following properties defined (in addition to `name`): `randomChars`, `char`, and/or `fixed`. Otherwise, the package will throw an error.
-
 ## Style Objects
 
-Style objects can be used to either create new styles or configure existing ones. They can have the following properties:
+For those who want to customize their grawlixes, style objects can be used to either create new styles or configure existing ones.
+
+```javascript
+// style object - basic format
+grawlix.setDefaults({
+  style: {
+    name: 'style-name',
+    randomChars: 'string-of-characters',
+    // or:
+    randomChars: {
+      add: 'characters-to-add',
+      remove: 'characters-to-remove',
+      replace: {
+        // map of characters to replace
+      }
+    },
+    // or:
+    char: 'single-character',
+    fixed: {
+      // map of fixed replacemets
+    },
+    allowOverride: true
+  }
+});
+```
+
+Style objects can have the following properties:
 
 #### name
 
@@ -212,6 +184,60 @@ Type: `Boolean`<br>
 Default: `true`
 
 Sets whether or not a style should allow itself to be overridden by [filter styles]() when it's the main style. When set to `false`, the style will ignore any filter-specific settings.
+
+## Creating New Grawlix Styles
+
+You can use [style objects](#style-objects) to create entirely new styles:
+
+```javascript
+grawlix.setDefaults({
+  style: {
+    name: 'x-out',
+    char: 'X'
+  }
+});
+grawlix('you bastards'); // outputs 'you XXXXXXX'
+```
+
+New styles can also be passed in via the `styles` option:
+
+```javascript
+grawlix.setDefaults({
+  styles: [
+    {
+      name: 'x-out',
+      char: 'X'
+    },
+    {
+      name: 'playing-cards',
+      randomChars: '♡♢♤♧'
+    }
+  ],
+  style: 'playing-cards'
+});
+```
+
+Please note that objects used to create new styles **must** have at least one of the following properties defined (in addition to `name`): `randomChars`, `char`, and/or `fixed`. Otherwise, the package will throw an error.
+
+## Configuring Existing Grawlix Styles
+
+To exert exact control over the main style's configuration, pass in a [style object](#style-objects) instead:
+
+```javascript
+grawlix.setDefaults({
+  style: {
+    name: 'ascii',
+    randomChars: {
+      add: '...',
+      remove: '...',
+      replace: {}
+    },
+    fixed: {
+      // add or replace fixed replacement strings
+    }
+  }
+});
+```
 
 ## Using Fixed Replacement Strings
 
