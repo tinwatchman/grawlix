@@ -215,6 +215,38 @@ describe('GrawlixUtil', function() {
       expect(testFunc).not.toThrow();
     });
 
+    it('should throw if an error occurs when loading filters', function() {
+      var badPlugin = new GrawlixPlugin({
+        name: 'bad-plugin',
+        filters: [
+          {
+            word: 'bad-word',
+            pattern: 'bad-word'
+          }
+        ]
+      });
+      var testFunc = function() {
+        util.loadPlugin(settings, { plugin: badPlugin }, {});
+      };
+      expect(testFunc).toThrow();
+    });
+
+    it('should throw if an error occurs loading styles', function() {
+      var badPlugin = new GrawlixPlugin({
+        name: 'bad-plugin',
+        styles: [
+          {
+            name: '',
+            char: '*'
+          }
+        ]
+      });
+      var testFunc = function() {
+        util.loadPlugin(settings, { plugin: badPlugin }, {});
+      };
+      expect(testFunc).toThrow();
+    });
+
     it('should accept new (valid) styles', function() {
       var initNumStyles = settings.styles.length;
       var plugin = new GrawlixPlugin({
@@ -239,6 +271,18 @@ describe('GrawlixUtil', function() {
       expect(cloudStyle).toBeDefined();
       expect(nedStyle).toBeDefined();
       expect(settings.styles.length).toEqual(initNumStyles + 2);
+    });
+
+    it('should throw an error when provided an invalid GrawlixPlugin', ()=>{
+      var testFunc = function() {
+        var plugin = {
+          plugin: new GrawlixPlugin({
+            name: null
+          })
+        };
+        util.loadPlugin(settings, plugin, {});
+      };
+      expect(testFunc).toThrow();
     });
 
     // tear down
@@ -353,6 +397,57 @@ describe('GrawlixUtil', function() {
         });
       };
       expect(testFunc).toThrow();
+    });
+
+    it('should throw an error when style cannot be found', function() {
+      var testFunc = function() {
+        var settings = util.parseOptions({
+          randomize: true,
+          allowed: [],
+          filters: [],
+          plugins: [],
+          styles: [],
+          style: {
+            name: 'Bladorfagorf',
+            allowOverride: false
+          }
+        });
+        expect(testFunc).toThrow();
+      };
+    });
+
+    it('should allow main style configuration', function() {
+      var settings = util.parseOptions({
+        randomize: true,
+        allowed: [],
+        filters: [],
+        plugins: [],
+        styles: [],
+        style: {
+          name: 'ascii',
+          allowOverride: false
+        }
+      });
+      expect(settings.style).not.toBe(null);
+      expect(settings.style.name).toEqual('ascii');
+      expect(settings.style.isOverrideAllowed).toBe(false);
+    });
+
+    it('should allow a new main style to be created', function() {
+      var settings = util.parseOptions({
+        randomize: true,
+        allowed: [],
+        filters: [],
+        plugins: [],
+        styles: [],
+        style: {
+          name: 'tilde',
+          char: '~'
+        }
+      });
+      expect(settings.style).not.toBe(null);
+      expect(settings.style.name).toEqual('tilde');
+      expect(settings.style.canRandomize()).toBe(false);
     });
 
     it('should allow plugins to be loaded', function() {
@@ -512,5 +607,38 @@ describe('GrawlixUtil', function() {
 
   });
 
+  describe('#replaceMatch', function() {
+
+    it('should allow filter styles', function() {
+      var settings = new GrawlixSettings();
+      settings.styles = _.map(defaultStyles, function(style) {
+        return style.clone();
+      });
+      settings.style = _.findWhere(settings.styles, { name: 'ascii' });
+      var filter = new GrawlixFilter('badword', /badword/i, {
+          style: 'asterix'
+      });
+      var r = util.replaceMatch('uh oh badword', filter, settings);
+      expect(r).toEqual('uh oh *******');
+    });
+
+    it('should not use a filter style when cannot override main style', ()=>{
+      var settings = new GrawlixSettings();
+      settings.styles = _.map(defaultStyles, function(style) {
+        var clone = style.clone();
+        if (style.name === 'ascii') {
+          clone.isOverrideAllowed = false;
+          settings.style = clone;
+        }
+        return clone;
+      });
+      var filter = new GrawlixFilter('badword', /badword/i, {
+          style: 'asterix'
+      });
+      var r = util.replaceMatch('uh oh badword', filter, settings);
+      expect(r).not.toEqual('uh oh *******');
+    });
+
+  });
   
 });

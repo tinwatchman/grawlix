@@ -67,24 +67,16 @@ exports.parseOptions = function(options, defaults) {
     throw new Error('grawlix main style not defined!');
   }
   var style;
+  // see if is style configuration
   if (_.isString(options.style)) {
     style = _.findWhere(settings.styles, { name: options.style });
   } else if (_.isObject(options.style) && _.has(options.style, 'name')) {
-    // check to see if it's a configuration
     style = _.findWhere(settings.styles, { name: options.style.name });
-    if (_.isUndefined(style)) {
-      // if style of that name not found, presume it's a new style object
-      style = toGrawlixStyle(options.style);
-    } else {
-      // otherwise, use object to configure existing style
-      style.configure(options.style);
-    }
-  } else if (_.isObject(options.style)) {
-    // if no style name given
-    style = toGrawlixStyle(options.style);
   }
-  if (_.isUndefined(style)) {
-    throw new Error('grawlix main style not found!');
+  if (!_.isUndefined(style) && !_.isString(style)) {
+    style.configure(options.style);
+  } else if (_.isUndefined(style)) {
+    style = toGrawlixStyle(options.style);
   }
   settings.style = style;
   // return settings
@@ -137,7 +129,7 @@ var loadPlugin = function(settings, pluginInfo, options) {
     plugin = pluginOrFunc;
   }
   if (_.isUndefined(plugin)) {
-    throw new Error({
+    throw new GrawlixPluginError({
       msg: 'plugin is undefined',
       plugin: pluginInfo
     });
@@ -167,7 +159,7 @@ var loadPlugin = function(settings, pluginInfo, options) {
     }
   }
   // load styles
-  if (plugin.styles.length > 0) {
+  if (!_.isUndefined(plugin.styles) && _.isArray(plugin.styles)) {
     try {
       loadStyles(settings, plugin.styles);
     } catch (err) {
@@ -304,9 +296,6 @@ exports.isMatch = function(str, settings) {
  * @return {String}                   Processed string
  */
 exports.replaceMatches = function(str, settings) {
-  if (settings.filters.length === 0) {
-    return str;
-  }
   _.each(settings.filters, function(filter) {
     while (filter.isMatch(str)) {
       str = replaceMatch(str, filter, settings);

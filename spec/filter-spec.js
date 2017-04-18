@@ -5,6 +5,7 @@ const _ = require('underscore');
 const filters = require('../filters').filters;
 const GrawlixFilter = require('../filters').GrawlixFilter;
 const toGrawlixFilter = require('../filters').toGrawlixFilter;
+const GrawlixFilterError = require('../filters').GrawlixFilterError;
 const FilterTemplate = require('../filters').FilterTemplate;
 
 // GrawfixFilter spec
@@ -180,6 +181,41 @@ describe('toGrawlixFilter', function() {
     expect(r instanceof GrawlixFilter).toBe(true);
   });
 
+});
+
+// GrawlixFilterError tests
+
+describe('GrawlixFilterError', function() {
+
+  it('should set filter to null if not provided', function() {
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error'
+    });
+    expect(err.filter).toBe(null);
+  });
+
+  it('should support the plugin argument', function() {
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error',
+      plugin: 'some-plugin'
+    });
+    expect(err.plugin).toBeDefined();
+    expect(err.plugin).toEqual('some-plugin');
+    expect(err.message.indexOf('some-plugin') > -1).toBe(true);
+  });
+
+  it('should support a plugin object being passed in', function() {
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error',
+      plugin: {
+        name: 'some-plugin'
+      }
+    });
+    expect(err.plugin).toBeDefined();
+    expect(err.plugin.name).toEqual('some-plugin');
+    expect(err.message.indexOf('some-plugin') > -1).toBe(true);
+  });
+  
 });
 
 // default filter tests

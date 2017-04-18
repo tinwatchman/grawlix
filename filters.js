@@ -167,7 +167,7 @@ GrawlixFilter.prototype = {};
 const GrawlixFilterError = function(args) {
   this.name = 'GrawlixFilterError';
   this.filter = _.has(args, 'filter') ? args.filter : null;
-  if (_.has(args, 'plugin') && !_.isUndefined(args.plugin)) {
+  if (_.has(args, 'plugin')) {
     this.plugin = args.plugin;
   }
   this.stack = (new Error()).stack;
@@ -178,9 +178,9 @@ const GrawlixFilterError = function(args) {
   } else {
     this.message = 'grawlix filter error: ' + args.msg;
   }
-  if (_.has(this, 'plugin') && _.has(this.plugin, 'name')) {
+  if (!_.isUndefined(this.plugin) && _.has(this.plugin, 'name')) {
     this.message += '\nplugin: ' + this.plugin.name;
-  } else if (_.has(this, 'plugin') && _.isString(this.plugin)) {
+  } else if (!_.isUndefined(this.plugin) && _.isString(this.plugin)) {
     this.message += '\nplugin: ' + this.plugin;
   }
 };

@@ -83,7 +83,7 @@ const GrawlixPluginError = function(args) {
     this.message = 'grawlix plugin error: ' + args.msg;
   }
   if (!_.isUndefined(this.baseError)) {
-    this.message += '\nbase error:' + JSON.stringify(this.baseError, null, 4);
+    this.message += '\nbase error - ' + this.baseError.message;
   }
 };
 GrawlixPluginError.prototype = Object.create(Error.prototype);

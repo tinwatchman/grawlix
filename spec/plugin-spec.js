@@ -1,6 +1,7 @@
 'use strict';
 
 const GrawlixPlugin = require('../plugin').GrawlixPlugin;
+const GrawlixPluginError = require('../plugin').GrawlixPluginError;
 const GrawlixStyle = require('../styles').GrawlixStyle;
 const _ = require('underscore');
 
@@ -99,4 +100,26 @@ describe('GrawlixPlugin', function() {
       expect(opts.self).toBe(plugin);
     });
   });
+});
+
+describe('GrawlixPluginError', function() {
+
+  it('should support the baseErr argument', function() {
+    var baseErr = new Error('base error message');
+    var err = new GrawlixPluginError({
+      msg: 'plugin error message',
+      baseError: baseErr
+    });
+    expect(err.baseError).toBe(baseErr);
+    expect(err.message.indexOf(baseErr.message) > -1).toBe(true);
+  });
+
+  it('should set plugin to null when not provided', function() {
+    var err = new GrawlixPluginError({
+      msg: 'plugin err'
+    });
+    expect(err.plugin).toBe(null);
+    expect(err.message).toEqual('grawlix plugin error: plugin err');
+  });
+
 });
