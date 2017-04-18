@@ -5,7 +5,7 @@ __Contents__
   + [Enumeration: grawlix.Style](#enumeration-grawlixstyle)
 - [Style Objects](#style-objects)
   + Properties:
-    * [name](#name)
+    * [name](#name_property)
     * [randomChars](#randomchars)
     * [char](#char)
     * [fixed](#fixed)
@@ -67,6 +67,8 @@ grawlix.setDefaults({
 ```
 
 Style objects can have the following properties:
+
+<a name="name_property"></a>
 
 ### name
 
@@ -189,7 +191,7 @@ Adds or replaces strings within the style's fixed replacement dictionary. See [U
 Type: `Boolean`<br>
 Default: `true`
 
-Sets whether or not a style should allow itself to be overridden by [filter styles]() when it's the main style. When set to `false`, the style will ignore any filter-specific settings.
+Sets whether or not a style should allow itself to be overridden by [filter styles](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#style) when it's the main style. When set to `false`, the style will ignore any filter-specific settings.
 
 ## Creating New Grawlix Styles
 
