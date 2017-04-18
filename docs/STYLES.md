@@ -4,6 +4,12 @@ __Contents__
 - [Choosing a Grawlix Style](#choosing-a-grawlix-style)
   + [Enumeration: grawlix.Style](#enumeration-grawlixstyle)
 - [Style Objects](#style-objects)
+  + Properties:
+    * [name](#name)
+    * [randomChars](#randomchars)
+    * [char](#char)
+    * [fixed](#fixed)
+    * [allowOverride](#allowoverride)
 - [Creating New Grawlix Styles](#creating-new-grawlix-styles)
 - [Configuring Existing Grawlix Styles](#configuring-existing-grawlix-styles)
 - [Using Fixed Replacement Strings](#using-fixed-replacement-strings)
@@ -12,7 +18,7 @@ __Contents__
 
 ## Choosing a Grawlix Style
 
-As has been said, the simplest way to specify a style is by passing the name of one of the default styles. In addition to passing in a raw `String`, developers of a more nervous disposition can access the [Style enumeration](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L9) via the `grawlix.Style` property:
+The simplest way to specify a style is by passing the name of one of the default styles. In addition to passing in a raw `String`, developers of a more nervous disposition can access the [Style enumeration](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L9) via the `grawlix.Style` property:
 
 ```javascript
 grawlix.setDefaults({
@@ -34,7 +40,7 @@ Properties:
 
 ## Style Objects
 
-For those who want to customize their grawlixes, style objects can be used to either create new styles or configure existing ones.
+For those who want to completely customize their grawlixes, style objects can be used to either create new styles or configure existing ones.
 
 ```javascript
 // style object - basic format
@@ -62,13 +68,13 @@ grawlix.setDefaults({
 
 Style objects can have the following properties:
 
-#### name
+### name
 
 Type: `String`
 
 The name of the style. **Required.**
 
-#### randomChars
+### randomChars
 
 Type: `String`, `Function`, or `Object` 
 
@@ -106,7 +112,7 @@ grawlix.setDefaults({
 grawlix('you bastard'); // outputs 'you *!*!*!*'
 ```
 
-An object can only be provided when configuring an existing style. It can have three properties: `add`, `remove`, and `replace`, all of which can be used to modify the style's character string.
+An object can only be provided when configuring an existing style. It can have three properties: `add`, `remove`, and `replace`, all of which modify the style's character string.
 
 ##### randomChars.add
 
@@ -118,7 +124,7 @@ This option adds the given characters to the string the style uses to randomly g
 grawlix.setDefaults({
   style: {
     name: 'ascii',
-    chars: {
+    randomChars: {
       add: '~?' // tilde and question mark will now be included in generated grawlixes
     }
   }
@@ -135,7 +141,7 @@ The characters specified in this option will be removed from the string the styl
 grawlix.setDefaults({
   style: {
     name: 'unicode',
-    chars: {
+    randomChars: {
       remove: '♡♢♤♧' // playing card symbols will not appear in grawlixes
     }
   }
@@ -154,7 +160,7 @@ This option allows one to pass in a map of characters to replace within the stri
 grawlix.setDefaults({
   style: {
     name: 'dingbats',
-    chars: {
+    randomChars: {
       replace: {
         '♡': '♥',
         '♢': '♦',
@@ -166,19 +172,19 @@ grawlix.setDefaults({
 });
 ```
 
-#### char
+### char
 
 Type: `String`
 
 Alternate shorthand property that specifies the character to use when creating a single-character style.
 
-#### fixed
+### fixed
 
 Type: `Object`
 
 Adds or replaces strings within the style's fixed replacement dictionary. See [Using Fixed Replacement Strings](#using-fixed-replacement-strings) below for more details.
 
-#### allowOverride
+### allowOverride
 
 Type: `Boolean`<br>
 Default: `true`
@@ -263,7 +269,7 @@ When creating a new style, you can optionally pass in a dictionary of replacemen
 grawlix.setDefaults({
   style: {
     name: 'my-custom-style',
-    randomChars: str,
+    randomChars: 'string-of-characters',
     fixed: {
       'word': '%!&#',
       'word2': '#&!%'
@@ -277,8 +283,8 @@ Things to keep in mind when coming up with your own fixed replacement strings:
 - Fixed replacement strings will be automatically wrapped in a filter's [template](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#filter-templates). In certain cases, this may have unexpected outcomes.
 - When using the `$` character, note that it will need to be repeated twice in order to render properly, on account of how JavaScript's [String#replace](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) function works. So `'%!$$#'` will be rendered as `'%!$#'`.
 
-To see how this works in the default styles, see [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L345).
+For examples of how this works, see the default styles in [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L345).
 
 ***
 
-*Last updated April 17, 2017.*
+*Last updated April 18, 2017.*

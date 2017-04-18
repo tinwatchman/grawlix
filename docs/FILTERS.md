@@ -2,6 +2,14 @@
 
 __Contents__
 - [Filter Objects](#filter-objects)
+  + Properties:
+    * [word](#word)
+    * [pattern](#pattern)
+    * [priority](#priority)
+    * [minPriority](#minpriority)
+    * [expandable](#expandable)
+    * [template](#template)
+    * [style](#style)
 - [Adding New Filters](#adding-new-filters)
 - [Configuring Filters](#configuring-filters)
 - [Filter Templates](#filter-templates)
@@ -13,46 +21,46 @@ __Contents__
 
 Filter objects can be used to either create new `grawlix` filters or configure existing ones. They can have the following properties:
 
-##### word
+### word
 
 Type: `String`
 
 Lowercase 'canonical' version of the word the filter is targeting. This property is **required.**
 
-##### pattern
+### pattern
 
 Type: `RegExp`
 
 Regular expression targeting the given word. This property is **required** for new filters.
 
-##### priority
+### priority
 
 Type: `Number`<br>
 Default: `0`
 
-Optional. This property determines the order in which filters are run on a given string. The lower the value, the sooner the filter is run. (Setting this number to a negative value, for instance, will make the filter run before all the default filters.) This can be used to set up cascading 'families' of filters for detecting specific scenarios that a single regular expression can't cover. To see how the default filters go about doing this, see [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L159).
+Optional. This property determines the order in which filters are run on a given string. The lower the value, the sooner the filter is run. (Setting this number to a negative value, for instance, will make the filter run before all the default filters.) This can be used to set up cascading 'families' of filters for detecting specific scenarios that a single regular expression can't cover. To see how the default filters go about doing this, see [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L225).
 
-##### minPriority
+### minPriority
 
 Type: `Number`
 
 Optional. This property will set the filter's priority to the given value if and only if the current priority is less than the given value. This may be useful as a way of avoiding overriding other settings when configuring filters from within plugins.
 
-##### expandable
+### expandable
 
 Type: `Boolean`<br>
 Default: `false`
 
 Optional. This flag should be set to `true` in filters where the regular expression might match more or less characters than a word's 'canonical' length. Imagine, for instance, a situation where we don't merely want to target the string `badword`, but all variant spellings or attempts to obfuscate the word, e.g. `baaaadword`, `badwordd`, `b a d w o r d`, etc. Setting this flag informs the library that it needs to check the length of the matched word when preparing a replacement grawlix for this filter. If this isn't necessary, however, the property should be left `false`.
 
-##### template
+### template
 
 Type: `String`<br>
 Default: `null`
 
 Optional. For more information on this property and how to use it, see [Filter Templates](#filter-templates) below.
 
-##### style
+### style
 
 Type: `String`<br>
 Default: `null`
@@ -162,4 +170,4 @@ Properties:
 
 ***
 
-*Last updated April 17, 2017.*
+*Last updated April 18, 2017.*
