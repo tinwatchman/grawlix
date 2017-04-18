@@ -7,9 +7,8 @@ __Contents__
   + [grawlix.getDefaults()](#grawlixgetdefaults)
   + [grawlix.setDefaults(options)](#grawlixsetdefaultsoptions)
   + [grawlix.hasPlugin(plugin)](#grawlixhaspluginplugin)
-  + [grawlix.loadPlugin(plugin\[, options\])](#grawlixloadpluginplugin-options)
+  + [grawlix.loadPlugin(plugin\[, pluginOptions\])](#grawlixloadpluginplugin-options)
   + [grawlix.Style](#grawlixstyle)
-  + [grawlix.GrawlixStyle](#grawlixgrawlixstyle)
   + [grawlix.GrawlixPlugin](#grawlixgrawlixplugin)
   + [grawlix.FilterTemplate](#grawlixfiltertemplate)
 
@@ -30,7 +29,8 @@ var censored = grawlix(str, {
   randomize: true,
   filters: [],
   allowed: [],
-  plugins: []
+  plugins: [],
+  styles: []
 });
 ```
 
@@ -51,6 +51,7 @@ Optional. An object that may have any of the following properties:
 - `filters`: {Array} An optional array of filter objects. For a full description of how to use this property, see the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md).
 - `allowed`: {Array} An optional array of strings, representing a whitelist of words that shouldn't be replaced.
 - `plugins`: {Array} An optional array of `grawlix` plugins to include. See the [Plugins documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md) for more details.
+- `styles`: {Array} An optional array of grawlix style objects, used to add or configure styles aside from the main one specified by the `style` option. See the [full Styles documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) for more information on style objects.
 
 #### Returns
 
@@ -85,14 +86,14 @@ The content string to check. Required.
 Type: `Array`<br>
 Default: `[]`
 
-Optional. An array of filter objects. Identical to [the `filter` option above](#options).
+Optional. An array of filter objects. Identical to [the `filters` option described above](#options).
 
 #### allowed
 
 Type: `Array`<br>
 Default: `[]`
 
-Optional. An array of strings, representing a whitelist of words that shouldn't be replaced. Identical to [the `allowed` option above](#options).
+Optional. An array of strings, representing a whitelist of words that shouldn't be replaced. Identical to [the `allowed` option described above](#options).
 
 #### Returns
 
@@ -151,7 +152,7 @@ Name of plugin, `GrawlixPlugin` object, or plugin factory function.
 
 `Boolean` -- `true` if plugin found, `false` otherwise.
 
-### grawlix.loadPlugin(plugin[, options])
+### grawlix.loadPlugin(plugin[, pluginOptions])
 
 Adds the given plugin to the default options.
 
@@ -183,7 +184,7 @@ Type: `String`, `GrawlixPlugin`, or `Function`
 
 The plugin to add to the default options. Required.
 
-#### options
+#### pluginOptions
 
 Type: `Object`<br>
 Default: `{}`
@@ -198,10 +199,6 @@ The main `grawlix` function, so as to enable chaining.
 
 See [Enumeration: grawlix.Style](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#enumeration-grawlixstyle).
 
-### grawlix.GrawlixStyle
-
-See [Class: grawlix.GrawlixStyle](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#class-grawlixgrawlixstyle).
-
 ### grawlix.GrawlixPlugin
 
 See [Class: grawlix.GrawlixPlugin](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md#class-grawlixgrawlixplugin).
@@ -212,4 +209,4 @@ See [Enumeration: grawlix.FilterTemplate](https://github.com/tinwatchman/grawlix
 
 ***
 
-*Last updated March 28, 2017.*
+*Last updated April 17, 2017.*

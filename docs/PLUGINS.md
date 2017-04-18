@@ -56,8 +56,8 @@ The key to developing your own plugin module is the `GrawlixPlugin` class ([see 
 
 * A `GrawlixPlugin` instance, or;
 * A factory function that returns a `GrawlixPlugin` instance when called. Factory functions will be provided with two arguments:
-  + `options`: {Object} The main `grawlix` options object.
   + `pluginOptions`: {Object} The plugin-specific options that were given to `grawlix` along with the module.
+  + `options`: {Object} The main `grawlix` options object.
 
 Here's a brief demonstration of both approaches:
 
@@ -121,8 +121,8 @@ Type: `Object`
 Options object. Allows one to set all of the object's properties at once and/or override the class `init` method. Possible properties include:
 
 - `name`: {String} The unique name of the plugin.
-- `filters`: {Array} An optional array of filter objects, as described in the [Filters documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md).
-- `styles`: {Array} An optional array of `GrawlixStyle` objects to add to the available styles.
+- `filters`: {Array} An array of [filter objects](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#filter-objects) to add to grawlix's filters. Optional.
+- `styles`: {Array} An array of [style objects](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#style-objects) to add to the available styles. Optional.
 - `init`: {Function} Overrides the plugin's `init` method ([see below](#initoptions).) The function will be provided one argument, an `Object` with options specific to the plugin (if given.) The `this` keyword will always be set to the `GrawlixPlugin` instance.
 
 ### Properties
@@ -143,7 +143,7 @@ An array of filter objects to be added to the default filters. See the [Filters 
 
 Type: `Array`
 
-An array of `GrawlixStyle` objects to be added to the default styles. See the [GrawlixStyle class documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#class-grawlixgrawlixstyle) for more information on creating these.
+An array of style objects to be added to the default styles. See the [Style documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md) for more information.
 
 ### Methods
 
@@ -159,4 +159,4 @@ An array of `GrawlixStyle` objects to be added to the default styles. See the [G
 
 ***
 
-*Last updated March 30, 2017.*
+*Last updated April 17, 2017.*

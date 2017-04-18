@@ -3,9 +3,9 @@
 __Contents__
 - [Choosing a Grawlix Style](#choosing-a-grawlix-style)
   + [Enumeration: grawlix.Style](#enumeration-grawlixstyle)
-- [Advanced Style Options](#advanced-style-options)
-- [Creating a new Grawlix Style](#creating-a-new-grawlix-style)
-  + [Class: grawlix.GrawlixStyle](#class-grawlixgrawlixstyle)
+- [Configuring an Existing Grawlix Style](#configuring-an-existing-grawlix-style)
+- [Creating New Grawlix Styles](#creating-new-grawlix-styles)
+- [Style Objects](#style-objects)
 - [Using Fixed Replacement Strings](#using-fixed-replacement-strings)
 
 ***
@@ -32,15 +32,15 @@ Properties:
 + `UNICODE`: the `'unicode'` style
 + `UNDERSCORE`: the `'underscore'` style
 
-## Advanced Style Options
+## Configuring an Existing Grawlix Style
 
-Specifying an `Object` as the `style` option allows one to exert exact control over the style's configuration:
+To exert exact control over the main style's configuration, pass in a [style object](#style-objects) instead:
 
 ```javascript
 grawlix.setDefaults({
   style: {
     name: 'ascii',
-    chars: {
+    randomChars: {
       add: '...',
       remove: '...',
       replace: {}
@@ -52,17 +52,91 @@ grawlix.setDefaults({
 });
 ```
 
-### Options
+## Creating New Grawlix Styles
 
-The following properties can be specified within the `style` option object:
+You can also use [style objects](#style-objects) to create entirely new styles:
 
-##### name
+```javascript
+grawlix.setDefaults({
+  style: {
+    name: 'x-out',
+    char: 'X'
+  }
+});
+grawlix('you bastards'); // outputs 'you XXXXXXX'
+```
+
+New styles can also be passed in via the `styles` option:
+
+```javascript
+grawlix.setDefaults({
+  styles: [
+    {
+      name: 'x-out',
+      char: 'X'
+    },
+    {
+      name: 'playing-cards',
+      randomChars: '♡♢♤♧'
+    }
+  ],
+  style: 'playing-cards'
+});
+```
+
+Please note that objects used to create new styles **must** have at least one of the following properties defined (in addition to `name`): `randomChars`, `char`, and/or `fixed`. Otherwise, the package will throw an error.
+
+## Style Objects
+
+Style objects can be used to either create new styles or configure existing ones. They can have the following properties:
+
+#### name
 
 Type: `String`
 
-The name of the style to use. **Required** when modifying an existing style.
+The name of the style. **Required.**
 
-##### chars.add
+#### randomChars
+
+Type: `String`, `Function`, or `Object` 
+
+A string or function that the style should use to construct random grawlixes. When a string is provided, the style will split and recombine its individual characters at random:
+
+```javascript
+grawlix.setDefaults({
+  style: {
+    name: 'custom-style',
+    randomChars: '?!#$%*'
+  }
+});
+grawlix('i invoke fsck'); // will output 'i invoke ?*$#'
+```
+
+If a function is provided, the style will invoke it when a random grawlix is called for, passing in the length of the desired output as an argument. The function is expected to return a string:
+
+```javascript
+grawlix.setDefaults({
+  style: {
+    name: 'custom-style',
+    randomChars: function(len) {
+      var str = '';
+      for (var i=0; i<len; i++) {
+        if (i % 2 > 0) {
+          str += '!';
+        } else {
+          str += '*'
+        }
+      }
+      return str;
+    }
+  }
+});
+grawlix('you bastard'); // outputs 'you *!*!*!*'
+```
+
+An object can only be provided when configuring an existing style. It can have three properties: `add`, `remove`, and `replace`, all of which can be used to modify the style's character string.
+
+##### randomChars.add
 
 Type: `String`
 
@@ -79,7 +153,7 @@ grawlix.setDefaults({
 });
 ```
 
-##### chars.remove
+##### randomChars.remove
 
 Type: `String`
 
@@ -90,13 +164,13 @@ grawlix.setDefaults({
   style: {
     name: 'unicode',
     chars: {
-      remove: '♡♢♤♧' // playing card symbols will not longer appear in grawlixes
+      remove: '♡♢♤♧' // playing card symbols will not appear in grawlixes
     }
   }
 });
 ```
 
-##### chars.replace
+##### randomChars.replace
 
 Type: `Object`
 
@@ -120,56 +194,24 @@ grawlix.setDefaults({
 });
 ```
 
-##### fixed
+#### char
+
+Type: `String`
+
+Alternate shorthand property that specifies the character to use when creating a single-character style.
+
+#### fixed
 
 Type: `Object`
 
 Adds or replaces strings within the style's fixed replacement dictionary. See [Using Fixed Replacement Strings](#using-fixed-replacement-strings) below for more details.
 
-## Creating a new Grawlix Style
+#### allowOverride
 
-If reconfiguring an existing style won't work for your purposes, you can also specify your own style of grawlix. You do this by creating a new `GrawlixStyle` object -- available via `grawlix.GrawlixStyle` -- and passing it in as the `style` option. Like so:
+Type: `Boolean`<br>
+Default: `true`
 
-```javascript
-grawlix.setDefaults({
-  style: new grawlix.GrawlixStyle('my-style-name', chars)
-});
-```
-
-### Class: grawlix.GrawlixStyle
-
-#### new grawlix.GrawlixStyle(name, chars[, fixedReplacements])
-
-##### name
-
-Type: `String`
-
-The name of the style. **Required.**
-
-##### chars
-
-Type: `String`
-
-The string of characters the style should use to randomly generate or fill grawlixes. If you want to create a 'single-character' style, like `'nextwave'` or `'redacted'`, just pass in the symbol you want to replace everything:
-
-```javascript
-// replaces all targeted words with x's
-var style = new grawlix.GrawlixStyle('x-out', 'x');
-```
-
-Or provide multiple symbols if you prefer the grawlixes to be random:
-
-```javascript
-// chess-themed grawlixes
-var style = new grawlix.GrawlixStyle('chess-pieces', '♔♕♖♗♘♙');
-```
-
-##### fixedReplacements
-
-Type: `Object`<br>
-Default: `{}`
-
-Optional. A map of fixed replacement strings to be used when `randomize` is set to `false`. See [Using Fixed Replacement Strings](#using-fixed-replacement-strings) below for more details.
+Sets whether or not a style should allow itself to be overridden by [filter styles]() when it's the main style. When set to `false`, the style will ignore any filter-specific settings.
 
 ## Using Fixed Replacement Strings
 
@@ -189,12 +231,18 @@ grawlix.setDefaults({
 });
 ```
 
-When creating a new style, you can optionally pass in a dictionary of replacement strings via the `fixedReplacements` parameter:
+You can also optionally pass in a dictionary of replacement strings via the `fixed` parameter when creating a new style:
 
 ```javascript
-var style = new grawlix.GrawlixStyle(styleName, chars, {
-  'word': '%!&#',
-  'word2': '#&!%'
+grawlix.setDefaults({
+  style: {
+    name: 'my-custom-style',
+    randomChars: str,
+    fixed: {
+      'word': '%!&#',
+      'word2': '#&!%'
+    }
+  }
 });
 ```
 
@@ -203,8 +251,8 @@ Things to keep in mind when coming up with your own fixed replacement strings:
 - Fixed replacement strings will be automatically wrapped in a filter's [template](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#filter-templates). In certain cases, this may have unexpected outcomes.
 - When using the `$` character, note that it will need to be repeated twice in order to render properly, on account of how JavaScript's [String#replace](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) function works. So `'%!$$#'` will be rendered as `'%!$#'`.
 
-To see how this works in the default styles, see [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L62).
+To see how this works in the default styles, see [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L345).
 
 ***
 
-*Last updated March 25, 2017.*
+*Last updated April 17, 2017.*

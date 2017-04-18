@@ -1,5 +1,5 @@
 {
-    "knownWords": [
+    "words": [
         "ass",
         "asses",
         "asshole",
@@ -22,5 +22,5 @@
         "titties",
         "titty"
     ],
-    "version": "0.0.1"
+    "version": "1.0.4"
 }

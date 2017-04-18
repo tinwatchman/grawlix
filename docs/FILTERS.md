@@ -1,49 +1,17 @@
 # `grawlix`: Filters
 
 __Contents__
+- [Filter Objects](#filter-objects)
 - [Adding New Filters](#adding-new-filters)
-  + [Filter Properties](#filter-properties)
 - [Configuring Filters](#configuring-filters)
 - [Filter Templates](#filter-templates)
   + [Enumeration: grawlix.FilterTemplate](#enumeration-grawlixfiltertemplate)
 
 ***
 
-## Adding New Filters
+## Filter Objects
 
-```javascript
-grawlix.setDefaults({
-  filters: [
-    {
-      word: 'fsck',
-      pattern: /fsck/i,
-      priority: 0,
-      expandable: false,
-      template: null
-    }
-  ]
-});
-```
-
-Note that filters can also be passed in via the options object when calling the `grawlix` function, like so:
-
-```javascript
-var censored = grawlix(text, {
-  filters: [
-    {
-      word: 'fsck',
-      pattern: /fsck/i
-      // ... other properties, etc.
-    }
-  ]
-});
-```
-
-However, setting filters via `setDefaults` will likely deliver better performance. 
-
-### Filter Properties
-
-Filter objects can have the following properties:
+Filter objects can be used to either create new `grawlix` filters or configure existing ones. They can have the following properties:
 
 ##### word
 
@@ -86,7 +54,8 @@ Optional. For more information on this property and how to use it, see [Filter T
 
 ##### style
 
-Type: `String`
+Type: `String`<br>
+Default: `null`
 
 (**New in v1.0.5**) Sets a specific style for a filter, overriding whatever the main style is when replacing the filter's word. This allows one to replace specific words with entirely different styles of grawlixes. For example:
 
@@ -110,9 +79,41 @@ grawlix('I hate that fooing bar.');
 // returns: 'I hate that ***ing ███.'
 ```
 
+## Adding New Filters
+
+```javascript
+grawlix.setDefaults({
+  filters: [
+    {
+      word: 'fsck',
+      pattern: /fsck/i,
+      priority: 0,
+      expandable: false,
+      template: null
+    }
+  ]
+});
+```
+
+Note that filters can also be passed in via the options object when calling the `grawlix` function, like so:
+
+```javascript
+var censored = grawlix(text, {
+  filters: [
+    {
+      word: 'fsck',
+      pattern: /fsck/i
+      // ... other properties, etc.
+    }
+  ]
+});
+```
+
+However, setting filters via `setDefaults` will likely deliver better performance. 
+
 ## Configuring Filters
 
-The `filters` option can also be used to reconfigure the existing default filters if necessary. To do this, one merely has to leave out the `pattern` property. The library will then interpret the provided filter object as configuration settings.
+The `filters` option can also be used to reconfigure the existing default filters if necessary. To do this, one merely has to leave out the `pattern` property. The library will then interpret the object as configuration settings for an existing filter.
 
 For example -- the following code will update the priority property of the default `bastard` filter:
 
@@ -127,7 +128,7 @@ grawlix.setDefaults({
 });
 ```
 
-Messing with the internals of the library in this manner will probably be unnecessary for most developers. Still, the option is there.
+Messing with the internals of the library in this manner will most likely be unnecessary for most developers. Still, the option is there.
 
 ## Filter Templates
 
@@ -161,4 +162,4 @@ Properties:
 
 ***
 
-*Last updated March 27, 2017.*
+*Last updated April 17, 2017.*

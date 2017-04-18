@@ -99,6 +99,23 @@ describe('GrawlixStyle', function() {
       expect(isRun).toBe(true);
       expect(r).toEqual('!@#$%^*');
     });
+    it('should run more complex randomChars functions', function() {
+      var style = new GrawlixStyle('style', {
+        randomChars: function(len) {
+          var s = '';
+          for (var i=0; i<len; i++) {
+            if (i % 2 > 0) {
+              s += '!';
+            } else {
+              s += '*';
+            }
+          }
+          return s;
+        }
+      });
+      var r = style.getRandomGrawlix(7);
+      expect(r).toEqual('*!*!*!*');
+    });
     it('should throw an error if style does not support random mode', ()=>{
       var style = new GrawlixStyle('style', { char: 'x' });
       var r;

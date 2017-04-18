@@ -2,7 +2,7 @@ grawlix
 =======
 > Make the Internet swear like a cartoon
 
-`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L348) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
+`grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L439) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
 
 Please note that, due to the subject matter, the `grawlix` source code may be considered **NSFW/Not Safe For Work**, depending on an individual reader's circumstances. To see the full list of the words the library currently targets, see [this file](https://github.com/tinwatchman/grawlix/blob/master/WORDS.json).
 
@@ -40,6 +40,8 @@ grawlix.setDefaults({
   plugins: []
 });
 ```
+
+For even more options, see the [full API documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/API.md).
 
 ##### style
 
@@ -79,9 +81,10 @@ var censored = grawlix(text, {
 
 ##### plugins
 
-An optional `Array` of plugins to include. See the [Plugins documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md) for more details.
+Type: `Array`<br>
+Default: `[]`
 
-For more information, see the [full API documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/API.md).
+An optional `Array` of plugins to include. See [Using Plugins](#using_plugins) below for more details.
 
 <a name="styles"></a>
 
@@ -128,7 +131,37 @@ grawlix.setDefaults({
 });
 ```
 
-For more information on creating and configuring filters, see the [Filters](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md) documentation.
+For more information on creating and configuring filters, see the full [Filters](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md) documentation.
+
+<a name="using_plugins"></a>
+
+## Using Plugins
+
+Plugins are modules with additional functionality (such as new filters and styles) for `grawlix` that can be easily shared among developers. Here's a running list of the plugins that are currently available:
+
++ [grawlix-racism](https://www.npmjs.com/package/grawlix-racism): targets racial and ethnic slurs.
+
+To use a plugin, install the module into your project and pass it in as part of your `grawlix` options:
+
+```javascript
+var plugin = require('grawlix-example-plugin-module');
+grawlix.setDefaults({
+  plugins: [
+    {
+      plugin: plugin,
+      options: {
+        // plugin-specific options go here
+      }
+    }
+  ]
+});
+// or alternately
+grawlix.loadPlugin(plugin, {
+  // plugin-specific options go here
+});
+```
+
+For more information on plugins (including how to create your own), see the [full Plugin documentation](https://github.com/tinwatchman/grawlix/blob/master/docs/PLUGINS.md).
 
 ## Testing
 
@@ -148,7 +181,7 @@ Depending on community response, the following areas and/or features could poten
 - [ ] Internationalization / support for languages other than English
 - [ ] Regular expression optimization
 - [ ] New grawlix styles
-- [ ] Improve test coverage for util.js
+- [X] Improve test coverage for util.js
 
 ## Release History
 
