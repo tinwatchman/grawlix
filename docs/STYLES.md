@@ -3,9 +3,9 @@
 __Contents__
 - [Choosing a Grawlix Style](#choosing-a-grawlix-style)
   + [Enumeration: grawlix.Style](#enumeration-grawlixstyle)
-- [Configuring an Existing Grawlix Style](#configuring-an-existing-grawlix-style)
-- [Creating New Grawlix Styles](#creating-new-grawlix-styles)
 - [Style Objects](#style-objects)
+- [Creating New Grawlix Styles](#creating-new-grawlix-styles)
+- [Configuring Existing Grawlix Styles](#configuring-existing-grawlix-styles)
 - [Using Fixed Replacement Strings](#using-fixed-replacement-strings)
 
 ***
@@ -257,7 +257,7 @@ grawlix.setDefaults({
 });
 ```
 
-You can also optionally pass in a dictionary of replacement strings via the `fixed` parameter when creating a new style:
+When creating a new style, you can optionally pass in a dictionary of replacement strings via the `fixed` parameter:
 
 ```javascript
 grawlix.setDefaults({
