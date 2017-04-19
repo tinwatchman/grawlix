@@ -103,6 +103,8 @@ module.exports = function(pluginOptions, options) {
 };
 ```
 
+To see an example of a working plugin module (including unit tests), take a look at the code in the [grawlix-racism](https://github.com/tinwatchman/grawlix-racism) repository.
+
 ## Class: grawlix.GrawlixPlugin
 
 ### Constructor
@@ -159,4 +161,4 @@ An array of [style objects](https://github.com/tinwatchman/grawlix/blob/master/d
 
 ***
 
-*Last updated April 17, 2017.*
+*Last updated April 18, 2017.*

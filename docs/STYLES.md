@@ -285,7 +285,7 @@ Things to keep in mind when coming up with your own fixed replacement strings:
 - Fixed replacement strings will be automatically wrapped in a filter's [template](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#filter-templates). In certain cases, this may have unexpected outcomes.
 - When using the `$` character, note that it will need to be repeated twice in order to render properly, on account of how JavaScript's [String#replace](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) function works. So `'%!$$#'` will be rendered as `'%!$#'`.
 
-For examples of how this works, see the default styles in [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L345).
+For examples of how this works, see the default styles in [styles.js](https://github.com/tinwatchman/grawlix/blob/master/styles.js#L356).
 
 ***
 

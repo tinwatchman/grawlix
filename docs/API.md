@@ -11,6 +11,10 @@ __Contents__
   + [grawlix.Style](#grawlixstyle)
   + [grawlix.GrawlixPlugin](#grawlixgrawlixplugin)
   + [grawlix.FilterTemplate](#grawlixfiltertemplate)
+  + [grawlix.error](#grawlixerror)
+  + [grawlix.error.GrawlixFilterError](#grawlixerrorgrawlixfiltererror)
+  + [grawlix.error.GrawlixPluginError](#grawlixerrorgrawlixpluginerror)
+  + [grawlix.error.GrawlixStyleError](#grawlixerrorgrawlixstyleerror)
 
 ***
 
@@ -207,6 +211,22 @@ See [Class: grawlix.GrawlixPlugin](https://github.com/tinwatchman/grawlix/blob/m
 
 See [Enumeration: grawlix.FilterTemplate](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#enumeration-grawlixfiltertemplate).
 
+### grawlix.error
+
+To help in debugging issues related to the package, `grawlix` throws three custom [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) subclasses that include extra information about the exception. These subclasses are exported under the `grawlix.error` namespace for identification purposes (i.e. via `instanceof`.)
+
+### grawlix.error.GrawlixFilterError
+
+Custom `Error` subclass, thrown when an error occurs while loading a filter object. See [Class: grawlix.error.GrawlixFilterError](https://github.com/tinwatchman/grawlix/blob/master/docs/ERRORS.md#class-grawlixerrorgrawlixfiltererror) for details.
+
+### grawlix.error.GrawlixPluginError
+
+Custom `Error` subclass, thrown when an error occurs while loading a plugin. See [Class: grawlix.error.GrawlixPluginError](https://github.com/tinwatchman/grawlix/blob/master/docs/ERRORS.md#class-grawlixerrorgrawlixpluginerror) for details.
+
+### grawlix.error.GrawlixStyleError
+
+Custom `Error` subclass, thrown when an error occurs while loading a style object. See [Class: grawlix.error.GrawlixStyleError](https://github.com/tinwatchman/grawlix/blob/master/docs/ERRORS.md#class-grawlixerrorgrawlixstyleerror) for details.
+
 ***
 
-*Last updated April 17, 2017.*
+*Last updated April 18, 2017.*

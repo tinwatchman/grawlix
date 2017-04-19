@@ -10,7 +10,7 @@ __Contents__
 
 ## Introduction
 
-To help in debugging issues related to the package, `grawlix` throws three custom `Error` classes that include extra information about the exception that was raised.
+To help in debugging issues related to the package, `grawlix` throws three custom [`Error`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error) subclasses that include extra information about the exception.
 
 ## Class: grawlix.error.GrawlixFilterError
 

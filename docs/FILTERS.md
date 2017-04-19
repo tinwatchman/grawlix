@@ -38,7 +38,7 @@ Regular expression targeting the given word. This property is **required** for n
 Type: `Number`<br>
 Default: `0`
 
-Optional. This property determines the order in which filters are run on a given string. The lower the value, the sooner the filter is run. (Setting this number to a negative value, for instance, will make the filter run before all the default filters.) This can be used to set up cascading 'families' of filters for detecting specific scenarios that a single regular expression can't cover. To see how the default filters go about doing this, see [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L225).
+Optional. This property determines the order in which filters are run on a given string. The lower the value, the sooner the filter is run. (Setting this number to a negative value, for instance, will make the filter run before all the default filters.) This can be used to set up cascading 'families' of filters for detecting specific scenarios that a single regular expression can't cover. To see how the default filters go about doing this, see [filters.js](https://github.com/tinwatchman/grawlix/blob/master/filters.js#L226).
 
 ### minPriority
 
