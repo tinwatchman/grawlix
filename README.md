@@ -184,6 +184,9 @@ Depending on community response, the following areas and/or features could poten
 
 ## Release History
 
+- 1.0.6
+  * 100% complete test coverage achieved (as rated by [istanbul](https://www.npmjs.com/package/istanbul).)
+  * Added documentation on the [custom Error subclasses](https://github.com/tinwatchman/grawlix/blob/master/docs/ERRORS.md) thrown by the package.
 - 1.0.5
   * Switched to using [style objects](https://github.com/tinwatchman/grawlix/blob/master/docs/STYLES.md#style-objects) for consistency.
   * Different styles can now be set on individual filters. [See here](https://github.com/tinwatchman/grawlix/blob/master/docs/FILTERS.md#style) for details.
