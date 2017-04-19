@@ -27,11 +27,20 @@ describe('grawlix', function() {
       expect(_.isFunction(grawlix.GrawlixPlugin)).toBe(true);
     });
   });
-  
+
   describe('#FilterTemplate', function() {
     it('should exist', function() {
       expect(grawlix.FilterTemplate).toBeDefined();
       expect(_.isObject(grawlix.FilterTemplate)).toBe(true);
+    });
+  });
+
+  describe('#error', function() {
+    it('should exist', function() {
+      expect(grawlix.error).toBeDefined();
+      expect(grawlix.error.GrawlixFilterError).toBeDefined();
+      expect(grawlix.error.GrawlixPluginError).toBeDefined();
+      expect(grawlix.error.GrawlixStyleError).toBeDefined();
     });
   });
 
@@ -355,34 +364,6 @@ describe('grawlix', function() {
       expect(grawlix.hasPlugin(factory)).toBe(true);
     });
 
-    it('should return true if factory with given name found', function() {
-      grawlix.setDefaults({
-        plugins: [
-          {
-            plugin: function(options) {
-              return new grawlix.GrawlixPlugin('blank-plugin'); 
-            },
-            name: 'blank-plugin'
-          }
-        ]
-      });
-      expect(grawlix.hasPlugin('blank-plugin')).toBe(true);
-    });
-
-    it("should return true if factory with given plugin's name found", () => {
-      var plugin = new grawlix.GrawlixPlugin('blank-plugin');
-      grawlix.setDefaults({
-        plugins: [
-          {
-            plugin: function(options) {
-              return new grawlix.GrawlixPlugin('blank-plugin'); 
-            },
-            name: 'blank-plugin'
-          }
-        ]
-      });
-      expect(grawlix.hasPlugin(plugin)).toBe(true);
-    });
   });
 
   describe('#loadPlugin', function() {
@@ -413,13 +394,12 @@ describe('grawlix', function() {
       expect(isFound).toBe(true);
     });
 
-    it('should load a grawlix plugin module via require', function() {
+    it('should add a plugin module', function() {
       grawlix.loadPlugin('./spec/support/grawlix-test-plugin-module');
-      var isFound = _.some(grawlix.getDefaults().plugins, function(info) {
+      var isFound = _.some(grawlix.getDefaults().plugins, function(obj) {
         return (
-          _.isFunction(info.plugin) && 
-          _.has(info, 'name') && 
-          info.name === './spec/support/grawlix-test-plugin-module'
+          _.has(obj, 'module') &&
+          obj.module === './spec/support/grawlix-test-plugin-module'
         );
       });
       expect(isFound).toBe(true);

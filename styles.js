@@ -282,30 +282,40 @@ GrawlixStyle.prototype = {};
  * Custom Error subclass for grawlix style exceptions
  * @param {Object} args           Parameters object
  * @param {String} args.msg       Error message. Required.
+ * @param {String} args.message   Alias for args.msg
  * @param {Object} args.style     Problematic style object or GrawlixStyle 
- *                                instance
- * @param {String} args.styleName Name of problematic object
- * @param {Object} args.plugin    Source plugin (if applicable)
+ *                                instance. Optional.
+ * @param {String} args.styleName Name of problematic object. Optional.
+ * @param {Object} args.plugin    Source plugin (if applicable.) Optional.
+ * @param {Error}  args.trace     New Error object to take stack trace from. 
+ *                                Optional.
  */
 const GrawlixStyleError = function(args) {
   this.name = 'GrawlixStyleError';
-  this.style = _.has(args, 'style') ? args.style : null;
   this.styleName = _.has(args, 'styleName') ? args.styleName : null;
-  if (_.has(args, 'plugin')) {
-    this.plugin = args.plugin;
+  this.style = _.has(args, 'style') ? args.style : null;
+  this.plugin = _.has(args, 'plugin') ? args.plugin : null;
+  if (_.has(args, 'trace') && args.trace instanceof Error) {
+    this.stack = args.trace.stack;
+  } else {
+    this.stack = (new Error()).stack;
   }
   // construct message
-  this.message = 'grawlix style error: ' + args.msg;
+  var msg;
+  if (_.has(args, 'msg')) {
+    msg = args.msg;
+  } else if (_.has(args, 'message')) {
+    msg = args.message;
+  } else {
+    msg = args;
+  }
   if (this.styleName !== null) {
-    this.message += '\nstyle: ' + this.styleName;
-  }
-  if (this.plugin !== null && _.has(this.plugin, 'name')) {
-    this.message += '\nplugin: ' + this.plugin.name;
-  } else if (this.plugin !== null && _.isString(this.plugin)) {
-    this.message += '\nplugin: ' + this.plugin;
-  }
-  if (this.style !== null) {
-    this.message += '\n' + JSON.stringify(this.style, null, 4);
+    this.message = '[style ' + this.styleName + '] ' + msg; 
+  } else if (this.style !== null && _.has(this.style, 'name')) {
+    this.styleName = this.style.name;
+    this.message = '[style ' + this.style.name + '] ' + msg;
+  } else {
+    this.message = msg;
   }
 };
 GrawlixStyleError.prototype = Object.create(Error.prototype);
@@ -325,14 +335,15 @@ const toGrawlixStyle = function(obj) {
   if (!_.has(obj, 'name') || !_.isString(obj.name) || _.isEmpty(obj.name)) {
     throw new GrawlixStyleError({
       msg: 'name parameter is required',
-      style: obj
+      style: obj,
+      trace: new Error()
     });
   }
   if (!_.has(obj,'char') && !_.has(obj,'randomChars') && !_.has(obj,'fixed')) {
     throw new GrawlixStyleError({
       msg: 'char, randomChars or fixed parameter required',
       style: obj,
-      styleName: obj.name
+      trace: new Error()
     });
   }
   return new GrawlixStyle(obj.name, obj);

@@ -44,19 +44,21 @@ const GrawlixPlugin = function(obj) {
     // can override in subclasses
   };
 
-  if(!_.isUndefined(obj) && _.isString(obj)) {
-    this.name = obj;
-  } else if (!_.isUndefined(obj) && !_.isString(obj) && _.has(obj, 'name')) {
-    this.name = obj.name;
-  }
-  if (!_.isUndefined(obj) && _.has(obj, 'filters') && _.isArray(obj.filters)) {
-    this.filters = obj.filters;
-  }
-  if (!_.isUndefined(obj) && _.has(obj, 'styles') && _.isArray(obj.styles)) {
-    this.styles = obj.styles;
-  }
-  if (!_.isUndefined(obj) && _.has(obj, 'init') && _.isFunction(obj.init)) {
-    this.init = _.bind(obj.init, this);
+  if (!_.isUndefined(obj)) {
+    if (_.has(obj, 'name') && _.isString(obj.name)) {
+      this.name = obj.name;
+    } else if (_.isString(obj)) {
+      this.name = obj;
+    }
+    if (_.has(obj, 'filters') && _.isArray(obj.filters)) {
+      this.filters = obj.filters;
+    }
+    if (_.has(obj, 'styles') && _.isArray(obj.styles)) {
+      this.styles = obj.styles;
+    }
+    if (_.has(obj, 'init') && _.isFunction(obj.init)) {
+      this.init = _.bind(obj.init, this);
+    }
   }
 };
 GrawlixPlugin.prototype = {};
@@ -65,25 +67,32 @@ GrawlixPlugin.prototype = {};
  * Custom Error subclass for Grawlix plugin exceptions
  * @param {Object} args            Arguments
  * @param {String} args.msg        Error message. Required.
+ * @param {String} args.message    Alias of args.msg
  * @param {Object} args.plugin     Plugin object or plugin. Optional.
- * @param {Error}  args.baseError  An error that caused or is related to the 
- *                                 plugin error. Optional.
+ * @param {Error}  args.trace      New Error object to take stack trace from. 
+ *                                 Optional.
  */
 const GrawlixPluginError = function(args) {
   this.name = 'GrawlixPluginError';
   this.plugin = _.has(args, 'plugin') ? args.plugin : null;
-  if (_.has(args, 'baseError')) {
-    this.baseError = args.baseError;
-  }
-  this.stack = (new Error()).stack;
-  if (this.plugin !== null) {
-    this.message = 'grawlix plugin error: ' + args.msg + '\n' + 
-                   JSON.stringify(this.plugin, null, 4);
+  if (_.has(args, 'trace') && args.trace instanceof Error) {
+    this.stack = args.trace.stack;
   } else {
-    this.message = 'grawlix plugin error: ' + args.msg;
+    this.stack = (new Error()).stack;
   }
-  if (!_.isUndefined(this.baseError)) {
-    this.message += '\nbase error - ' + this.baseError.message;
+  // construct message
+  var msg;
+  if (_.has(args, 'msg')) {
+    msg = args.msg;
+  } else if (_.has(args, 'message')) {
+    msg = args.message;
+  } else {
+    msg = args;
+  }
+  if (this.plugin !== null && _.has(this.plugin, 'name')) {
+    this.message = '[plugin ' + this.plugin.name + '] ' + msg;
+  } else {
+    this.message = msg;
   }
 };
 GrawlixPluginError.prototype = Object.create(Error.prototype);

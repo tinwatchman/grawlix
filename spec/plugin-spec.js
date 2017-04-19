@@ -23,7 +23,7 @@ describe('GrawlixPlugin', function() {
       });
       expect(plugin.name).toEqual('my-plugin');
     });
-    it('should accept a string', function() {
+    it('should accept a string as an argument', function() {
       var plugin = new GrawlixPlugin('my-plugin');
       expect(plugin.name).toEqual('my-plugin');
     });
@@ -104,22 +104,61 @@ describe('GrawlixPlugin', function() {
 
 describe('GrawlixPluginError', function() {
 
-  it('should support the baseErr argument', function() {
-    var baseErr = new Error('base error message');
-    var err = new GrawlixPluginError({
-      msg: 'plugin error message',
-      baseError: baseErr
-    });
-    expect(err.baseError).toBe(baseErr);
-    expect(err.message.indexOf(baseErr.message) > -1).toBe(true);
+  it('should support taking a message string as argument', function() {
+    var err = new GrawlixPluginError('some-plugin-error');
+    expect(err.message).toEqual('some-plugin-error');
+    expect(err.plugin).toBe(null);
   });
 
-  it('should set plugin to null when not provided', function() {
+  it('should support the msg argument', function() {
     var err = new GrawlixPluginError({
-      msg: 'plugin err'
+      msg: 'some-plugin-error'
     });
-    expect(err.plugin).toBe(null);
-    expect(err.message).toEqual('grawlix plugin error: plugin err');
+    expect(err.message).toEqual('some-plugin-error');
+  });
+
+  it('should support the message argument', function() {
+    var err = new GrawlixPluginError({
+      message: 'some-plugin-error'
+    });
+    expect(err.message).toEqual('some-plugin-error');
+  });
+
+  it('should support the plugin argument', function() {
+    var plugin = { filters: [], styles: [] };
+    var err = new GrawlixPluginError({
+      msg: 'some-error',
+      plugin: plugin
+    });
+    expect(err.plugin).toBe(plugin);
+  });
+
+  it('should add plugin.name to the message if available', function() {
+    var err = new GrawlixPluginError({
+      msg: 'some-error',
+      plugin: {
+        name: 'some-plugin'
+      }
+    });
+    expect(err.message.indexOf('some-plugin') > -1).toBe(true);
+  });
+
+  it('should support the trace argument', function() {
+    var trace = new Error();
+    var err = new GrawlixPluginError({
+      msg: 'some-error',
+      trace: trace
+    });
+    expect(err.stack).toBe(trace.stack);
+  });
+
+  it('should ignore trace argument if not an Error', function() {
+    var trace = { stack: 'some-stack' };
+    var err = new GrawlixPluginError({
+      msg: 'some-error',
+      trace: trace
+    });
+    expect(err.stack).not.toBe(trace.stack);
   });
 
 });

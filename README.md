@@ -176,11 +176,10 @@ Forks and pull requests welcome.
 Depending on community response, the following areas and/or features could potentially be explored in the future:
 
 - [ ] Default support for more curse words (depending on community needs)
-- [X] Plugin framework (work in progress)
 - [ ] Browser support
 - [ ] Internationalization / support for languages other than English
 - [ ] Regular expression optimization
-- [ ] New grawlix styles
+- [X] Plugin framework
 - [X] Improve test coverage for util.js
 
 ## Release History

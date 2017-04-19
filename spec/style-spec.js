@@ -1,9 +1,10 @@
 'use strict';
 
 const _ = require('underscore');
-var GrawlixStyle = require('../styles').GrawlixStyle;
-var toGrawlixStyle = require('../styles').toGrawlixStyle;
-var GrawlixStyleError = require('../styles').GrawlixStyleError;
+const GrawlixStyle = require('../styles').GrawlixStyle;
+const toGrawlixStyle = require('../styles').toGrawlixStyle;
+const GrawlixStyleError = require('../styles').GrawlixStyleError;
+const styles = require('../styles').styles;
 
 /**
  * GrawlixStyle class unit tests
@@ -466,36 +467,111 @@ describe('toGrawlixStyle', function() {
  * GrawlixStyleError tests
  */
 describe('GrawlixStyleError', function() {
-  it('should include given style name', function() {
-    var err = new GrawlixStyleError({
-      msg: 'style error',
-      styleName: 'my-style'
-    });
-    expect(err.message).toEqual(
-      'grawlix style error: style error\n' +
-      'style: my-style'
-    );
+
+  it('should support taking a message string as argument', function() {
+    var err = new GrawlixStyleError('some-style-error');
+    expect(err.message).toEqual('some-style-error');
+    expect(err.style).toBe(null);
+    expect(err.styleName).toBe(null);
+    expect(err.plugin).toBe(null);
   });
-  it('should include the name of a given plugin object', function() {
+
+  it('should support the msg argument', function() {
     var err = new GrawlixStyleError({
-      msg: 'style error',
-      plugin: {
-        name: 'Plugin With Style'
+      msg: 'some-style-error'
+    });
+    expect(err.message).toEqual('some-style-error');
+  });
+
+  it('should support the message argument', function() {
+    var err = new GrawlixStyleError({
+      message: 'some-style-error'
+    });
+    expect(err.message).toEqual('some-style-error');
+  });
+
+  it('should support the styleName argument', function() {
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      styleName: 'some-style'
+    });
+    expect(err.styleName).toEqual('some-style');
+    expect(err.message.indexOf('some-style') > -1).toBe(true);
+  });
+
+  it('should support the style argument', function() {
+    var style = { randomChars: 'x' };
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      style: style
+    });
+    expect(err.style).toBe(style);
+    expect(err.message).toEqual('some-error');
+  });
+
+  it('should add style.name to the message if available', function() {
+    var style = {
+      name: 'some-style',
+      randomChars: 'x'
+    };
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      style: style
+    });
+    expect(err.message.indexOf('some-style') > -1).toBe(true);
+  });
+
+  it('should set styleName to style.name if provided', function() {
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      style: {
+        name: 'some-style'
       }
     });
-    expect(err.message).toEqual(
-      'grawlix style error: style error\n' +
-      'plugin: Plugin With Style'
-    );
+    expect(err.styleName).toEqual('some-style');
   });
-  it('should include a given plugin name', function() {
+
+  it('should support the plugin argument', function() {
+    var plugin = {
+      name: 'some-plugin'
+    };
     var err = new GrawlixStyleError({
-      msg: 'style error',
-      plugin: 'Plugin With Style'
+      msg: 'some-error',
+      plugin: plugin
     });
-    expect(err.message).toEqual(
-      'grawlix style error: style error\n' +
-      'plugin: Plugin With Style'
-    );
+    expect(err.plugin).toBe(plugin);
   });
+
+  it('should support the trace argument', function() {
+    var trace = new Error();
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      trace: trace
+    });
+    expect(err.stack).toBe(trace.stack);
+  });
+
+  it('should ignore trace argument if not an Error', function() {
+    var trace = { stack: 'some-stack' };
+    var err = new GrawlixStyleError({
+      msg: 'some-error',
+      trace: trace
+    });
+    expect(err.stack).not.toBe(trace.stack);
+  });
+
+});
+
+/**
+ * Default styles check
+ */
+describe('default styles', function() {
+
+  it('should all be valid', function() {
+    _.each(styles, function(style) {
+      expect(style instanceof GrawlixStyle).toBe(true);
+      expect(style.isValid()).toBe(true);
+    });
+  });
+
 });

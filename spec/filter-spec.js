@@ -183,41 +183,6 @@ describe('toGrawlixFilter', function() {
 
 });
 
-// GrawlixFilterError tests
-
-describe('GrawlixFilterError', function() {
-
-  it('should set filter to null if not provided', function() {
-    var err = new GrawlixFilterError({
-      msg: 'some-filter-error'
-    });
-    expect(err.filter).toBe(null);
-  });
-
-  it('should support the plugin argument', function() {
-    var err = new GrawlixFilterError({
-      msg: 'some-filter-error',
-      plugin: 'some-plugin'
-    });
-    expect(err.plugin).toBeDefined();
-    expect(err.plugin).toEqual('some-plugin');
-    expect(err.message.indexOf('some-plugin') > -1).toBe(true);
-  });
-
-  it('should support a plugin object being passed in', function() {
-    var err = new GrawlixFilterError({
-      msg: 'some-filter-error',
-      plugin: {
-        name: 'some-plugin'
-      }
-    });
-    expect(err.plugin).toBeDefined();
-    expect(err.plugin.name).toEqual('some-plugin');
-    expect(err.message.indexOf('some-plugin') > -1).toBe(true);
-  });
-  
-});
-
 // default filter tests
 
 describe('default filters', function() {
@@ -228,6 +193,14 @@ describe('default filters', function() {
       return filter.isMatch(str);
     });
   };
+
+  // validation
+  it('should all be valid', function() {
+    _.each(filters, function(filter) {
+      expect(filter instanceof GrawlixFilter).toBe(true);
+      expect(filter.isValid()).toBe(true);
+    });
+  });
 
   // basic tests
   describe('(basic tests)', function() {
@@ -565,4 +538,80 @@ describe('default filters', function() {
     });
   });
 
+});
+
+// GrawlixFilterError tests
+
+describe('GrawlixFilterError', function() {
+
+  it('should support just taking a raw message as argument', function() {
+    var err = new GrawlixFilterError('some-filter-error');
+    expect(err.message).toEqual('some-filter-error');
+    expect(err.filter).toBe(null);
+    expect(err.plugin).toBe(null);
+  });
+
+  it('should support the msg argument', function() {
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error'
+    });
+    expect(err.message).toEqual('some-filter-error');
+  });
+
+  it('should support the message argument', function() {
+    var err = new GrawlixFilterError({
+      message: 'some-filter-error'
+    });
+    expect(err.message).toEqual('some-filter-error');
+  });
+
+  it('should support the filter argument', function() {
+    var filterObj = {
+      word: 'some-word',
+      pattern: /some_pattern/i
+    };
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error',
+      filter: filterObj
+    });
+    expect(err.filter).toBe(filterObj);
+  });
+
+  it('should set filter to null if not provided', function() {
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error'
+    });
+    expect(err.filter).toBe(null);
+    expect(err.plugin).toBe(null);
+  });
+
+  it('should support the plugin argument', function() {
+    var pluginObj = {
+      name: 'some-plugin'
+    };
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error',
+      plugin: pluginObj
+    });
+    expect(err.plugin).toBe(pluginObj);
+  });
+
+  it('should support the trace argument', function() {
+    var trace = new Error();
+    var err = new GrawlixFilterError({
+      msg: 'some-filter-error',
+      trace: trace
+    });
+    expect(err.stack).toBe(trace.stack);
+  });
+
+  it('should ignore trace argument if not an Error', function() {
+    var trace = { stack: 'some-stack' };
+    var err = new GrawlixFilterError({
+      msg: 'some-error',
+      trace: trace
+    });
+    expect(err.stack).not.toBe(trace.stack);
+  });
+  
 });

@@ -4,9 +4,11 @@ const _ = require('underscore');
 const util = require('../util');
 const Style = require('../styles').Style;
 const GrawlixStyle = require('../styles').GrawlixStyle;
+const GrawlixStyleError = require('../styles').GrawlixStyleError;
 const GrawlixSettings = require('../util').GrawlixSettings;
 const GrawlixFilter = require('../filters').GrawlixFilter;
 const GrawlixPlugin = require('../plugin').GrawlixPlugin;
+const GrawlixPluginError = require('../plugin').GrawlixPluginError;
 const defaultFilters = require('../filters').filters;
 const defaultStyles = require('../styles').styles;
 
@@ -146,6 +148,18 @@ describe('GrawlixUtil', function() {
         util.loadPlugin(settings, {}, {});
       };
       expect(testFunc).toThrow();
+    });
+
+    it('should load plugin from module property if given', function() {
+      var pluginInfo = {
+        module: './spec/support/grawlix-test-plugin-module',
+        options: {}
+      };
+      var options = {
+        plugins: [ pluginInfo ]
+      };
+      util.loadPlugin(settings, pluginInfo, options);
+      expect(settings.loadedPlugins).toContain('grawlix-test-plugin-module');
     });
 
     it("should throw if factory function doesn't return a GrawlixPlugin", ()=>{
@@ -323,6 +337,54 @@ describe('GrawlixUtil', function() {
       expect(testFunc).not.toThrow();
     });
 
+    it('should not load the same plugin twice', function() {
+      var plugin1 = { 
+        plugin: new GrawlixPlugin('blank-plugin')
+      };
+      var plugin2 = {
+        plugin: new GrawlixPlugin('blank-plugin')
+      };
+      var options = {
+        plugins: [ plugin1, plugin2 ]
+      };
+      util.loadPlugin(settings, plugin1, options);
+      util.loadPlugin(settings, plugin2, options);
+      expect(settings.loadedPlugins.length).toEqual(1);
+    });
+
+    it('should not load the same module twice', function() {
+      var plugin1 = {
+        module: './spec/support/grawlix-test-plugin-module',
+        options: {}
+      };
+      var plugin2 = {
+        module: './spec/support/grawlix-test-plugin-module',
+        options: {
+          active: false
+        }
+      };
+      var options = {
+        plugins: [ plugin1, plugin2 ]
+      };
+      util.loadPlugin(settings, plugin1, options);
+      util.loadPlugin(settings, plugin2, options);
+      expect(settings.loadedPlugins.length).toEqual(1);
+      expect(settings.loadedModules.length).toEqual(1);
+    });
+
+    it('should throw when a bad module path is given', function() {
+      var plugin = {
+        module: './spec/support/bad-module-path'
+      };
+      var options = {
+        plugins: [ plugin ]
+      };
+      var testFunc = function() {
+        util.loadPlugin(settings, plugin, options);
+      };
+      expect(testFunc).toThrowError(GrawlixPluginError);
+    });
+
     // tear down
     afterAll(function() {
       var bastardFilter = _.findWhere(settings.filters, { word: 'bastard'});
@@ -334,15 +396,47 @@ describe('GrawlixUtil', function() {
 
     it('should return false if plugin with given name not found', () => {
       expect(util.hasPlugin('null-plugin', {})).toBe(false);
+      expect(util.hasPlugin('null-plugin', { plugins: null })).toBe(false);
       expect(util.hasPlugin('null-plugin', { plugins: [] })).toBe(false);
       expect(util.hasPlugin(
         'null-plugin', 
         {
           plugins: [
-            { plugin: new GrawlixPlugin('blank-plugin') }
+            {
+              plugin: new GrawlixPlugin('blank-plugin') 
+            },
+            {
+              module: 'some-plugin-module' 
+            },
+            {
+              plugin: function() {
+                return new GrawlixPlugin('blank-plugin-2');
+              }
+            }
           ]
         }
       )).toBe(false);
+    });
+
+    it('should return false for invalid input', function() {
+      var options = {
+        plugins: [
+          {
+            plugin: new GrawlixPlugin('blank-plugin') 
+          },
+          {
+            module: 'some-plugin-module' 
+          },
+          {
+            plugin: function() {
+              return new GrawlixPlugin('blank-plugin-2');
+            }
+          }
+        ]
+      };
+      expect(util.hasPlugin(null, options)).toBe(false);
+      expect(util.hasPlugin([], options)).toBe(false);
+      expect(util.hasPlugin({}, options)).toBe(false);
     });
 
     it('should return true if GrawlixPlugin with given name is found', () => {
@@ -366,6 +460,26 @@ describe('GrawlixUtil', function() {
       expect(r).toBe(true);
     });
 
+    it('should return false if given GrawlixPlugin is not found', () => {
+      var plugin = new GrawlixPlugin('blank-plugin');
+      var options = {
+        plugins: [
+          {
+            plugin: new GrawlixPlugin('blank-plugin-1')
+          },
+          {
+            plugin: function() {
+              return new GrawlixPlugin('blank-plugin-2')
+            }
+          },
+          {
+            module: 'some-plugin-module'
+          }
+        ]
+      };
+      expect(util.hasPlugin(plugin, options)).toBe(false);
+    });
+
     it('should return true if GrawlixPlugin with same name found', () => {
       var plugin = new GrawlixPlugin('blank-plugin');
       var options = {
@@ -376,6 +490,25 @@ describe('GrawlixUtil', function() {
         ]
       };
       expect(util.hasPlugin(plugin, options)).toBe(true);
+    });
+
+    it('should return true if GrawlixPlugin with given name found', () => {
+      var options = {
+        plugins: [
+          {
+            module: 'some-plugin-module'
+          },
+          {
+            plugin: function() {
+              return new GrawlixPlugin('blank-plugin-2');
+            }
+          },
+          {
+            plugin: new GrawlixPlugin('blank-plugin')
+          }
+        ]
+      };
+      expect(util.hasPlugin('blank-plugin', options)).toBe(true);
     });
 
     it('should return true if same factory function found', function() {
@@ -392,33 +525,30 @@ describe('GrawlixUtil', function() {
       expect(util.hasPlugin(factory, options)).toBe(true);
     });
 
-    it('should return true if factory with given name found', function() {
+    it('should return true if module name found', function() {
       var options = {
         plugins: [
+          {},
           {
-            plugin: function(options) {
-              return new GrawlixPlugin('blank-plugin'); 
-            },
-            name: 'blank-plugin'
+            plugin: null
+          },
+          {
+            plugin: new GrawlixPlugin('blank-plugin')
+          },
+          {
+            plugin: function() {
+              return new GrawlixPlugin('another-blank-plugin');
+            }
+          },
+          {
+            module: 'another-plugin-module'
+          },
+          {
+            module: 'some-plugin-module'
           }
         ]
       };
-      expect(util.hasPlugin('blank-plugin', options)).toBe(true);
-    });
-
-    it("should return true if factory with given plugin's name found", () => {
-      var plugin = new GrawlixPlugin('blank-plugin');
-      var options = {
-        plugins: [
-          {
-            plugin: function(options) {
-              return new GrawlixPlugin('blank-plugin'); 
-            },
-            name: 'blank-plugin'
-          }
-        ]
-      };
-      expect(util.hasPlugin(plugin, options)).toBe(true);
+      expect(util.hasPlugin('some-plugin-module', options)).toBe(true);
     });
 
   });
@@ -446,12 +576,26 @@ describe('GrawlixUtil', function() {
           plugins: [],
           styles: [],
           style: {
-            name: 'Bladorfagorf',
+            name: 'invalid-style-name',
             allowOverride: false
           }
         });
-        expect(testFunc).toThrow();
       };
+      expect(testFunc).toThrowError(GrawlixStyleError, /invalid-style-name/);
+    });
+
+    it('should throw an error when given style name cannot be found', ()=>{
+      var testFunc = function() {
+        var settings = util.parseOptions({
+          randomize: true,
+          allowed: [],
+          filters: [],
+          plugins: [],
+          styles: [],
+          style: 'invalid-style-name'
+        });
+      };
+      expect(testFunc).toThrowError(GrawlixStyleError, /invalid-style-name/);
     });
 
     it('should allow main style configuration', function() {

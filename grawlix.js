@@ -4,6 +4,7 @@ const _ = require('underscore');
 const util = require('./util');
 const Style = require('./styles').Style;
 const GrawlixPlugin = require('./plugin').GrawlixPlugin;
+const GrawlixPluginError = require('./plugin').GrawlixPluginError;
 
 /**
  * Grawlix default options
@@ -112,46 +113,37 @@ grawlix.isObscene = function(str, filters, allowed) {
 
 /**
  * Adds a plugin to the default options.
- * @param  {GrawlixPlugin|Function|String} plugin  Either a GrawlixPlugin 
- *                                                 object, a factory function 
- *                                                 that returns a GrawlixPlugin 
- *                                                 object, or a module plugin 
- *                                                 name to load via require.
- * @param  {Object}                        options Plugin-specific options. 
- *                                                 Optional.
- * @return {grawlix}                               Returns self for chaining
+ * @param  {*}       plugin         Either a GrawlixPlugin instance, a factory 
+ *                                  function that returns a GrawlixPlugin 
+ *                                  instance, or a module name to load via 
+ *                                  require.
+ * @param  {Object}  pluginOptions  Plugin-specific options. Optional.
+ * @return {grawlix}                Return self for chaining
  */
-grawlix.loadPlugin = function(plugin, options) {
-  // see if plugin needs to be loaded via require
-  var resolved;
-  if (_.isString(plugin)) {
-    resolved = require(plugin);
+grawlix.loadPlugin = function(plugin, pluginOptions) {
+  var obj = {};
+  if (plugin instanceof GrawlixPlugin || _.isFunction(plugin)) {
+    obj.plugin = plugin;
+  } else if (_.isString(plugin)) {
+    // presume it's a module name to load
+    obj.module = plugin;
   } else {
-    resolved = plugin;
+    throw new GrawlixPluginError({
+      message: 'invalid plugin',
+      plugin: plugin,
+      trace: new Error()
+    });
   }
-  // throw error if it's not a plugin or a factory function
-  if (!_.isFunction(resolved) && !(resolved instanceof GrawlixPlugin)) {
-    throw new Error('invalid grawlix plugin');
-  }
-  // add to default options
-  if (!util.hasPlugin(resolved, defaultOptions)) {
-    var pluginInfo = { plugin: resolved };
-    if (_.isFunction(resolved) && _.isString(plugin)) {
-      // save module plugin name if it was required
-      pluginInfo.name = plugin;
-    }
-    pluginInfo.options = !_.isUndefined(options) ? options : {};
-    defaultOptions.plugins.push(pluginInfo);
-  }
+  obj.options = !_.isUndefined(pluginOptions) ? pluginOptions : {};
+  defaultOptions.plugins.push(obj);
   // return self for chaining
   return grawlix;
 };
 
 /**
- * Returns whether or not the given plugin has already been added to the default
- * options.
- * @param  {String|GrawlixPlugin|Function}  plugin Name of plugin, GrawlixPlugin 
- *                                                 object, or factory function.
+ * Returns whether or not given plugin has been added to the default options.
+ * @param  {*}       plugin Plugin name, module id, GrawlixPlugin instance, or 
+ *                          factory function.
  * @return {Boolean}
  */
 grawlix.hasPlugin = function(plugin) {
@@ -164,6 +156,11 @@ grawlix.hasPlugin = function(plugin) {
 grawlix.Style = Style;
 grawlix.GrawlixPlugin = GrawlixPlugin;
 grawlix.FilterTemplate = require('./filters').FilterTemplate;
+grawlix.error = {
+  GrawlixFilterError: require('./filters').GrawlixFilterError,
+  GrawlixPluginError: GrawlixPluginError,
+  GrawlixStyleError: require('./styles').GrawlixStyleError
+};
 
 /**
  * Export

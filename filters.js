@@ -159,29 +159,30 @@ GrawlixFilter.prototype = {};
 
 /**
  * Custom Error subclass for grawlix filter exceptions
- * @param {Object} args        Parameters
- * @param {String} args.msg    Error message. Required.
- * @param {Object} args.filter Filter object or GrawlixFilter instance
- * @param {Object} args.plugin Source plugin. Optional.
+ * @param {Object} args         Parameters
+ * @param {String} args.msg     Error message. Required.
+ * @param {String} args.message Alias for args.msg
+ * @param {Object} args.filter  Filter object or GrawlixFilter instance
+ * @param {Object} args.plugin  Source plugin. Optional.
+ * @param {Error}  args.trace   New Error object to take stack trace from. 
+ *                              Optional.
  */
 const GrawlixFilterError = function(args) {
   this.name = 'GrawlixFilterError';
   this.filter = _.has(args, 'filter') ? args.filter : null;
-  if (_.has(args, 'plugin')) {
-    this.plugin = args.plugin;
-  }
-  this.stack = (new Error()).stack;
-  // construct message
-  if (this.filter !== null) {
-    this.message = 'grawlix filter error: ' + args.msg + '\n' + 
-                   JSON.stringify(this.filter);
+  this.plugin = _.has(args, 'plugin') ? args.plugin : null;
+  if (_.has(args, 'trace') && args.trace instanceof Error) {
+    this.stack = args.trace.stack;
   } else {
-    this.message = 'grawlix filter error: ' + args.msg;
+    this.stack = (new Error()).stack;
   }
-  if (!_.isUndefined(this.plugin) && _.has(this.plugin, 'name')) {
-    this.message += '\nplugin: ' + this.plugin.name;
-  } else if (!_.isUndefined(this.plugin) && _.isString(this.plugin)) {
-    this.message += '\nplugin: ' + this.plugin;
+  // construct message
+  if (_.has(args, 'msg')) {
+    this.message = args.msg;
+  } else if (_.has(args, 'message')) {
+    this.message = args.message;
+  } else {
+    this.message = args;
   }
 };
 GrawlixFilterError.prototype = Object.create(Error.prototype);

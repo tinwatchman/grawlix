@@ -7,7 +7,6 @@ const defaultStyles = require('./styles').styles;
 const FilterSort = require('./filters').FilterSort;
 const GrawlixFilter = require('./filters').GrawlixFilter;
 const toGrawlixFilter = require('./filters').toGrawlixFilter;
-const GrawlixFilterError = require('./filters').GrawlixFilterError;
 const GrawlixStyle = require('./styles').GrawlixStyle;
 const toGrawlixStyle = require('./styles').toGrawlixStyle;
 const GrawlixStyleError = require('./styles').GrawlixStyleError;
@@ -40,7 +39,7 @@ exports.parseOptions = function(options, defaults) {
         _.has(optFilter, 'pattern')
       );
     });
-    if (!isAllowed && !isReplaced && filter.isValid()) {
+    if (!isAllowed && !isReplaced) {
       settings.filters.push( filter.clone() );
     }
   });
@@ -62,21 +61,38 @@ exports.parseOptions = function(options, defaults) {
   loadStyles(settings, options.styles);
   // get main style
   if (!_.has(options, 'style') || options.style === null) {
-    throw new Error('grawlix main style not defined!');
+    throw new GrawlixStyleError({
+      msg: 'main style not found',
+      style: options.style,
+      trace: new Error()
+    });
   }
+  // try to find style
   var style;
-  // see if is style configuration
-  if (_.isString(options.style)) {
-    style = _.findWhere(settings.styles, { name: options.style });
-  } else if (_.isObject(options.style) && _.has(options.style, 'name')) {
+  if (_.has(options.style, 'name')) {
+    // if options.style is a style object
     style = _.findWhere(settings.styles, { name: options.style.name });
+    if (!_.isUndefined(style)) {
+      // if style is found, configure style with object
+      style.configure(options.style);
+    } else {
+      // if style not found, try to create a new style with object
+      style = toGrawlixStyle(options.style);
+    }
+  } else {
+    // try to treat options.style as string
+    style = _.findWhere(settings.styles, { name: options.style });
   }
-  if (!_.isUndefined(style) && !_.isString(style)) {
-    style.configure(options.style);
-  } else if (_.isUndefined(style)) {
-    style = toGrawlixStyle(options.style);
+  if (style instanceof GrawlixStyle) {
+    settings.style = style;
+  } else {
+    throw new GrawlixStyleError({
+      msg: 'main style not found',
+      styleName: options.style,
+      style: options.style,
+      trace: new Error()
+    });
   }
-  settings.style = style;
   // return settings
   return settings;
 };
@@ -91,6 +107,7 @@ var GrawlixSettings = function() {
   this.style = null;
   this.styles = [];
   this.loadedPlugins = [];
+  this.loadedModules = [];
 };
 GrawlixSettings.prototype = {};
 exports.GrawlixSettings = GrawlixSettings;
@@ -107,40 +124,48 @@ exports.GrawlixSettings = GrawlixSettings;
  * @return {GrawlixSettings}            Settings object with plugin loaded
  */
 var loadPlugin = function(settings, pluginInfo, options) {
-  // unpack plugin and plugin options
-  var pluginOrFunc;
-  var pluginOpts;
+  // resolve plugin and plugin options
   var plugin;
-  if (_.isFunction(pluginInfo) || pluginInfo instanceof GrawlixPlugin) {
-    // if we're just given the straight plugin without any options
-    pluginOrFunc = pluginInfo;
-    pluginOpts = {};
-  } else if (_.has(pluginInfo, 'plugin')) {
-    // if we're given an object with a `plugin` property (and maybe options)
-    pluginOrFunc = pluginInfo.plugin;
-    pluginOpts = _.has(pluginInfo, 'options') ? pluginInfo.options : {};
+  if (_.has(pluginInfo, 'plugin')) {
+    plugin = pluginInfo.plugin;
+  } else if (_.has(pluginInfo, 'module')) {
+    // make sure we don't load the same module twice
+    if (_.contains(settings.loadedModules, pluginInfo.module)) {
+      return settings;
+    }
+    // try to load module
+    try {
+      plugin = require(pluginInfo.module);
+    } catch (err) {
+      throw new GrawlixPluginError({
+        msg: "cannot find module '" + pluginInfo.module + "'",
+        plugin: pluginInfo,
+        trace: new Error() 
+      });
+    }
+    settings.loadedModules.push(pluginInfo.module);
+  } else {
+    plugin = pluginInfo;
   }
+  var pluginOpts = _.has(pluginInfo, 'options') ? pluginInfo.options : {};
   // instantiate plugin if necessary
-  if (_.isFunction(pluginOrFunc)) {
-    plugin = pluginOrFunc(pluginOpts, options);
-  } else if (pluginOrFunc instanceof GrawlixPlugin) {
-    plugin = pluginOrFunc;
+  if (_.isFunction(plugin)) {
+    plugin = plugin(pluginOpts, options);
   }
-  if (_.isUndefined(plugin)) {
+  // validate plugin
+  if (!(plugin instanceof GrawlixPlugin)) {
     throw new GrawlixPluginError({
-      msg: 'plugin is undefined',
-      plugin: pluginInfo
-    });
-  } else if (!(plugin instanceof GrawlixPlugin)) {
-    throw new GrawlixPluginError({
-      msg: 'object is not a GrawlixPlugin',
+      msg: 'invalid plugin',
       plugin: pluginInfo
     });
   } else if (plugin.name === null || _.isEmpty(plugin.name)) {
     throw new GrawlixPluginError({
-      msg: 'invalid plugin; name property is not provided',
+      msg: 'invalid plugin - name property not provided',
       plugin: pluginInfo
     });
+  } else if (_.contains(settings.loadedPlugins, plugin.name)) {
+    // don't load the same plugin twice
+    return settings;
   }
   // initialize plugin
   plugin.init(pluginOpts);
@@ -149,11 +174,8 @@ var loadPlugin = function(settings, pluginInfo, options) {
     try {
       loadFilters(settings, plugin.filters, options.allowed);
     } catch (err) {
-      throw new GrawlixPluginError({
-        msg: 'error loading plugin filters',
-        plugin: plugin,
-        baseError: err
-      });
+      err.plugin = pluginInfo;
+      throw err;
     }
   }
   // load styles
@@ -161,11 +183,8 @@ var loadPlugin = function(settings, pluginInfo, options) {
     try {
       loadStyles(settings, plugin.styles);
     } catch (err) {
-      throw new GrawlixPluginError({
-        msg: 'error loading plugin styles',
-        plugin: plugin,
-        baseError: err
-      });
+      err.plugin = pluginInfo;
+      throw err;
     }
   }
   // add name to loaded plugins
@@ -237,31 +256,39 @@ exports.loadStyles = loadStyles;
  * @return {Boolean}
  */
 exports.hasPlugin = function(plugin, options) {
-  if (!_.has(options, 'plugins') || !_.isArray(options.plugins) || 
-    _.isEmpty(options.plugins)) {
-    return false;
+  if (_.has(options, 'plugins') && _.isArray(options.plugins)) {
+    // search for matching GrawlixPlugin
+    if (plugin instanceof GrawlixPlugin) {
+      return _.some(options.plugins, function(obj) {
+        return (
+          _.has(obj, 'plugin') &&
+          obj.plugin instanceof GrawlixPlugin &&
+          (obj.plugin === plugin || obj.plugin.name === plugin.name)
+        );
+      });
+    }
+    // search for matching factory function
+    if (_.isFunction(plugin)) {
+      return _.some(options.plugins, function(obj) {
+        return (_.has(obj, 'plugin') && obj.plugin === plugin);
+      });
+    }
+    // search by module and by GrawlixPlugin name
+    if (_.isString(plugin)) {
+      return _.some(options.plugins, function(obj) {
+        return (
+          (_.has(obj, 'module') && obj.module === plugin) ||
+          (
+            _.has(obj, 'plugin') && 
+            obj.plugin instanceof GrawlixPlugin && 
+            obj.plugin.name === plugin
+          )
+        );
+      });
+    }
   }
-  var isNameMatch = function(name, info) {
-    return (
-      _.has(info, 'plugin') && _.isString(name) &&
-      (
-        (!_.isFunction(info.plugin) && info.plugin.name === name) || 
-        (_.has(info, 'name') && info.name === name)
-      )
-    );
-  };
-  if (_.isFunction(plugin)) {
-    return _.some(options.plugins, function(info) {
-      return ( info.plugin === plugin );
-    });
-  } else if (plugin instanceof GrawlixPlugin) {
-    return _.some(options.plugins, function(info) {
-      return ( info.plugin === plugin || isNameMatch(plugin.name, info) );
-    });
-  }
-  return _.some(options.plugins, function(info) {
-    return isNameMatch(plugin, info);
-  });
+  // or, if all else fails...
+  return false;
 };
 
 /**
