@@ -4,3 +4,4 @@ node_modules/*
 *.sublime-workspace
 gen/*
 coverage/*
+.coveralls.yml

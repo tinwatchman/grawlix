@@ -4,7 +4,7 @@
   "description": "Replaces profanity with nonsensical symbols",
   "main": "grawlix.js",
   "scripts": {
-    "test": "istanbul cover node_modules/jasmine/bin/jasmine.js -x 'spec/**'"
+    "test": "istanbul cover node_modules/jasmine/bin/jasmine.js -x 'spec/**' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "engines": {
     "node": ">=7.3.0"
@@ -35,6 +35,7 @@
     "url": "https://github.com/tinwatchman/grawlix/issues"
   },
   "devDependencies": {
+    "coveralls": "^2.13.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.3"
   },
