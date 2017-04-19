@@ -3,6 +3,7 @@ grawlix
 > Make the Internet swear like a cartoon
 
 [![Build Status](https://travis-ci.org/tinwatchman/grawlix.svg?branch=master)](https://travis-ci.org/tinwatchman/grawlix)
+[![Dependency Status](https://gemnasium.com/tinwatchman/grawlix.svg)](https://gemnasium.com/tinwatchman/grawlix)
 [![Coverage Status](https://coveralls.io/repos/github/tinwatchman/grawlix/badge.svg?branch=master)](https://coveralls.io/github/tinwatchman/grawlix?branch=master)
 
 `grawlix` is a configurable `RegExp`-based profanity filter that swaps out obscene words for [grawlixes](https://en.wiktionary.org/wiki/grawlix) -- long strings of emoticons or typographical symbols often used to represent swearing in comic strips and cartoons. Primarily aimed at George Carlin's ["Seven Dirty Words"](https://en.wikipedia.org/wiki/Seven_dirty_words), the library's default filters have been [rigorously tested](https://github.com/tinwatchman/grawlix/blob/master/spec/filter-spec.js#L412) against potential false positives and [Scunthorpe problems](https://en.wikipedia.org/wiki/Scunthorpe_problem). It's highly extensible, allowing new words and grawlix styles to be easily added as needed.
